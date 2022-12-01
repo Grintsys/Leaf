@@ -131,17 +131,19 @@ def return_data(filters):
 			row = [register.posting_date, register.name, register.status, refenrence.reference_doctype, refenrence.reference_name, invoice_date, register.party_name, register.party_rtn, register.company, register.reason_payment, register.paid_amount, register.total_allocated_amount, register.unallocated_amount, register.difference_amount, register.reference_no, register.reference_date, register.user]
 			data.append(row)
 
-			apply_extra_registers = frappe.get_all("Apply Payment Entries Without References", filters = {"payment_entry": register.name})
+		apply_extra_registers = frappe.get_all("Apply Payment Entries Without References", filters = {"payment_entry": register.name})
 
-			for apply in apply_extra_registers:
-				references_apply = frappe.get_all("Apply Payment Entries Without References Detail", ["*"], filters = {"parent": apply.name})
-				for reference_apply in references_apply:
-					invoice_date_apply = ""
+		for apply in apply_extra_registers:
+			references_apply = frappe.get_all("Apply Payment Entries Without References Detail", ["*"], filters = {"parent": apply.name})
+			for reference_apply in references_apply:
+				invoice_date_apply = ""
 
-					invoice = frappe.get_doc("Sales Invoice", reference_apply.reference_name)
-					invoice_date_apply = invoice.posting_date
-					row = [register.posting_date, register.name, register.status,"Sales Invoice", reference_apply.reference_name, invoice_date_apply, register.party_name, register.party_rtn, register.company, register.reason_payment, register.paid_amount, register.total_allocated_amount, register.unallocated_amount, register.difference_amount, register.reference_no, register.reference_date, register.user]
-					data.append(row)
+				invoice = frappe.get_doc("Sales Invoice", reference_apply.reference_name)
+				invoice_date_apply = invoice.posting_date
+				row = [register.posting_date, register.name, register.status,"Sales Invoice", reference_apply.reference_name, invoice_date_apply, register.party_name, register.party_rtn, register.company, register.reason_payment, register.paid_amount, register.total_allocated_amount, register.unallocated_amount, register.difference_amount, register.reference_no, register.reference_date, register.user]
+				data.append(row)
+		
+
 
 	return data
 
