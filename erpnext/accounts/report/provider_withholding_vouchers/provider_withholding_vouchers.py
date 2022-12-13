@@ -121,7 +121,7 @@ def return_data(filters):
 	if filters.get("to_date"): to_date = filters.get("to_date")
 	conditions = return_filters(filters, from_date, to_date)
 
-	retentions = frappe.get_all("Supplier Retention", ["*"], filters = conditions)
+	retentions = frappe.get_all("Supplier Retention", ["*"], filters = conditions, order_by = "name asc")
 
 	if filters.get("reason"):
 		for retention in retentions:
@@ -144,6 +144,8 @@ def build_data(retention):
 	data = []
 	
 	references = frappe.get_all("Withholding Reference", ["*"], filters = {"parent": retention.name})
+
+	# references = list(reversed(response))
 
 	for reference in references:
 		percentage_str = str(retention.percentage_total)
