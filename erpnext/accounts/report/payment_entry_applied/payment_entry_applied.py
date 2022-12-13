@@ -41,6 +41,12 @@ def execute(filters=None):
 			"width": 240
 		},
 		{
+			"fieldname": "datereference",
+			"label": _("Date Reference"),
+			"fieldtype": "Data",
+			"width": 120
+		},
+		{
 			"fieldname": "company",
 			"label": _("Company"),
 			"fieldtype": "Link",
@@ -84,7 +90,8 @@ def return_data(filters):
 		is_serial, references = verificate_serial(filters, entry.naming_series, entry.name)
 		if is_serial:
 			for reference in references:
-				row = [entry.name, entry.naming_series, entry.party, reference.reference_doctype, reference.reference_name, entry.company, reference.allocated_amount, entry.mode_of_payment, entry.reason_payment]
+				ref = frappe.get_doc(reference.reference_doctype, reference.reference_name)
+				row = [entry.name, entry.naming_series, entry.party, reference.reference_doctype, reference.reference_name, ref.posting_date, entry.company, reference.allocated_amount, entry.mode_of_payment, entry.reason_payment]
 				data.append(row)
 
 	return data

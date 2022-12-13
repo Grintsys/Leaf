@@ -470,7 +470,8 @@
    "fieldname": "rtn",
    "fieldtype": "Data",
    "label": "RTN",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "serie",
@@ -544,7 +545,7 @@
  "icon": "fa fa-user",
  "idx": 363,
  "image_field": "image",
- "modified": "2022-03-28 13:55:17.580857",
+ "modified": "2022-11-30 23:24:49.902779",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",

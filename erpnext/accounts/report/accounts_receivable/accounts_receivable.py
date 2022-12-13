@@ -58,7 +58,7 @@ class ReceivablePayableReport(object):
 
 		for document in documents:
 			paid = document.total - document.outstanding_amount
-			row = [document.posting_date, document.customer, "",_("Customer Documents"), document.name, document.document_number, document.due_date, document.total, paid, 0.0, document.outstanding_amount, 0, 0.0, 0.0, 0.0, 0.0, "HNL", "", "", "", "No hay observaciones"]
+			row = [document.posting_date, document.customer, "","Customer Documents", document.name, document.document_number, document.due_date, document.total, paid, 0.0, document.outstanding_amount, 0, 0.0, 0.0, 0.0, 0.0, "HNL", "", "", "", "No hay observaciones"]
 			if document.outstanding_amount > 0:
 				self.data.append(row)
 
@@ -226,7 +226,7 @@ class ReceivablePayableReport(object):
 	def append_row(self, row):
 		newrow = False
 
-		if row.voucher_type == 'Payment Entry' or row.voucher_type == 'Journal Entry':
+		if row.voucher_type == 'Payment Entry' or row.voucher_type == 'Journal Entry' or row.voucher_type == 'Customer Retention' or row.voucher_type == 'Supplier Retention':
 			newrow = False
 		else:		
 			document = frappe.get_doc(row.voucher_type, row.voucher_no)
@@ -260,6 +260,14 @@ class ReceivablePayableReport(object):
 			row.document_number = document_number
 		else:
 			row.document_number = ''
+		
+		if row.voucher_type == "Supplier Documents":
+				doc = frappe.get_doc(row.voucher_type, row.voucher_no)
+				row.document_number = doc.transaction_number
+
+		if row.voucher_type == "Purchase Invoice":
+			doc = frappe.get_doc(row.voucher_type, row.voucher_no)
+			row.document_number = doc.bill_no
 
 	def set_delivery_notes(self, row):
 		delivery_notes = self.delivery_notes.get(row.voucher_no, [])
