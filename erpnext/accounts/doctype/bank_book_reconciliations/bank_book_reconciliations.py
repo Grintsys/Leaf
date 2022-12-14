@@ -283,8 +283,8 @@ class BankBookReconciliations(Document):
 		for detail in details:
 			doc = frappe.get_doc("Bank Transactions", detail.name)
 			doc.docstatus = 3
-			doc.status = "Transit"
-			doc.db_set('status', "Transit", update_modified=False)
+			doc.status = "Pre-reconciled"
+			doc.db_set('status', "Pre-reconciled", update_modified=False)
 			doc.save()
 	
 	def conciliation_transactions(self):
