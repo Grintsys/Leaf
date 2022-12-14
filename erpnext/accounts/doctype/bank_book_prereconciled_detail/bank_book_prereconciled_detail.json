@@ -1,0 +1,30 @@
+{
+ "autoname": "field:transaction",
+ "creation": "2022-12-14 08:25:44.203459",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction"
+ ],
+ "fields": [
+  {
+   "fieldname": "transaction",
+   "fieldtype": "Link",
+   "label": "transaction",
+   "options": "Bank Transactions",
+   "unique": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2022-12-14 08:25:44.203459",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Bank Book Prereconciled Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
