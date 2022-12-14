@@ -138,11 +138,6 @@ class Customer(TransactionBase):
 		self.generateSerie()
 	
 	def validate(self):
-		cu = frappe.get_all("Customer", ["*"], filters={"rtn": self.rtn})
-
-		if len(cu) > 0:
-			frappe.throw("RTN debe ser unico.")
-
 		self.flags.is_new_doc = self.is_new()
 		self.flags.old_lead = self.lead_name
 		validate_party_accounts(self)
