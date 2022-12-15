@@ -408,6 +408,12 @@ def get_data():
 					"is_query_report": True,
 					"name": "Item Variant Details",
 					"doctype": "Item"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Transactions By User",
+					"doctype": "Purchase Invoice"
 				}
 			]
 		},
