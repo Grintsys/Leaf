@@ -362,14 +362,13 @@
   },
   {
    "fieldname": "conciliation",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "hidden": 1,
-   "label": "conciliation",
-   "options": "Bank Book Reconciliations"
+   "label": "conciliation"
   }
  ],
  "is_submittable": 1,
- "modified": "2022-11-25 23:04:32.914309",
+ "modified": "2022-12-16 10:11:24.573863",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Transactions",
