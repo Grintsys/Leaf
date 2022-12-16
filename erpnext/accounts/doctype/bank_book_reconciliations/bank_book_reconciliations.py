@@ -285,6 +285,7 @@ class BankBookReconciliations(Document):
 			doc = frappe.get_doc("Bank Transactions", detail.name)
 			doc.docstatus = 4
 			doc.status = "Pre-reconciled"
+			doc.db_set('conciliation', "", update_modified=False)
 			doc.db_set('status', "Pre-reconciled", update_modified=False)
 			doc.db_set('docstatus', 4, update_modified=False)
 	
