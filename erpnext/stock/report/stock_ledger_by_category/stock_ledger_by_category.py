@@ -104,7 +104,84 @@ def execute(filters=None):
 	# 										valuation_rate_transactions.append(sle.valuation_rate)
 	# 										stock_value_transactions.append(stock_value)
 
-	for group in groups:	
+	# for group in groups:
+	# 	group_list = []
+	# 	for product in products:
+	# 		actual_qty_product = 0
+	# 		qty_after_transaction_product = 0
+	# 		incoming_rate_product = 0
+	# 		valuation_rate_product = 0
+	# 		stock_value_product = 0
+	# 		transaction_add = []
+	# 		product_add = []
+	# 		for sle in sl_entries:
+	# 			if sle.item_group == group:
+	# 				if sle.item_code == product:
+	# 					for type in type_transactions:
+	# 						pro = []
+	# 						actual_qty_type = 0
+	# 						qty_after_transaction_type = 0
+	# 						incoming_rate_type = 0
+	# 						valuation_rate_type = 0
+	# 						stock_value_type = 0
+	# 						actual_type = ""
+	# 						transaction_new = False
+	# 						for sle_type in sl_entries:
+	# 							product_new = True
+	# 							if sle_type.voucher_no in product_add:
+	# 								product_new = False
+																
+	# 							if product_new:
+									# actual_qty_product += sle_type.actual_qty
+									# qty_after_transaction_product += sle_type.qty_after_transaction
+									# incoming_rate_product += sle_type.incoming_rate
+									# valuation_rate_product += sle_type.valuation_rate
+									# stock_value_product += sle_type.stock_value
+
+									
+	# 								actual_qty_type += sle_type.actual_qty
+	# 								qty_after_transaction_type += sle_type.qty_after_transaction
+	# 								incoming_rate_type += sle_type.incoming_rate
+	# 								valuation_rate_type += sle_type.valuation_rate
+	# 								stock_value_type += sle_type.stock_value
+	# 								product_add.append(sle_type.voucher_no)
+	# 								pro += [{'indent': 3.0, "transaction": "", "item_code":"", "item_name":"","voucher_type":sle_type.voucher_type, "voucher_no":sle_type.voucher_no, 
+	# 										"stock_uom":sle_type.stock_uom, "actual_qty":sle_type.actual_qty, "qty_after_transaction":sle_type.qty_after_transaction, "incoming_rate":sle_type.incoming_rate, "valuation_rate":sle_type.valuation_rate, "stock_value":sle_type.stock_value}]
+
+	# 						if actual_type == type:
+	# 							if transaction_new == False:
+	# 								add_transaction = True
+	# 								if actual_type in transaction_add:
+	# 									add_transaction = False
+
+	# 								if add_transaction:
+	# 									transaction_new = True
+	# 									transaction_add.append(actual_type)
+	# 									group_list += [{'indent': 2.0, "transaction": "", "item_code":"", "item_name":"", "voucher_type":actual_type, "voucher_no":"",
+	# 									"stock_uom":"", "actual_qty":actual_qty_type, "qty_after_transaction":qty_after_transaction_type, "incoming_rate":incoming_rate_type, "valuation_rate":valuation_rate_type, "stock_value":stock_value_type}]
+								
+	# 							for p in pro:
+	# 								group_list += [p]
+								
+	# 							pro = []
+	# 		group_list += [{'indent': 1.0, "transaction": "", "item_code":sle.item_code, "item_name":sle.item_name, "voucher_type":"", "voucher_no":"",
+	# 							"stock_uom":"", "actual_qty":actual_qty_product, "qty_after_transaction":qty_after_transaction_product, "incoming_rate":incoming_rate_product, 
+	# 							"valuation_rate":valuation_rate_product, "stock_value":stock_value_product}]
+
+
+		
+
+	# 	data.extend(group_row or [])
+	# 	data.extend(group_list or [])
+		# data.extend(products_list or [])
+		# data.extend(transaction_list or [])
+
+	for group in groups:
+		actual_qty_group = 0
+		qty_after_transaction_group = 0
+		incoming_rate_group = 0
+		valuation_rate_group = 0
+		stock_value_group = 0
 		group_list = []
 		group_row = [{'indent': 0.0, "transaction": group}]	
 		for product in products:
@@ -159,6 +236,12 @@ def execute(filters=None):
 												valuation_rate_product += sle_type.valuation_rate
 												stock_value_product += sle_type.stock_value
 
+												actual_qty_group += sle_type.actual_qty
+												qty_after_transaction_group += sle_type.qty_after_transaction
+												incoming_rate_group += sle_type.incoming_rate
+												valuation_rate_group += sle_type.valuation_rate
+												stock_value_group += sle_type.stock_value
+
 												actual_qty_type += sle_type.actual_qty
 												qty_after_transaction_type += sle_type.qty_after_transaction
 												incoming_rate_type += sle_type.incoming_rate
@@ -171,7 +254,8 @@ def execute(filters=None):
 							if product_register == False:
 								product_register = True
 								group_list += [{'indent': 1.0, "transaction": "", "item_code":sle.item_code, "item_name":sle.item_name, "voucher_type":"", "voucher_no":"",
-								"stock_uom":"", "actual_qty":0, "qty_after_transaction":0, "incoming_rate":0, "valuation_rate":0, "stock_value":0}]
+								"stock_uom":"", "actual_qty":actual_qty_product, "qty_after_transaction":qty_after_transaction_product, 
+								"incoming_rate":incoming_rate_product, "valuation_rate":valuation_rate_product, "stock_value":stock_value_product}]
 
 							if actual_type == type:
 								if transaction_new == False:
@@ -189,11 +273,13 @@ def execute(filters=None):
 									group_list += [p]
 								
 								pro = []
-
+		group_row = [{'indent': 0.0, "transaction": group, "item_code":"", "item_name":"", "voucher_type":"", "voucher_no":"",
+					"stock_uom":"", "actual_qty":actual_qty_group, "qty_after_transaction":qty_after_transaction_group, "incoming_rate":incoming_rate_group, 
+					"valuation_rate":valuation_rate_group, "stock_value":stock_value_group}]	
 		data.extend(group_row or [])
 		data.extend(group_list or [])
-		# data.extend(products_list or [])
-		# data.extend(transaction_list or [])
+	# 	# data.extend(products_list or [])
+	# 	# data.extend(transaction_list or [])
 
 	update_included_uom_in_report(columns, data, include_uom, conversion_factors)
 	return columns, data
