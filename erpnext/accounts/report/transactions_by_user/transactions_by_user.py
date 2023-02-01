@@ -42,6 +42,11 @@ def execute(filters=None):
 			"options": "Item",
   		},
 		{
+			"fieldname": "item_name",
+   			"fieldtype": "Data",
+   			"label": "Item Name"
+		},
+		{
 			"fieldname": "quantity",
    			"fieldtype": "Float",
    			"label": "Quantity"
@@ -82,7 +87,7 @@ def get_data(filters):
 		if hour_invoice >= from_time and hour_invoice <= to_time:
 			items = frappe.get_all("Stock Entry Detail", ["*"], filters = {"parent": entry.name})
 			for item in items:
-				row = [entry.posting_date, entry.posting_time, "Stock Entry", entry.name, item.item_code, item.qty, entry.from_warehouse, item.item_group, entry.owner]
+				row = [entry.posting_date, entry.posting_time, "Stock Entry", entry.name, item.item_code, item.item_name, item.qty, entry.from_warehouse, item.item_group, entry.owner]
 				data.append(row)
 
 	purchase_receipts = frappe.get_all("Purchase Receipt" , ["*"], filters = conditions)
@@ -93,7 +98,7 @@ def get_data(filters):
 		if hour_invoice >= from_time and hour_invoice <= to_time:
 			items = frappe.get_all("Purchase Receipt Item", ["*"], filters = {"parent": receipt.name})
 			for item in items:
-				row = [receipt.posting_date, receipt.posting_time, "Purchase Receipt", receipt.name, item.item_code, item.qty, receipt.set_warehouse, item.item_group, receipt.owner]
+				row = [receipt.posting_date, receipt.posting_time, "Purchase Receipt", receipt.name, item.item_code, item.item_name, item.qty, receipt.set_warehouse, item.item_group, receipt.owner]
 				data.append(row)
 	
 	purchase_invoices = frappe.get_all("Purchase Invoice" , ["*"], filters = conditions)
@@ -104,7 +109,7 @@ def get_data(filters):
 		if hour_invoice >= from_time and hour_invoice <= to_time:
 			items = frappe.get_all("Purchase Invoice Item", ["*"], filters = {"parent": purchase.name})
 			for item in items:
-				row = [purchase.posting_date, purchase.posting_time, "Purchase Invoice", purchase.name, item.item_code, item.qty, purchase.set_warehouse, item.item_group, purchase.owner]
+				row = [purchase.posting_date, purchase.posting_time, "Purchase Invoice", purchase.name, item.item_code, item.item_name, item.qty, purchase.set_warehouse, item.item_group, purchase.owner]
 				data.append(row)
 	
 	conditions = return_filters_inventory_download(filters, from_date, to_date)
@@ -116,7 +121,7 @@ def get_data(filters):
 		if hour_invoice >= from_time and hour_invoice <= to_time:
 			items = frappe.get_all("Inventory Download Detail", ["*"], filters = {"parent": inventory.name})
 			for item in items:
-				row = [inventory.creation_date, inventory.posting_time, "Inventory Download", inventory.name, item.item_code, item.qty, inventory.warehouse, item.item_group, inventory.owner]
+				row = [inventory.creation_date, inventory.posting_time, "Inventory Download", inventory.name, item.item_code, item.item_name, item.qty, inventory.warehouse, item.item_group, inventory.owner]
 				data.append(row)
 	
 	conditions = return_filters_dispatch(filters, from_date, to_date)
@@ -125,7 +130,7 @@ def get_data(filters):
 	for dispatch in dispatch_controls:
 		items = frappe.get_all("Dispatch Control Detail", ["*"], filters = {"parent": dispatch.name})
 		for item in items:
-			row = [dispatch.creation_date, "", "Dispatch Control", dispatch.name, item.item_code, item.qty, "", "", dispatch.owner]
+			row = [dispatch.creation_date, "", "Dispatch Control", dispatch.name, item.item_code, item.item_name, item.qty, "", "", dispatch.owner]
 			data.append(row)
 
 	return data
