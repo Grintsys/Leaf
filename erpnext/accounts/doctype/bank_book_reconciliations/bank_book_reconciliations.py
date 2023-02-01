@@ -30,11 +30,11 @@ class BankBookReconciliations(Document):
 			self.transit_check_amount()
 			self.bank_book_value()
 			self.update_amount()
-			self.conciliation_transactions_pre_reconciled_cancel()
-	
+			
 	def on_cancel(self):
 		# self.conciliation_transactions_cancel()
 		self.modified_total_reconcilitiation_account_cancel()
+		self.conciliation_transactions_pre_reconciled_cancel()
 		# self.mark_reconciled_payment_entry_cancel()
 
 	def transit_check(self):
@@ -272,6 +272,8 @@ class BankBookReconciliations(Document):
 			doc.docstatus = 5
 			doc.status = "Reconciled"
 			doc.db_set('conciliation', self.name, update_modified=False)
+			doc.db_set('status', "Reconciled", update_modified=False)
+			doc.db_set('docstatus', 5, update_modified=False)
 			doc.conciliation = self.name
 			doc.save()
 	
@@ -281,9 +283,11 @@ class BankBookReconciliations(Document):
 
 		for detail in details:
 			doc = frappe.get_doc("Bank Transactions", detail.name)
-			doc.docstatus = 3
-			doc.status = "Transit"
-			doc.save()
+			doc.docstatus = 4
+			doc.status = "Pre-reconciled"
+			doc.db_set('conciliation', "", update_modified=False)
+			doc.db_set('status', "Pre-reconciled", update_modified=False)
+			doc.db_set('docstatus', 4, update_modified=False)
 	
 	def conciliation_transactions(self):
 		details = frappe.get_all("Bank reconciliations Table", ["bank_trasaction"], filters = {"parent": self.name})
