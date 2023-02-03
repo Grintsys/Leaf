@@ -83,6 +83,11 @@ def get_data():
 					"description": _("Payment Request"),
 				},
 				{
+					"type": "doctype",
+					"name": "Setting Item Wise",
+					"description": _("Create setting by Item Wise")
+				},
+				{
 					"type": "report",
 					"name": "Cancellation Of Invoices",
 					"doctype": "Cancellation Of Invoices",
@@ -120,6 +125,12 @@ def get_data():
 				{
 					"type": "report",
 					"name": "Item-wise Sales Register",
+					"is_query_report": True,
+					"doctype": "Sales Invoice"
+				},
+				{
+					"type": "report",
+					"name": "Item-wise Sales Register Company Default",
 					"is_query_report": True,
 					"doctype": "Sales Invoice"
 				},

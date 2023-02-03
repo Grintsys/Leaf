@@ -160,6 +160,13 @@ class PurchaseInvoice(BuyingController):
 			self.update_accounts_status()
 			self.update_dashboard_supplier()
 		validate_inter_company_party(self.doctype, self.supplier, self.company, self.inter_company_invoice_reference)
+		self.verify_purchase_invoice()
+	
+	def verify_purchase_invoice(self):
+		registers = frappe.get_all("Purchase Invoice", ["*"], filters = {"supplier": self.supplier, "bill_no": self.bill_no})
+
+		if len(registers) > 0:
+			frappe.throw(_("Ther is already an invoice with this provider and invoice number."))
 
 	def update_dashboard_supplier(self):
 		suppliers = frappe.get_all("Dashboard Supplier",["*"], filters = {"supplier": self.supplier, "company": self.company})

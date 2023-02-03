@@ -436,6 +436,12 @@ class PayrollEntry(Document):
 		debit = 0
 		credit = 0
 		register_list = []
+
+		employee = frappe.get_all("Employee", ["*"], filters = {"first_name": "Empleados varios"})
+
+		if len(employee) == 0:
+			frappe.throw(_("Create employee with firstname: Empleados varios"))
+			
 		for row in rows_acc:
 			debit += rows_deb[cont_rows]
 			credit += rows_cred[cont_rows]
@@ -448,7 +454,7 @@ class PayrollEntry(Document):
 					"reference_type": self.doctype,
 					"reference_name": self.name,
 					"party_type": "Employee",
-					"party": "EMP/00160"
+					"party": employee[0].name
 				}
 			)			
 
@@ -464,7 +470,7 @@ class PayrollEntry(Document):
 		 		"reference_type": self.doctype,
 		 		"reference_name": self.name,
 				"party_type": "Employee",
-				"party": "EMP/00160"
+				"party": employee[0].name
 		 	}
 		)
 
