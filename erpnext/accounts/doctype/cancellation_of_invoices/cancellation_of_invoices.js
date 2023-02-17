@@ -16,6 +16,11 @@ erpnext.accounts.SalesInvoiceController = erpnext.selling.SellingController.exte
 	onload: function() {
 		var me = this;
 		this._super();
+		cur_frm.fields_dict['sale_invoice'].get_query = function(doc, cdt, cdn) {
+			return {
+				filters:{'status': ["!=","Cancelled"]}
+			}
+		}
 
 		if(!this.frm.doc.__islocal && !this.frm.doc.customer && this.frm.doc.debit_to) {
 			// show debit_to in print format

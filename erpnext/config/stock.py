@@ -140,6 +140,18 @@ def get_data():
 					"is_query_report": True,
 					"name": "Sale Price List",
 					"doctype": "Price List"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Kardex Stock",
+					"doctype": "Stock Ledger Entry"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Kardex Stock Detail",
+					"doctype": "Stock Ledger Entry"
 				}
 			]
 		},

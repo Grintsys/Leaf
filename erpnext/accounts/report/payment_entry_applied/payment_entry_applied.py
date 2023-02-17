@@ -93,6 +93,18 @@ def return_data(filters):
 				ref = frappe.get_doc(reference.reference_doctype, reference.reference_name)
 				row = [entry.name, entry.naming_series, entry.party, reference.reference_doctype, reference.reference_name, ref.posting_date, entry.company, reference.allocated_amount, entry.mode_of_payment, entry.reason_payment]
 				data.append(row)
+		
+			apply_extra_registers = frappe.get_all("Apply Payment Entries Without References", filters = {"payment_entry": entry.name})
+
+			for apply in apply_extra_registers:
+				references_apply = frappe.get_all("Apply Payment Entries Without References Detail", ["*"], filters = {"parent": apply.name})
+				for reference_apply in references_apply:
+					invoice_date_apply = ""
+
+					invoice = frappe.get_doc("Sales Invoice", reference_apply.reference_name)
+					invoice_date_apply = invoice.posting_date
+					row = [entry.posting_date, entry.name, entry.status,"Sales Invoice", reference_apply.reference_name, invoice_date_apply, entry.party_name, entry.party_rtn, entry.company, entry.reason_payment, entry.paid_amount, entry.total_allocated_amount, entry.unallocated_amount, entry.difference_amount, entry.reference_no, entry.reference_date, entry.user]
+					data.append(row)
 
 	return data
 

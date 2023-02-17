@@ -24,9 +24,7 @@ class CancellationOfInvoices(Document):
 
 		if self.docstatus == 1:
 			self.add_bin()
-			# self.delete_gl_entry()
 			self.modified_sale_invoice()
-			# cost = super(CancellationOfInvoices, self).get_cost()
 			self.update_dashboard_customer()
 	
 	def update_dashboard_customer(self):
@@ -60,7 +58,6 @@ class CancellationOfInvoices(Document):
 	def on_cancel(self):
 		frappe.throw(_("Unable to cancel Cancellation Of Invoice"))
 		self.delete_stock_ledger_entry()
-		# frappe.throw(_("An annulment cannot be canceled."))
 
 	def delete_items(self, items):
 		for item in items:
@@ -158,8 +155,6 @@ class CancellationOfInvoices(Document):
 
 		update_bin(sle, allow_negative_stock, via_landed_cost_voucher)
 
-		# doc.insert()
-
 	def get_items(self):
 		items = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.sale_invoice})
 
@@ -245,51 +240,12 @@ class CancellationOfInvoices(Document):
 		entrys = frappe.get_all("GL Entry", ["*"], filters = {"voucher_no": self.sale_invoice})
 
 		for entry in entrys:
-			doc = frappe.get_doc("GL Entry", entry.name)
-			doc.db_set('docstatus', 0, update_modified=False)
-
 			frappe.delete_doc("GL Entry", entry.name)
 
 	def modified_sale_invoice(self):
-		# doc = frappe.get_doc("Sales Invoice", self.sale_invoice)
-		# doc.db_set('docstatus', 0, update_modified=False)
-		# doc.db_set('status', "Draft", update_modified=False)
-
-		# items = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.sale_invoice})
-
-		# for item in items:
-		# 	product = frappe.get_doc("Sales Invoice Item", item.name)
-		# 	product.db_set('rate', 0, update_modified=False)
-		# 	product.db_set('amount', 0, update_modified=False)
-
 		doc = frappe.get_doc("Sales Invoice", self.sale_invoice)
 		doc.db_set('status', "Cancelled", update_modified=False)
 		doc.db_set('docstatus', 9, update_modified=False)
-		# doc.db_set('partial_discount', 0, update_modified=False)
-		# doc.db_set('discount_amount', 0, update_modified=False)
-		# doc.db_set('base_discount_amount', 0, update_modified=False)
-		# doc.db_set('total_qty', 0, update_modified=False)
-		# doc.db_set('total', 0, update_modified=False)
-		# doc.db_set('total_net_weight', 0, update_modified=False)
-		# doc.db_set('total_taxes_and_charges', 0, update_modified=False)
-		# doc.db_set('additional_discount_percentage', 0, update_modified=False)
-		# doc.db_set('taxed_sales15', 0, update_modified=False)
-		# doc.db_set('isv15', 0, update_modified=False)
-		# doc.db_set('taxed_sales18', 0, update_modified=False)
-		# doc.db_set('isv18', 0, update_modified=False)
-		# doc.db_set('total_exempt', 0, update_modified=False)
-		# doc.db_set('total_exonerated', 0, update_modified=False)
-		# doc.db_set('grand_total', 0, update_modified=False)
-		# doc.db_set('rounding_adjustment', 0, update_modified=False)
-		# doc.db_set('rounded_total', 0, update_modified=False)
-		# doc.db_set('total_advance', 0, update_modified=False)
-		# doc.db_set('outstanding_amount', 0, update_modified=False)
-		# doc.db_set('paid_amount', 0, update_modified=False)
-		# doc.db_set('base_change_amount', 0, update_modified=False)
-		# doc.db_set('change_amount', 0, update_modified=False)
-		# doc.db_set('write_off_amount', 0, update_modified=False)
-		# doc.db_set('commission_rate', 0, update_modified=False)
-		# doc.db_set('total_commission', 0, update_modified=False)
 
 def make_entry(args, allow_negative_stock=False, via_landed_cost_voucher=False):
 		args.update({"doctype": "Stock Ledger Entry"})
