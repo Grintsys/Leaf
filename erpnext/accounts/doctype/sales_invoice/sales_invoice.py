@@ -547,6 +547,9 @@ class SalesInvoice(SellingController):
 
 				self.discount_amount = discount_amount
 				self.db_set('discount_amount', discount_amount, update_modified=False)
+
+				change_amount = self.paid_amount - self.rounded_total
+				self.db_set('change_amount', change_amount, update_modified=False)
 		else:
 			if self.round_off_discount == 1:
 				discount_amount = math.ceil(self.discount_amount)
