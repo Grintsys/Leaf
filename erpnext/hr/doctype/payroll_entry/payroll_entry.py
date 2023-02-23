@@ -396,7 +396,6 @@ class PayrollEntry(Document):
 					debit = 0
 					credit = detail.amount
 
-				
 				ver_acc.append(account[0].default_account)
 				ver_deb.append(debit)
 				ver_cred.append(credit)
@@ -443,13 +442,20 @@ class PayrollEntry(Document):
 			frappe.throw(_("Create employee with firstname: Empleados varios"))
 			
 		for row in rows_acc:
-			debit += 0
+			debitRow = rows_deb[cont_rows]
+
+			if rows_cred[cont_rows] > 0:
+				debitRow = 0
+
+			debit += debitRow
 			credit += rows_cred[cont_rows]
+
+
 
 			register_list.append(
 				{
 					"account": row,
-					"debit_in_account_currency": 0,
+					"debit_in_account_currency": debitRow,
 					"credit_in_account_currency": rows_cred[cont_rows],
 					"reference_type": self.doctype,
 					"reference_name": self.name,
