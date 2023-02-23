@@ -443,13 +443,13 @@ class PayrollEntry(Document):
 			frappe.throw(_("Create employee with firstname: Empleados varios"))
 			
 		for row in rows_acc:
-			debit += rows_deb[cont_rows]
+			debit += 0
 			credit += rows_cred[cont_rows]
 
 			register_list.append(
 				{
 					"account": row,
-					"debit_in_account_currency": rows_deb[cont_rows],
+					"debit_in_account_currency": 0,
 					"credit_in_account_currency": rows_cred[cont_rows],
 					"reference_type": self.doctype,
 					"reference_name": self.name,
