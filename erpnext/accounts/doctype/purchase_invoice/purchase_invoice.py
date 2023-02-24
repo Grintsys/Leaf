@@ -168,7 +168,7 @@ class PurchaseInvoice(BuyingController):
 
 		if len(registers) > 0:
 			if registers[0].name != self.name:
-				frappe.throw(_("Ther is already an invoice with this provider and invoice number."))
+				frappe.throw(_("There is already an invoice with this provider and invoice number."))
 
 	def update_dashboard_supplier(self):
 		suppliers = frappe.get_all("Dashboard Supplier",["*"], filters = {"supplier": self.supplier, "company": self.company})
