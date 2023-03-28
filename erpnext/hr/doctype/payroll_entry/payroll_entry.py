@@ -600,7 +600,7 @@ class PayrollEntry(Document):
 
 		doc.set("accounts", register_list)
 		
-		doc.save(ignore_permissions = False)
+		doc.save()
 		
 	def create_journal_entry(self, je_payment_amount, user_remark):
 		default_payroll_payable_account = self.get_default_payroll_payable_account()
