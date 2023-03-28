@@ -22,6 +22,10 @@ class CreditNoteCXC(Document):
 	
 	def on_cancel(self):
 		self.update_dashboard_customer_cancel()
+		self.verificate_amount_cancel()
+		self.update_accounts_status_cancel()
+		self.delete_gl_entry()
+		self.update_dashboard_customer_cancel()
 	
 	def update_dashboard_customer(self):
 		customers = frappe.get_all("Dashboard Customer",["*"], filters = {"customer": self.customer, "company": self.company})
@@ -37,6 +41,14 @@ class CreditNoteCXC(Document):
 			new_doc.billing_this_year = 0
 			new_doc.total_unpaid = self.amount_total * -1
 			new_doc.insert()
+	
+	def update_dashboard_customer_cancel(self):
+		customers = frappe.get_all("Dashboard Customer",["*"], filters = {"customer": self.customer, "company": self.company})
+
+		if len(customers) > 0:
+			customer = frappe.get_doc("Dashboard Customer", customers[0].name)
+			customer.total_unpaid += self.amount_total
+			customer.save()
 	
 	def update_dashboard_customer_cancel(self):
 		customers = frappe.get_all("Dashboard Customer",["*"], filters = {"customer": self.customer, "company": self.company})
@@ -124,11 +136,51 @@ class CreditNoteCXC(Document):
 					sales_invoice.outstanding_amount -= self.amount_total
 				sales_invoice.save()
 	
+	def verificate_amount_cancel(self):
+		if len(self.get("references")) > 1:
+			for d in sorted(self.references, key=lambda item: item.total_amount):
+				sales_invoice = frappe.get_doc("Sales Invoice", d.reference_name)
+				if amount_total > d.total_amount:
+					amount_total -= d.total_amount
+					if sales_invoice.outstanding_amount == d.total_amount:
+						sales_invoice.status = "Unpaid"
+						sales_invoice.db_set('status', "Unpaid", update_modified=False)
+
+					sales_invoice.outstanding_amount += d.total_amount
+					sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)
+				else:
+					if amount_total <= d.total_amount:
+						if sales_invoice.outstanding_amount == amount_total:
+							sales_invoice.status = "Unpaid"
+							sales_invoice.db_set('status', "Unpaid", update_modified=False)
+
+						sales_invoice.outstanding_amount += amount_total	
+						sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)						
+				sales_invoice.save()
+		else: 
+			for x in self.get("references"):
+				if amount_total <= x.total_amount:
+					sales_invoice = frappe.get_doc("Sales Invoice", x.reference_name)
+					if sales_invoice.outstanding_amount == self.amount_total:
+						sales_invoice.status = "Unpaid"
+						sales_invoice.db_set('status', "Unpaid", update_modified=False)
+
+					sales_invoice.outstanding_amount += self.amount_total
+					sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)
+				sales_invoice.save()
+	
 	def update_accounts_status(self):
 		customer = frappe.get_doc("Customer", self.customer)
 		if customer:
 			customer.credit += self.amount_total
 			customer.remaining_balance -= self.amount_total
+			customer.save()
+
+	def update_accounts_status_cancel(self):
+		customer = frappe.get_doc("Customer", self.customer)
+		if customer:
+			customer.credit -= self.amount_total
+			customer.remaining_balance += self.amount_total
 			customer.save()
 	
 	def assign_cai(self):
@@ -247,7 +299,12 @@ class CreditNoteCXC(Document):
 					if str(date) == str(sum_dates1):
 						frappe.msgprint(_("This CAI expires in {} days.".format(i)))
 						break
-	
+	def delete_gl_entry(self):
+		entries = frappe.get_all("GL Entry", ["name"], filters = {"voucher_no": self.name})
+
+		for entry in entries:
+			frappe.delete_doc("GL Entry", entry.name)
+
 	def apply_gl_entry(self):
 		currentDateTime = datetime.now()
 		date = currentDateTime.date()
