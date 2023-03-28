@@ -426,6 +426,12 @@ def get_data():
               		"name": "Bank reconciliations",
               		"label": _("Bank reconciliations"),
               		"description": _("Create Bank reconciliations"),
+            	},		    
+            	{
+              		"type": "doctype",
+              		"name": "Preconciled Bank Transactions",
+              		"label": _("Preconciled Bank Transactions"),
+              		"description": _("Create Preconciled Bank Transactions"),
             	},
 				{
 					"type": "doctype",

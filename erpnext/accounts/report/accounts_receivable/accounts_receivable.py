@@ -49,6 +49,10 @@ class ReceivablePayableReport(object):
 		self.get_chart_data()
 		if self.filters.get("party_type") == 'Customer':
 			self.customer_documents()
+		
+		if len(self.columns) - len(self.data) == 1:
+			del self.columns[16]
+
 		return self.columns, self.data, None, self.chart
 	
 	def customer_documents(self):
