@@ -281,7 +281,7 @@ let make_bank_entry = function (frm) {
 
 let journal_entry = function (frm) {
 	var doc = frm.doc;
-	if (doc.company && doc.start_date && doc.end_date && doc.payment_account) {
+	if (doc.company && doc.start_date && doc.end_date) {
 		return frappe.call({
 			doc: cur_frm.doc,
 			method: "make_journal_entry",
@@ -294,7 +294,7 @@ let journal_entry = function (frm) {
 			freeze_message: __("Creating Payment Entries......")
 		});
 	} else {
-		frappe.msgprint(__("Company, Payment Account, From Date and To Date is mandatory"));		
+		frappe.msgprint(__("Company, From Date and To Date is mandatory"));		
 	}
 };
 
