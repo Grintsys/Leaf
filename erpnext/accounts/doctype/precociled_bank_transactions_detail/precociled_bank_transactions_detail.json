@@ -1,0 +1,49 @@
+{
+ "creation": "2023-03-27 22:10:29.254138",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "bank_transaction",
+  "amount_data",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "bank_transaction",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Bank Trasaction",
+   "options": "Bank Transactions",
+   "read_only": 1
+  },
+  {
+   "depends_on": "check",
+   "fieldname": "amount_data",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount Transaction",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "precociled bank transactions detail",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "istable": 1,
+ "modified": "2023-03-27 22:35:34.975433",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "precociled bank transactions detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

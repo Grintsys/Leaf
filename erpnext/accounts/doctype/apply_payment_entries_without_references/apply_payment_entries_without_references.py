@@ -9,12 +9,16 @@ from frappe import _
 
 class ApplyPaymentEntriesWithoutReferences(Document):
 	def validate(self):
+		if self.user == None:
+			self.user = frappe.session.user
+			
 		if self.current_unallocated_amount <= 0:
 			frappe.throw(_("This payment entry {} is not valid.".format(self.payment_entry)))
 
 		if self.docstatus == 1:
 			self.update_sales_invoice()
 			self.update_payment_entry()
+
 		# self.create_payment_entry_reference()
 
 	def onload(self):

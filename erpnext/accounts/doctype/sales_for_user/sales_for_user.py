@@ -205,6 +205,13 @@ class SalesForUser(Document):
 
 			for entry in entries:
 				payment_entry += entry.paid_amount
+
+			con_entry_without = self.filters_entries_without()
+
+			entrie_without = frappe.get_all("Apply Payment Entries Without References", ["paid_amount"], filters = con_entry_without)
+
+			for entry in entrie_without:
+				payment_entry += entry.paid_amount
 		
 		self.total_cash = cash
 		self.actual_cash = change_amount
@@ -224,6 +231,16 @@ class SalesForUser(Document):
 
 		conditions += "{"
 		conditions += '"creation": ["between", ["{}", "{}"]]'.format(self.start_date, self.final_date)
+		conditions += ', "user": "{}"'.format(self.user)
+		conditions += '}'
+
+		return conditions
+
+	def filters_entries_without(self):
+		conditions = ''
+
+		conditions += "{"
+		conditions += '"creation_date": ["between", ["{}", "{}"]]'.format(self.start_date, self.final_date)
 		conditions += ', "user": "{}"'.format(self.user)
 		conditions += '}'
 

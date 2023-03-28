@@ -1,0 +1,211 @@
+{
+ "creation": "2023-03-28 09:48:42.645618",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "day_of_payment",
+  "salary_base",
+  "adjustment_retactive",
+  "extra_hours",
+  "base",
+  "cobertura",
+  "plus",
+  "work_days",
+  "extra_income",
+  "pago_bruto",
+  "days_not_work",
+  "payment_adjustment_salary_slip",
+  "ihss",
+  "isr",
+  "optica",
+  "ondontology",
+  "neighborhood_tax",
+  "prestamos",
+  "university_ujn",
+  "cafe",
+  "salary_advance",
+  "ladylee",
+  "coperative_elga",
+  "missing",
+  "rap",
+  "salary_slip_adjusment_payment",
+  "uncorresponding_disability_payment",
+  "total_deduction",
+  "net_pay"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee"
+  },
+  {
+   "fieldname": "day_of_payment",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "D\u00edas de pago"
+  },
+  {
+   "fieldname": "salary_base",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Salary Base"
+  },
+  {
+   "fieldname": "adjustment_retactive",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "AJUSTE RETROACTIVO SALARIO MINIMO"
+  },
+  {
+   "fieldname": "extra_hours",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Horas Extra"
+  },
+  {
+   "fieldname": "base",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Base"
+  },
+  {
+   "fieldname": "cobertura",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cobertura"
+  },
+  {
+   "fieldname": "plus",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "PLUS"
+  },
+  {
+   "fieldname": "work_days",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Dias trabajados"
+  },
+  {
+   "fieldname": "extra_income",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Extra Income"
+  },
+  {
+   "fieldname": "pago_bruto",
+   "fieldtype": "Currency",
+   "label": "Pago Bruto"
+  },
+  {
+   "fieldname": "days_not_work",
+   "fieldtype": "Currency",
+   "label": "DIAS NO TRABJADOS"
+  },
+  {
+   "fieldname": "payment_adjustment_salary_slip",
+   "fieldtype": "Currency",
+   "label": "Ajuste pago de mas en planilla"
+  },
+  {
+   "fieldname": "ihss",
+   "fieldtype": "Currency",
+   "label": "IHSS"
+  },
+  {
+   "fieldname": "isr",
+   "fieldtype": "Currency",
+   "label": "ISR"
+  },
+  {
+   "fieldname": "optica",
+   "fieldtype": "Currency",
+   "label": "OPTICA"
+  },
+  {
+   "fieldname": "ondontology",
+   "fieldtype": "Currency",
+   "label": "ODONTOLOGIA"
+  },
+  {
+   "fieldname": "neighborhood_tax",
+   "fieldtype": "Currency",
+   "label": "IMPUESTO VECINAL"
+  },
+  {
+   "fieldname": "prestamos",
+   "fieldtype": "Currency",
+   "label": "PRESTAMOS"
+  },
+  {
+   "fieldname": "university_ujn",
+   "fieldtype": "Currency",
+   "label": "UNIVERSIDAD UJN"
+  },
+  {
+   "fieldname": "cafe",
+   "fieldtype": "Currency",
+   "label": "CAFETERIA"
+  },
+  {
+   "fieldname": "salary_advance",
+   "fieldtype": "Currency",
+   "label": "Anticipos de Salario"
+  },
+  {
+   "fieldname": "ladylee",
+   "fieldtype": "Currency",
+   "label": "LADY LEE"
+  },
+  {
+   "fieldname": "coperative_elga",
+   "fieldtype": "Currency",
+   "label": "COOPERATIVA ELGA"
+  },
+  {
+   "fieldname": "missing",
+   "fieldtype": "Currency",
+   "label": "FALTANTES"
+  },
+  {
+   "fieldname": "rap",
+   "fieldtype": "Currency",
+   "label": "RAP"
+  },
+  {
+   "fieldname": "salary_slip_adjusment_payment",
+   "fieldtype": "Currency",
+   "label": "AJUSTE DE PAGO EN PLANILLA"
+  },
+  {
+   "fieldname": "uncorresponding_disability_payment",
+   "fieldtype": "Currency",
+   "label": "pago no correspondiente de incapacidad"
+  },
+  {
+   "fieldname": "total_deduction",
+   "fieldtype": "Currency",
+   "label": "Deducci\u00f3n Total"
+  },
+  {
+   "fieldname": "net_pay",
+   "fieldtype": "Currency",
+   "label": "Pago Neto"
+  }
+ ],
+ "istable": 1,
+ "modified": "2023-03-28 11:16:44.068594",
+ "modified_by": "Administrator",
+ "module": "HR",
+ "name": "Report Salary Register Detail Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

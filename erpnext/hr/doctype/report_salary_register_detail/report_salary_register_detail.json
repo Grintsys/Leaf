@@ -1,0 +1,122 @@
+{
+ "autoname": "SAL-REG-REP-.########",
+ "creation": "2023-03-27 22:53:45.036823",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "from_date",
+  "to_date",
+  "employee",
+  "colum1",
+  "company",
+  "docstatusvalue",
+  "department",
+  "section1",
+  "employees",
+  "section_break_10",
+  "created_by",
+  "colum2",
+  "aproved_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "docstatusvalue",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Document Status",
+   "options": "Draft\nSubmitted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "employees",
+   "fieldtype": "Table",
+   "label": "Employees",
+   "options": "Report Salary Register Detail Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "colum1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "created_by",
+   "fieldtype": "Signature",
+   "label": "ELABORADO POR:"
+  },
+  {
+   "fieldname": "colum2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "REVISADO POR:",
+   "fieldname": "aproved_by",
+   "fieldtype": "Signature",
+   "label": "REVISADO POR:"
+  }
+ ],
+ "modified": "2023-03-28 15:24:57.854333",
+ "modified_by": "Administrator",
+ "module": "HR",
+ "name": "Report Salary Register Detail",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

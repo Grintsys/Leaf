@@ -6,6 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "payment_entry",
+  "creation_date",
+  "user",
   "paid_amount",
   "current_unallocated_amount",
   "current_total_allocated_amount",
@@ -93,10 +95,21 @@
    "fieldtype": "Currency",
    "label": "Current Total Allocated Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "creation_date",
+   "fieldtype": "Date",
+   "label": "Creation Date"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Data",
+   "label": "User",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2022-02-16 11:50:41.594712",
+ "modified": "2023-03-27 21:24:07.931553",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Apply Payment Entries Without References",
