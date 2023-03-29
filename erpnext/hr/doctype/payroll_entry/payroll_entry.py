@@ -493,55 +493,52 @@ class PayrollEntry(Document):
 
 		employee = frappe.get_all("Employee", ["*"], filters = {"first_name": "Empleados varios"})
 
-		earnings = []
-		deductions = []
-		if len(employee) == 0:
-			frappe.throw(_("Create employee with firstname: Empleados varios"))
-
-		salary_slips = frappe.get_all("Salary Slip", ["*"], filters = {"payroll_entry": self.name})
-
-		for salary_slip in salary_slips:
-			details = frappe.get_all("Salary Detail", ["*"], filters = {"parent": salary_slip.name})
-			
-			for detail in details:
-				component = frappe.get_doc("Salary Component", detail.salary_component)
-
-				if component.type == "Earning":
-					if component.name in earnings:
-						exist = True
-					else:
-						earnings.append(component.name)
-
-				if component.type == "Deduction":
-					if component.name in deductions:
-						exist = True
-					else:
-						deductions.append(component.name)
-
 		debit = 0
 		credit = 0
 		register_list = []
 
-		for earning in earnings:
-			debit_component = 0
+		assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name", "type", "salary_component"], filters = {"payroll_entry": self.name})
 
-			assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name"], filters = {"payroll_entry": self.name, "salary_component": earning})
+		for assignment in assignment_salary_component:
+			details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment.name})
 
-			if(len(assignment_salary_component) > 0):
+			if assignment.type == "Deduction":
+				credit_component = 0
+				for detailsalarycomponent in details_assignment_salary_component:
+					credit_component += detailsalarycomponent.moneda
+							
+				account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": assignment.salary_component, "company": self.company})
 
-				details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment_salary_component[0].name})
+				if len(account) == 0:
+					frappe.throw(_("This component {} don't have a account.".format(assignment.salary_component)))
+						
+				register_list.append(
+					{
+						"account": account[0].default_account,
+						"debit_in_account_currency": 0,
+						"credit_in_account_currency": credit_component,
+						"reference_type": self.doctype,
+						"reference_name": self.name,
+						"party_type": "Employee",
+						"party": employee[0].name
+					}
+				)
 
+				credit += credit_component
+				
+			if assignment.type == "Earning":
+				debit_component = 0
 				for detailsalarycomponent in details_assignment_salary_component:
 					debit_component += detailsalarycomponent.moneda
 
-				account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": earning, "company": self.company})
+				account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": assignment.salary_component, "company": self.company})
 
 				if len(account) == 0:
-					frappe.throw(_("This component {} don't have a account.".format(component.name)))
-				
+					frappe.throw(_("This component {} don't have a account.".format(assignment.salary_component)))
+					
 				register_list.append(
 					{
-						"account": account,
+						"account": account[0].default_account,
 						"debit_in_account_currency": debit_component,
 						"credit_in_account_currency": 0,
 						"reference_type": self.doctype,
@@ -552,37 +549,6 @@ class PayrollEntry(Document):
 				)
 
 				debit += debit_component
-			
-			for deduction in deductions:
-				credit_component = 0
-
-				assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name"], filters = {"payroll_entry": self.name, "salary_component": deduction})
-
-				if(len(assignment_salary_component) > 0):
-
-					details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment_salary_component[0].name})
-
-					for detailsalarycomponent in details_assignment_salary_component:
-						credit_component += detailsalarycomponent.moneda
-						
-					account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": deduction, "company": self.company})
-
-					if len(account) == 0:
-						frappe.throw(_("This component {} don't have a account.".format(component.name)))
-					
-					register_list.append(
-						{
-							"account": account,
-							"debit_in_account_currency": 0,
-							"credit_in_account_currency": credit_component,
-							"reference_type": self.doctype,
-							"reference_name": self.name,
-							"party_type": "Employee",
-							"party": employee[0].name
-						}
-					)
-
-					credit += credit_component
 		
 		difference = debit - credit
 		default_payroll_payable_account = self.get_default_payroll_payable_account()
@@ -600,7 +566,7 @@ class PayrollEntry(Document):
 
 		doc.set("accounts", register_list)
 		
-		doc.save()
+		doc.save(ignore_permissions = True)
 		
 	def create_journal_entry(self, je_payment_amount, user_remark):
 		default_payroll_payable_account = self.get_default_payroll_payable_account()
