@@ -372,6 +372,7 @@ class PayrollEntry(Document):
 		rows_acc = []
 		rows_deb = []
 		rows_cred = []
+		validate_component = []
 		salary_slips = frappe.get_all("Salary Slip", ["*"], filters = {"payroll_entry": self.name})
 		
 		for salary_slip in salary_slips:
@@ -381,41 +382,44 @@ class PayrollEntry(Document):
 				debit = 0
 				credit = 0
 
-				component = frappe.get_doc("Salary Component", detail.salary_component)
+				if detail.salary_component in validate_component:
+					component = frappe.get_doc("Salary Component", detail.salary_component)
 
-				account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": component.name, "company": self.company})
+					account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": component.name, "company": self.company})
 
-				if len(account) == 0:
-					frappe.throw(_("This component {} don't have a account.".format(component.name)))
+					if len(account) == 0:
+						frappe.throw(_("This component {} don't have a account.".format(component.name)))
 
-				if component.type == "Earning":
-					assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name", "type", "salary_component"], filters = {"payroll_entry": self.name, "salary_component": component.name})
-					
-					if len(assignment_salary_component) == 0:					
-						debit = detail.amount
-					else:
-						details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment_salary_component[0].name})
-						for componentSalary in details_assignment_salary_component:
-							debit += componentSalary.moneda
+					if component.type == "Earning":
+						assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name", "type", "salary_component"], filters = {"payroll_entry": self.name, "salary_component": component.name})
+						
+						if len(assignment_salary_component) == 0:					
+							debit = detail.amount
+						else:
+							validate_component.append(detail.salary_component)
+							details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment_salary_component[0].name})
+							for componentSalary in details_assignment_salary_component:
+								debit += componentSalary.moneda
 
-					credit = 0
+						credit = 0
 
-				if component.type == "Deduction":
-					assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name", "type", "salary_component"], filters = {"payroll_entry": self.name, "salary_component": component.name})
-					
-					if len(assignment_salary_component) == 0:					
-						credit = detail.amount
-					else:
-						details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment_salary_component[0].name})
-						for componentSalary in details_assignment_salary_component:
-							credit += componentSalary.moneda
+					if component.type == "Deduction":
+						assignment_salary_component = frappe.get_all("Assignment Salary Component", ["name", "type", "salary_component"], filters = {"payroll_entry": self.name, "salary_component": component.name})
+						
+						if len(assignment_salary_component) == 0:					
+							credit = detail.amount
+						else:
+							validate_component.append(detail.salary_component)
+							details_assignment_salary_component = frappe.get_all("Employee Detail Salary Component", ["*"], filters = {"parent": assignment_salary_component[0].name})
+							for componentSalary in details_assignment_salary_component:
+								credit += componentSalary.moneda
 
-					debit = 0
-					
+						debit = 0
+						
 
-				ver_acc.append(account[0].default_account)
-				ver_deb.append(debit)
-				ver_cred.append(credit)
+					ver_acc.append(account[0].default_account)
+					ver_deb.append(debit)
+					ver_cred.append(credit)
 		
 		cont_acc = 0
 		for verificate in ver_acc:
