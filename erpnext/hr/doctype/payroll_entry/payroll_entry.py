@@ -383,6 +383,8 @@ class PayrollEntry(Document):
 				credit = 0
 
 				if detail.salary_component in validate_component:
+					exist = True
+				else:
 					component = frappe.get_doc("Salary Component", detail.salary_component)
 
 					account = frappe.get_all("Salary Component Account", ["default_account"], filters = {"parent": component.name, "company": self.company})
