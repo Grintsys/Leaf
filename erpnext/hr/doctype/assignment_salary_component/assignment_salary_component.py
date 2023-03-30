@@ -12,6 +12,14 @@ class AssignmentSalaryComponent(Document):
 	def validate(self):
 		self.status = self.get_status()
 	
+	def on_update(self):
+		total = 0
+		for employee in self.get("employees"):
+			total += employee.moneda
+		
+		self.total = total
+		self.db_set('total', total, update_modified=False)
+	
 	def get_status(self):
 		if self.docstatus == 0:
 			status = "Saved"
