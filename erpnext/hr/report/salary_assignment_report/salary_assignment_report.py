@@ -24,8 +24,8 @@ def execute(filters=None):
 			for item_employee in employee_detail:
 				employee = item_employee.employee_name
 				filters_employee = get_employee(filters, employee)
-				employee = frappe.get_all("Employee", ["department", "company"], filters = filters_employee)
-				for verificate in employee:
+				employeeList = frappe.get_all("Employee", ["department", "company"], filters = filters_employee)
+				for verificate in employeeList:
 					row = [verificate.company, item_employee.employee_name, verificate.department, item.payroll_entry, item.salary_component, item_employee.moneda]
 					data.append(row)
 	

@@ -5,6 +5,13 @@ frappe.ui.form.on('Assignment Salary Component', {
 	// refresh: function(frm) {
 
 	// }
+	setup: function(frm) {
+		frm.set_query("employee", "employees", function(doc, cdt, cdn) {
+			return {
+				filters:{"company": doc.company}
+			};
+		});
+    },
 	
 	onload: function(frm) {
 		cur_frm.fields_dict['salary_component'].get_query = function(doc, cdt, cdn) {
