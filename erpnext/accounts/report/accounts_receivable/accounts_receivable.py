@@ -49,9 +49,6 @@ class ReceivablePayableReport(object):
 		self.get_chart_data()
 		if self.filters.get("party_type") == 'Customer':
 			self.customer_documents()
-		
-		if len(self.columns) - len(self.data) == 1:
-			del self.columns[16]
 
 		return self.columns, self.data, None, self.chart
 	
@@ -62,7 +59,7 @@ class ReceivablePayableReport(object):
 
 		for document in documents:
 			paid = document.total - document.outstanding_amount
-			row = [document.posting_date, document.customer, "","Customer Documents", document.name, document.document_number, document.due_date, document.total, paid, 0.0, document.outstanding_amount, 0, 0.0, 0.0, 0.0, 0.0, "HNL", "", "", "", "No hay observaciones"]
+			row = [document.posting_date, document.customer, "","Customer Documents", document.name, document.document_number, document.due_date, document.total, paid, 0.0, document.outstanding_amount, 0, 0.0, 0.0, 0.0, 0.0, "HNL", "", "", "", "", "No hay observaciones"]
 			if document.outstanding_amount > 0:
 				self.data.append(row)
 
