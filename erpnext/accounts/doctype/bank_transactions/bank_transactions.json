@@ -333,8 +333,7 @@
   {
    "fieldname": "person_name",
    "fieldtype": "Data",
-   "label": "Party Name",
-   "reqd": 1
+   "label": "Party Name"
   },
   {
    "fieldname": "section_party",
@@ -368,7 +367,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2022-12-16 10:11:24.573863",
+ "modified": "2023-04-21 20:39:07.037631",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Transactions",
