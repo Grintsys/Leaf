@@ -7,7 +7,7 @@
  "doctype": "Report",
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-02-03 12:54:19.836655",
+ "modified": "2023-04-30 23:39:06.368606",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Item-wise Sales Register Company Default",
@@ -22,6 +22,9 @@
   },
   {
    "role": "Accounts User"
+  },
+  {
+   "role": "Agente de Ultrasonido"
   }
  ]
 }
