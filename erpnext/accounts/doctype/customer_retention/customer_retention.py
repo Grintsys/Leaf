@@ -73,7 +73,7 @@ class CustomerRetention(Document):
 	def calculate_retention(self):
 		for document in self.get("references"):
 			total = document.net_total * (self.percentage_total/100)
-			if document.reference_name == "Sales Invoice":
+			if document.reference_doctype == "Sales Invoice":
 				sales_invoice = frappe.get_doc("Sales Invoice", document.reference_name)
 				# sales_invoice.outstanding_amount -= total
 				sales_invoice.outstanding_amount = document.net_total - total
@@ -83,7 +83,7 @@ class CustomerRetention(Document):
 	def calculate_retention_cancel(self):
 		for document in self.get("references"):
 			total = document.net_total * (self.percentage_total/100)
-			if document.reference_name == "Sales Invoice":
+			if document.reference_doctype == "Sales Invoice":
 				sales_invoice = frappe.get_doc("Sales Invoice", document.reference_name)
 				# sales_invoice.outstanding_amount -= total
 				sales_invoice.outstanding_amount = document.net_total + total
