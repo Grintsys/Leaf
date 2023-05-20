@@ -230,7 +230,9 @@
   "against_income_account",
   "pos_total_qty",
   "creation_date",
-  "total_with_discount"
+  "total_with_discount",
+  "account15",
+  "account18"
  ],
  "fields": [
   {
@@ -1901,12 +1903,26 @@
    "fieldtype": "Link",
    "label": "Work Order Invoice",
    "options": "Work Order Invoice"
+  },
+  {
+   "fieldname": "account15",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Account 15%",
+   "options": "Account"
+  },
+  {
+   "fieldname": "account18",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Account 18%",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 181,
  "is_submittable": 1,
- "modified": "2022-08-17 15:56:20.257902",
+ "modified": "2023-05-19 17:40:10.307358",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",
