@@ -1119,7 +1119,7 @@
    "fieldname": "taxes_purchase",
    "fieldtype": "Table",
    "label": "Taxes Purchase",
-   "options": "Item Tax"
+   "options": "Item Tax Purchase"
   }
  ],
  "has_web_view": 1,
@@ -1127,7 +1127,7 @@
  "idx": 2,
  "image_field": "image",
  "max_attachments": 1,
- "modified": "2023-05-19 17:30:51.143030",
+ "modified": "2023-05-19 19:54:48.059074",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

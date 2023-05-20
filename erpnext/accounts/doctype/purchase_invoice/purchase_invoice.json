@@ -162,7 +162,9 @@
   "column_break_114",
   "auto_repeat",
   "update_auto_repeat_reference",
-  "transaction_number"
+  "transaction_number",
+  "account15",
+  "account18"
  ],
  "fields": [
   {
@@ -1337,12 +1339,26 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Transaction Number"
+  },
+  {
+   "fieldname": "account15",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Account 15%",
+   "options": "Account"
+  },
+  {
+   "fieldname": "account18",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Account 18%",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
- "modified": "2022-06-15 14:17:28.726659",
+ "modified": "2023-05-19 19:49:39.365632",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

@@ -71,30 +71,34 @@ class PurchaseInvoice(BuyingController):
 						exonerated += self.total
 		else:
 			if self.tax_included == 1:
+				taxed15 = self.isv15
+				taxed18 = self.isv18
 				items = frappe.get_all("Purchase Invoice Item", ["item_code", "amount"], filters = {"parent": self.name})
 
 				for item in items:
-					item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+					item_taxes = frappe.get_all("Item Tax Purchase", ['name', "item_tax_template"], filters = {"parent": item.item_code})
 					if len(item_taxes) >0:
 						for item_tax in item_taxes:
 							tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
 							
 							for tax_tamplate in tax_tamplates:
 
-								tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate"], filters = {"parent": tax_tamplate.name})
+								tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
 								
 								for tax_detail in tax_details:
 
 									if tax_detail.tax_rate == 15:
-										taxed15 += item.amount * (tax_detail.tax_rate/100)
+										# taxed15 += item.amount * (tax_detail.tax_rate/100)
+										self.account15 = tax_detail.tax_type
 								
 									if tax_detail.tax_rate == 18:
-										taxed18 += item.amount * (tax_detail.tax_rate/100)
+										# taxed18 += item.amount * (tax_detail.tax_rate/100)
+										self.account18 = tax_detail.tax_type
 					else:
 						exempt += item.amount
 	
-		self.isv15 = taxed15
-		self.isv18 = taxed18
+		# self.isv15 = taxed15
+		# self.isv18 = taxed18
 		self.total_exonerated = exonerated
 		self.total_exempt = exempt
 		self.total_taxes_and_charges = taxed15 + taxed18
@@ -501,6 +505,13 @@ class PurchaseInvoice(BuyingController):
 		gl_entries = []
 
 		self.make_supplier_gl_entry(gl_entries)
+
+		if self.isv15 > 0:
+			self.make_isv15_gl_entries(gl_entries)
+		
+		if self.isv18 > 0:
+			self.make_isv18_gl_entries(gl_entries)
+
 		self.make_item_gl_entries(gl_entries)
 
 		if self.check_asset_cwip_enabled():
@@ -524,6 +535,44 @@ class PurchaseInvoice(BuyingController):
 				if is_cwip_accounting_enabled(asset_category):
 					return 1
 		return 0
+
+	def make_isv15_gl_entries(self, gl_entries):
+		company = frappe.get_doc("Company", self.company)
+
+		account_currency = get_account_currency(self.account15)
+
+		gl_entries.append(
+				self.get_gl_dict({
+					"account": self.account15,
+					"party_type": "Supplier",
+					"party": self.supplier,
+					"against": self.supplier,
+			 		"debit": self.isv15,
+			 		"debit_in_account_currency": self.isv15,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+			}, account_currency)
+		)
+	
+	def make_isv18_gl_entries(self, gl_entries):
+		company = frappe.get_doc("Company", self.company)
+
+		account_currency = get_account_currency(self.account18)
+
+		gl_entries.append(
+				self.get_gl_dict({
+					"account": self.account18,
+					"party_type": "Supplier",
+					"party": self.supplier,
+					"against": self.supplier,
+			 		"debit": self.isv18,
+			 		"debit_in_account_currency": self.isv18,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+			}, account_currency)
+		)
 
 	def make_supplier_gl_entry(self, gl_entries):
 		# Checked both rounding_adjustment and rounded_total
