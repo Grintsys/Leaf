@@ -59,6 +59,9 @@ class PurchaseInvoice(BuyingController):
 
 	def on_update(self):
 		self.calculated_taxes()
+	
+	def calculated_amount_whitout_write_off_amount(self):
+		self.amount_whitout_write_off_amount = self.grand_total - self.write_off_amount
 		
 	def calculated_taxes(self):
 		taxed15 = 0
@@ -118,6 +121,7 @@ class PurchaseInvoice(BuyingController):
 		return self.on_hold and (not self.release_date or self.release_date > getdate(nowdate()))
 
 	def validate(self):
+		self.calculated_amount_whitout_write_off_amount()
 		self.transaction_number = self.bill_no
 		
 		if not self.is_opening:

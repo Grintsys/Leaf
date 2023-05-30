@@ -1,0 +1,58 @@
+{
+ "creation": "2023-05-29 14:28:39.837277",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_entry",
+  "amount_data",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "depends_on": "check",
+   "fieldname": "amount_data",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount Transaction",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "preconcilied detail payment entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "preconcilied detail payment entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_entry",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Payment Entry",
+   "options": "Payment Entry",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "istable": 1,
+ "modified": "2023-05-29 14:29:48.004118",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "preconcilied detail payment entry",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
