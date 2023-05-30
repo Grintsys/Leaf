@@ -103,7 +103,7 @@ def return_data(filters):
 
 					invoice = frappe.get_doc("Sales Invoice", reference_apply.reference_name)
 					invoice_date_apply = invoice.posting_date
-					row = [entry.posting_date, entry.name, entry.status,"Sales Invoice", reference_apply.reference_name, invoice_date_apply, entry.party_name, entry.party_rtn, entry.company, entry.reason_payment, entry.paid_amount, entry.total_allocated_amount, entry.unallocated_amount, entry.difference_amount, entry.reference_no, entry.reference_date, entry.user]
+					row = [apply.name, "ACC-PAY-WIT", entry.party, reference_apply.reference_doctype, reference_apply.reference_name, invoice_date_apply, entry.company, reference_apply.allocated,entry.mode_of_payment, entry.reason_payment]
 					data.append(row)
 
 	return data
