@@ -128,6 +128,7 @@
   "write_off",
   "write_off_amount",
   "base_write_off_amount",
+  "amount_whitout_write_off_amount",
   "column_break_61",
   "write_off_account",
   "write_off_cost_center",
@@ -162,7 +163,9 @@
   "column_break_114",
   "auto_repeat",
   "update_auto_repeat_reference",
-  "transaction_number"
+  "transaction_number",
+  "account15",
+  "account18"
  ],
  "fields": [
   {
@@ -1337,12 +1340,33 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Transaction Number"
+  },
+  {
+   "fieldname": "account15",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Account 15%",
+   "options": "Account"
+  },
+  {
+   "fieldname": "account18",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Account 18%",
+   "options": "Account"
+  },
+  {
+   "fieldname": "amount_whitout_write_off_amount",
+   "fieldtype": "Currency",
+   "label": "Amount Without write off amount",
+   "options": "Currency",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
- "modified": "2022-06-15 14:17:28.726659",
+ "modified": "2023-05-29 19:31:50.954488",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

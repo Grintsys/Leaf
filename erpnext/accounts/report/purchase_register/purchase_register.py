@@ -67,7 +67,7 @@ def _execute(filters=None, additional_table_columns=None, additional_query_colum
 				row.append(tax_amount)
 
 		# total tax, grand total, rounded total & outstanding amount 
-		row += [total_tax, inv.base_grand_total, flt(inv.base_grand_total, 0), inv.outstanding_amount]
+		row += [total_tax, inv.base_grand_total, inv.amount_whitout_write_off_amount, flt(inv.base_grand_total, 0), inv.outstanding_amount]
 		data.append(row)
 
 	return columns, data
@@ -118,7 +118,7 @@ def get_columns(invoice_list, additional_table_columns):
 			tax_columns.append(account + ":Currency/currency:120")
 
 	columns = columns + expense_columns + [_("Net Total") + ":Currency/currency:120"] + tax_columns + \
-		[_("Total Tax") + ":Currency/currency:120", _("Grand Total") + ":Currency/currency:120",
+		[_("Total Tax") + ":Currency/currency:120", _("Grand Total") + ":Currency/currency:120", _("Amount Without write off amount") + ":Currency/currency:120",
 			_("Rounded Total") + ":Currency/currency:120", _("Outstanding Amount") + ":Currency/currency:120"]
 
 	return columns, expense_accounts, tax_accounts
@@ -144,7 +144,7 @@ def get_invoices(filters, additional_query_columns):
 	return frappe.db.sql("""
 		select
 			name, posting_date, credit_to, supplier, supplier_name, tax_id, bill_no, bill_date,
-			remarks, base_net_total, base_grand_total, outstanding_amount,
+			remarks, base_net_total, base_grand_total, outstanding_amount, amount_whitout_write_off_amount,
 			mode_of_payment {0}
 		from `tabPurchase Invoice`
 		where docstatus = 1 %s

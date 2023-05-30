@@ -148,13 +148,15 @@ def return_data(filters):
 
 	dates_reverse = sorted(dates, reverse=False)
 
-	for date in dates_reverse:		
+	for date in dates_reverse:			
 		split_date = str(date).split("T")[0].split("-")
 		posting_date = "-".join(reversed(split_date))
 		serie_number = filters.get("serie")
-		type_transaction = "DN"
+		type_transaction = "DN"	
 		initial_range = ""
 		final_range = ""
+		final_range_reflex = ""
+		grand_total = 0
 		total_exempt = 0
 		total_exonerated = 0
 		taxed_sales15 = 0
@@ -197,12 +199,12 @@ def return_data(filters):
 						if tax_detail.tax_rate == 18:
 							taxed_sales18 += multiple_taxe.base_isv							
 		
-		grand_total = taxed_sales15 + isv15 + taxed_sales18 + isv18 + total_exempt
+			grand_total = taxed_sales15 + isv15 + taxed_sales18 + isv18 + total_exempt
 
-		final_range = "{}-{}".format(initial_range, final_range)
+			final_range_reflex = "{}-{}".format(initial_range, final_range)
 
 		if is_row:
-			row = [posting_date, serie_number, type_transaction, final_range, grand_total, total_exempt, total_exonerated, taxed_sales15, isv15, taxed_sales18, isv18, 0, 0, grand_total]
+			row = [posting_date, serie_number, type_transaction, final_range_reflex, grand_total, total_exempt, total_exonerated, taxed_sales15, isv15, taxed_sales18, isv18, 0, 0, grand_total]
 			data.append(row)
 	
 	conditions = return_filters_credit_note(filters, from_date, to_date)
@@ -225,13 +227,15 @@ def return_data(filters):
 
 	dates_reverse = sorted(dates, reverse=False)
 
-	for date in dates_reverse:		
+	for date in dates_reverse:	
 		split_date = str(date).split("T")[0].split("-")
 		posting_date = "-".join(reversed(split_date))
 		serie_number = filters.get("serie")
-		type_transaction = "CN"
+		type_transaction = "CN"		
 		initial_range = ""
 		final_range = ""
+		final_range_reflex = ""
+		grand_total = 0
 		total_exempt = 0
 		total_exonerated = 0
 		taxed_sales15 = 0
@@ -239,20 +243,20 @@ def return_data(filters):
 		taxed_sales18 = 0
 		isv18 = 0
 		is_row = False
-		cont = 0
-
-		for credit_note in credit_notes:
+		cont = 0	
+		
+		for credit_note in credit_notes:	
 			split_serie = credit_note.naming_series.split('-')
-			serie =  "{}-{}".format(split_serie[0], split_serie[1])		
-			total_exempt = credit_note.amount_total
+			serie =  "{}-{}".format(split_serie[0], split_serie[1])					
 				
 			if date == credit_note.posting_date and serie_number == serie:
 				if cont == 0:
 					split_initial_range = credit_note.name.split("-")
 					initial_range = split_initial_range[3]
 
+				total_exempt += credit_note.amount_total
 				isv15 += credit_note.isv_15
-				isv18 = credit_note.isv_18
+				isv18 += credit_note.isv_18
 				is_row = True
 				split_final_range = credit_note.name.split("-")
 				final_range = split_final_range[3]
@@ -275,13 +279,13 @@ def return_data(filters):
 						if tax_detail.tax_rate == 18:
 							taxed_sales18 += multiple_taxe.base_isv							
 		
-		grand_total = (taxed_sales15 + isv15 + taxed_sales18 + isv18 + total_exempt) * -1
+			grand_total = (taxed_sales15 + isv15 + taxed_sales18 + isv18 + total_exempt) * -1
 
-		final_range = "{}-{}".format(initial_range, final_range)
+			final_range_reflex = "{}-{}".format(initial_range, final_range)
 
 		if is_row:
-			row = [posting_date, serie_number, type_transaction, final_range, grand_total, total_exempt, total_exonerated, taxed_sales15, isv15, taxed_sales18, isv18, 0, 0, grand_total]
-			data.append(row)
+			row = [posting_date, serie_number, type_transaction, final_range_reflex, grand_total, total_exempt, total_exonerated, taxed_sales15, isv15, taxed_sales18, isv18, 0, 0, grand_total]
+			data.append(row)			
 	
 	dates.clear()
 

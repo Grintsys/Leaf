@@ -76,9 +76,12 @@ class CustomerRetention(Document):
 			if document.reference_doctype == "Sales Invoice":
 				sales_invoice = frappe.get_doc("Sales Invoice", document.reference_name)
 				# sales_invoice.outstanding_amount -= total
-				sales_invoice.outstanding_amount = document.net_total - total
-				sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)
-				sales_invoice.save()
+				if total <= sales_invoice.outstanding_amount:
+					sales_invoice.outstanding_amount = sales_invoice.outstanding_amount - total
+					sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)
+					sales_invoice.save()
+				else:
+					frappe.throw(_("The total amount of the retetion is more that outstanding amount."))
 
 	def calculate_retention_cancel(self):
 		for document in self.get("references"):
@@ -86,7 +89,7 @@ class CustomerRetention(Document):
 			if document.reference_doctype == "Sales Invoice":
 				sales_invoice = frappe.get_doc("Sales Invoice", document.reference_name)
 				# sales_invoice.outstanding_amount -= total
-				sales_invoice.outstanding_amount = document.net_total + total
+				sales_invoice.outstanding_amount = document.outstanding_amount + total
 				sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)
 				sales_invoice.save()
 	
