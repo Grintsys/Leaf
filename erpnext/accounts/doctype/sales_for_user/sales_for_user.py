@@ -222,8 +222,8 @@ class SalesForUser(Document):
 		self.total_income = total_income
 		self.total_credit = outstanding_amount
 
-		if self.total_credit == 0:
-			self.total_credit = self.total_exempt_sales - self.total_income
+		##if self.total_credit == 0:
+		##	self.total_credit = self.total_exempt_sales - self.total_income
 
 		self.total_invoice = operations
 		self.total_operations = operations
