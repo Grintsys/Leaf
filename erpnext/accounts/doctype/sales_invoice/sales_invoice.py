@@ -231,6 +231,31 @@ class SalesInvoice(SellingController):
 		self.deduction_grand_total = self.grand_total - self.total_insurance_deduction
 		self.db_set('deduction_grand_total', self.deduction_grand_total, update_modified=False)
 
+	def veificate_enrolled_student(self):		
+		enrolled = frappe.get_doc('Enrolled Student', self.enrolled_students)
+
+		details = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_students, "paid": 0}, order_by='date asc')
+
+		if len(details) == 0:
+			frappe.throw(_("You don´t have pending payments for Enrolled Student {}.".format(self.enrolled_students)))
+
+		products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "item_code": enrolled.item})
+
+		if len(products_verificate) == 0:
+			frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(enrolled.item, self.enrolled_students)))
+
+		if len(products_verificate) > 1:
+			frappe.throw(_("Only can exist one product {} in this invoice.".format(enrolled.item, self.enrolled_students)))
+		
+		if int(products_verificate[0].qty) > len(details):
+			frappe.throw(_("You have only {} pending payments and you pay {} in this invoice.".format(len(details), int(products_verificate[0].qty))))
+
+		for i in range(int(products_verificate[0].qty)):
+			doc = frappe.get_doc("details of quotas", details[i].name)
+			doc.paid = 1
+			doc.db_set('paid', 1, update_modified=False)
+			doc.save()
+
 	def validate(self):
 		super(SalesInvoice, self).validate()
 		self.validate_auto_set_posting_time()
@@ -319,6 +344,9 @@ class SalesInvoice(SellingController):
 			self.calculated_taxes()
 			if self.is_pos:
 				self.allow_credit_pos()
+			
+			if self.enrolled_students != None:
+				self.veificate_enrolled_student()
 
 			self.update_dashboard_customer()
 			# self.create_dispatch_control()
