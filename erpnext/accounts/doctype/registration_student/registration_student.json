@@ -1,0 +1,114 @@
+{
+ "autoname": "REG-STU-.########",
+ "creation": "2023-06-04 20:34:22.262708",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "from_date",
+  "to_date",
+  "expiration_days",
+  "surcharge",
+  "dues",
+  "frecuency",
+  "total_amount",
+  "students",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expiration_days",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Expiration Days",
+   "reqd": 1
+  },
+  {
+   "fieldname": "surcharge",
+   "fieldtype": "Currency",
+   "label": "Surcharge",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dues",
+   "fieldtype": "Int",
+   "label": "Dues",
+   "reqd": 1
+  },
+  {
+   "fieldname": "frecuency",
+   "fieldtype": "Link",
+   "label": "Frecuency",
+   "options": "Frecuency Enrolled Students",
+   "reqd": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "students",
+   "fieldtype": "Table",
+   "label": "Students",
+   "options": "Registration Students Customer"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Registration Student",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2023-06-04 20:45:05.948281",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Registration Student",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "item",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
