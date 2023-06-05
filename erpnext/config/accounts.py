@@ -867,7 +867,32 @@ def get_data():
 				}
 			]
 		},
-
+		{
+			"label": _("Inscriptions Students"),
+			"icon": "fa fa-microchip ",
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Registration Student",
+					"description": _("List Resgistration Student")
+				},
+				{
+					"type": "doctype",
+					"name": "Enrolled Student",
+					"description": _("List Enrolled Student"),
+				},
+				{
+					"type": "doctype",
+					"name": "Frecuency Enrolled Students",
+					"description": _("List Frecuency Enrolled Students")
+				},
+				{
+					"type": "doctype",
+					"name": "Settings Enrolled Students",
+					"description": _("List Settings Enrolled Students"),
+				}
+			]
+		},
 	]
 
 	gst = {
