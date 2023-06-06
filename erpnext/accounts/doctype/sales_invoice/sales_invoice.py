@@ -227,7 +227,11 @@ class SalesInvoice(SellingController):
 				frappe.delete_doc("Work Order Invoice", order.name)
 
 	def calculate_insurance(self):
-		self.total_insurance_deduction = self.excesses + self.deductible + self.ineligible_expenses + self.co_pay20
+		if self.excesses != None and self.excesses != None and self.excesses != None and self.excesses != None:
+			self.total_insurance_deduction = self.excesses + self.deductible + self.ineligible_expenses + self.co_pay20
+		else:
+			self.total_insurance_deduction = 0
+			
 		self.deduction_grand_total = self.grand_total - self.total_insurance_deduction
 		self.db_set('deduction_grand_total', self.deduction_grand_total, update_modified=False)
 
