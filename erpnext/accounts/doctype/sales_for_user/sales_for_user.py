@@ -94,7 +94,7 @@ class SalesForUser(Document):
 							split_initial_range = salary_slip.name.split("-")
 							initial_range = split_initial_range[3]
 
-						outstanding_amount += salary_slip.outstanding_amount
+						##outstanding_amount += salary_slip.outstanding_amount
 						adv_app += salary_slip.total_advance
 						total_exempt += salary_slip.total_exempt
 						gross += salary_slip.total
@@ -140,6 +140,8 @@ class SalesForUser(Document):
 
 								if cond == "Contado":
 									total_cont += salary_slip.grand_total
+								else:
+									outstanding_amount += salary_slip.outstanding_amount
 							
 							conta += 1
 

@@ -123,6 +123,9 @@ class PurchaseInvoice(BuyingController):
 		if not self.is_opening:
 			self.is_opening = 'No'
 
+		if len(self.bill_no) > 19:
+			frappe.throw(_("The BILL NO don´t permit more 19 characters."))
+
 		self.validate_posting_time()
 
 		super(PurchaseInvoice, self).validate()

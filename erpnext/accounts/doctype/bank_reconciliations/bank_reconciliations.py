@@ -319,7 +319,7 @@ class Bankreconciliations(Document):
 		conditions = ''
 
 		conditions += "{"
-		conditions += '"date_data": ["between", ["{}", "{}"]]'.format(self.from_date, self.to_date)
+		conditions += '"date_data": ["<=", "{}"]'.format(self.to_date)
 		conditions += ', "status": "Pre-reconciled"'
 		conditions += ', "bank_account": "{}"'.format(self.bank_account)
 
@@ -331,7 +331,7 @@ class Bankreconciliations(Document):
 		conditions = ''
 
 		conditions += "{"
-		conditions += '"date_data": ["between", ["{}", "{}"]]'.format(self.from_date, self.to_date)
+		conditions += '"date_data": ["<=", "{}"]'.format(self.to_date)
 		conditions += ', "status": "Transit"'
 		if transaction == "check": conditions += ', "check": 1'
 		if transaction == "deposit": conditions += ', "bank_deposit": 1'
@@ -346,7 +346,7 @@ class Bankreconciliations(Document):
 		conditions = ''
 
 		conditions += "{"
-		conditions += '"posting_date": ["between", ["{}", "{}"]]'.format(self.from_date, self.to_date)
+		conditions += '"posting_date": ["<=", "{}"]'.format(self.to_date)
 		conditions += ', "prereconcilied": 1'
 		conditions += ', "reconciled": 0'
 		conditions += ', "company": "{}"'.format(self.company)
@@ -359,7 +359,7 @@ class Bankreconciliations(Document):
 		conditions = ''
 		
 		conditions += "{"
-		conditions += '"posting_date": ["between", ["{}", "{}"]]'.format(self.from_date, self.to_date)
+		conditions += '"posting_date": ["<=", "{}"]'.format(self.to_date)
 		conditions += ', "prereconcilied": 0'
 		conditions += ', "reconciled": 0'
 		conditions += ', "mode_of_payment": "Cheque"'
