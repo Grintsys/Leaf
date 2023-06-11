@@ -88,6 +88,7 @@ class SalesForUser(Document):
 				if salary_slip.status != "Cancelled":
 					date_validate = salary_slip.creation.strftime('%Y-%m-%d %H:%M:%S')
 					dates_validate = salary_slip.posting_date.strftime('%Y-%m-%d')
+					outstanding_amount += salary_slip.outstanding_amount
 					if date == dates_validate and salary_slip.status != "Return" and date_validate >= self.start_date and date_validate <= self.final_date:
 						operations += 1
 						if cont == 0:
@@ -140,8 +141,6 @@ class SalesForUser(Document):
 
 								if cond == "Contado":
 									total_cont += salary_slip.grand_total
-								else:
-									outstanding_amount += salary_slip.outstanding_amount
 							
 							conta += 1
 

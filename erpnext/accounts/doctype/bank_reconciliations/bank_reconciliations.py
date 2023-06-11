@@ -38,12 +38,20 @@ class Bankreconciliations(Document):
 
 		bank_check_transit_amount = 0
 
+		frappe.msgprint(filters_transactions)
+
+		frappe.msgprint(transactions)
+
 		for transaction in transactions:
 			bank_check_transit_amount += transaction.amount_data
 
 		filters_payments = self.filters_payment_amount()
 
+		frappe.msgprint(filters_payments)
+
 		payments = frappe.get_all("Payment Entry", ["*"], filters = filters_payments)
+
+		frappe.msgprint(payments)
 
 		for payment in payments:
 			bank_check_transit_amount += payment.paid_amount
