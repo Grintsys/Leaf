@@ -14,7 +14,8 @@ class CustomerRetention(Document):
 		if self.docstatus == 1:
 			self.calculate_retention()
 			self.update_accounts_status()
-			self.apply_gl_entry()
+			for registger in self.get("references"):
+				self.apply_gl_entry(registger)
 			# self.apply_changes_sales_invoice()
 			self.apply_changes_customer_document()
 			self.update_dashboard_customer()
@@ -76,6 +77,9 @@ class CustomerRetention(Document):
 			if document.reference_doctype == "Sales Invoice":
 				sales_invoice = frappe.get_doc("Sales Invoice", document.reference_name)
 				# sales_invoice.outstanding_amount -= total
+				if document.net_total != sales_invoice.outstanding_amount:
+					frappe.throw(_("The outstanding amount of invoice {} change, please insert again the register in tha table.".format(sales_invoice.name)))
+
 				if total <= sales_invoice.outstanding_amount:
 					sales_invoice.outstanding_amount = sales_invoice.outstanding_amount - total
 					sales_invoice.db_set('outstanding_amount', sales_invoice.outstanding_amount, update_modified=False)
@@ -121,7 +125,7 @@ class CustomerRetention(Document):
 		if self.docstatus == 0:
 			self.create_daily_summary_series()
 	
-	def apply_gl_entry(self):
+	def apply_gl_entry(self, register):
 		currentDateTime = datetime.now()
 		date = currentDateTime.date()
 		year = date.strftime("%Y")
@@ -143,6 +147,8 @@ class CustomerRetention(Document):
 
 		account_to_credit = reason_retention.account
 
+		total = register.net_total * (self.percentage_total/100)
+
 		doc = frappe.new_doc("GL Entry")
 		doc.posting_date = self.posting_date
 		doc.transaction_date = None
@@ -150,14 +156,14 @@ class CustomerRetention(Document):
 		doc.party_type = "Customer"
 		doc.party = self.customer
 		doc.cost_center = company.cost_center
-		doc.debit = self.total_withheld
+		doc.debit = total
 		doc.credit = 0
 		doc.account_currency = self.currency
-		doc.debit_in_account_currency = self.total_withheld
+		doc.debit_in_account_currency = total
 		doc.credit_in_account_currency = None
 		doc.against = account_to_credit
-		doc.against_voucher_type = self.doctype
-		doc.against_voucher = self.name
+		# doc.against_voucher_type = self.doctype
+		# doc.against_voucher = self.name
 		doc.voucher_type =  self.doctype
 		doc.voucher_no = self.name
 		doc.voucher_detail_no = None
@@ -181,13 +187,13 @@ class CustomerRetention(Document):
 		doc.party = self.customer
 		doc.cost_center = company.cost_center
 		doc.debit = 0
-		doc.credit = self.total_withheld
+		doc.credit = total
 		doc.account_currency = self.currency
 		doc.debit_in_account_currency = 0
-		doc.credit_in_account_currency = self.total_withheld
+		doc.credit_in_account_currency = total
 		doc.against = account_to_debit
-		doc.against_voucher_type = self.doctype
-		doc.against_voucher = self.name
+		doc.against_voucher_type = register.reference_doctype
+		doc.against_voucher = register.reference_name
 		doc.voucher_type =  self.doctype
 		doc.voucher_no = self.name
 		doc.voucher_detail_no = None

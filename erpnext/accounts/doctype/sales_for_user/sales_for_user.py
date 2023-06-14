@@ -87,7 +87,8 @@ class SalesForUser(Document):
 			for salary_slip in salary_slips:
 				if salary_slip.status != "Cancelled":
 					date_validate = salary_slip.creation.strftime('%Y-%m-%d %H:%M:%S')
-					dates_validate = salary_slip.posting_date.strftime('%Y-%m-%d')
+					dates_validate = salary_slip.creation.strftime('%Y-%m-%d')
+					# outstanding_amount += salary_slip.outstanding_amount
 					if date == dates_validate and salary_slip.status != "Return" and date_validate >= self.start_date and date_validate <= self.final_date:
 						operations += 1
 						if cont == 0:
@@ -222,8 +223,8 @@ class SalesForUser(Document):
 		self.total_income = total_income
 		self.total_credit = outstanding_amount
 
-		if self.total_credit == 0:
-			self.total_credit = self.total_exempt_sales - self.total_income
+		##if self.total_credit == 0:
+		##	self.total_credit = self.total_exempt_sales - self.total_income
 
 		self.total_invoice = operations
 		self.total_operations = operations

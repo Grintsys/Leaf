@@ -68,7 +68,6 @@ class PaymentEntry(AccountsController):
 
 		if self.docstatus == 1:
 			self.update_accounts_status()
-			self.paid_sales_invoice()
 			self.paid_supplier_documents()
 			self.paid_credit_note_cxp()
 			self.paid_customer_documents()
@@ -78,6 +77,7 @@ class PaymentEntry(AccountsController):
 			if self.party_type == "Supplier":
 				self.update_dashboard_supplier()
 			self.create_serial()
+			self.paid_sales_invoice()
 	
 	def create_serial(self):
 		serial_split = self.naming_series.split("-")
@@ -222,7 +222,7 @@ class PaymentEntry(AccountsController):
 			self.update_dashboard_customer_cancel()
 		if self.party_type == "Supplier":
 			self.update_dashboard_supplier_cancel()
-		# self. paid_sales_invoice_cancel()
+		self. paid_sales_invoice_cancel()
 		self.paid_supplier_documents_cancel()
 		self.paid_credit_note_cxp_cancel()
 		self.paid_customer_documents_cancel()
@@ -235,8 +235,14 @@ class PaymentEntry(AccountsController):
 
 		for document in documents:
 			if document.reference_doctype == "Sales Invoice":
+				self.verificate_retentions(document.reference_name)
+
 				doc = frappe.get_doc("Sales Invoice", document.reference_name)
-				outstanding = doc.outstanding_amount - document.allocated_amount 
+
+				if doc.outstanding_amount != document.outstanding_amount:
+					frappe.throw(_("The outstanding amount of invoice {} change, please insert again the register in tha table.".format(doc.name)))
+
+				outstanding = document.outstanding_amount - document.allocated_amount 
 
 				doc.db_set('outstanding_amount', outstanding, update_modified=False)
 
@@ -244,7 +250,16 @@ class PaymentEntry(AccountsController):
 					doc.db_set('status', "Paid", update_modified=False)
 				else:
 					doc.db_set('status', "Unpaid", update_modified=False)
-	
+
+	def verificate_retentions(self, name):
+		retentions_details = frappe.get_all("Reference Customer Retention", ["*"], filters = {"reference_name": name})
+
+		for detail in retentions_details:
+			retention = frappe.get_doc("Customer Retention", detail.parent)
+
+			if retention.docstatus == 1:
+				frappe.throw(_("Exist a customer retention for invoice {}, you must create the payment entries before create a customer retention.".format(name)))
+				
 	def paid_sales_invoice_cancel(self):
 		documents = frappe.get_all("Payment Entry Reference", ["*"], filters = {"parent": self.name})
 
