@@ -3103,7 +3103,7 @@ DocType: Stock Entry,Receive at Warehouse,Recibir en el almacén
 apps/erpnext/erpnext/accounts/doctype/gl_entry/gl_entry.py,Accounting Dimension <b>{0}</b> is required for 'Profit and Loss' account {1}.,La dimensión contable <b>{0}</b> es necesaria para la cuenta &#39;Ganancias y pérdidas&#39; {1}.
 DocType: Communication Medium,Voice,Voz
 apps/erpnext/erpnext/manufacturing/doctype/bom/bom.py,BOM {0} must be submitted,La lista de materiales (LdM) {0} debe ser validada
-apps/erpnext/erpnext/config/accounting.py,Share Management,Gestión de Compartir
+apps/erpnext/erpnext/config/accounting.py,Share Management,Gestión de Compartir, Admin Enrolled Students,Plantillas de registro de estudiantes,Enrolled Student,Registro de estudiantes,Withdraw Course,Retirar cursos,Withdraw Course,Retirar cursos,Settings Enrolled Students,Configuración registro de estudiates
 apps/erpnext/erpnext/config/accounting.py,Inscriptions Students,Inscripción de estudiantes
 DocType: Authorization Control,Authorization Control,Control de Autorización
 apps/erpnext/erpnext/controllers/buying_controller.py,Row #{0}: Rejected Warehouse is mandatory against rejected Item {1},Fila #{0}: Almacén Rechazado es obligatorio en la partida rechazada {1}
