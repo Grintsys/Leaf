@@ -236,28 +236,47 @@ class SalesInvoice(SellingController):
 		self.db_set('deduction_grand_total', self.deduction_grand_total, update_modified=False)
 
 	def veificate_enrolled_student(self):		
-		enrolled = frappe.get_doc('Enrolled Student', self.enrolled_students)
+		# enrolled = frappe.get_doc('Enrolled Student', self.enrolled_students)
 
-		details = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_students, "paid": 0}, order_by='date asc')
+		details = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_students, "paid": 0, "pay": 1}, order_by='date asc')
 
-		if len(details) == 0:
-			frappe.throw(_("You don´t have pending payments for Enrolled Student {}.".format(self.enrolled_students)))
+		graduation_exp = True
 
-		products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "item_code": enrolled.item})
+		details_graduations = frappe.get_all("details of graduation expenses", ["*"], filters = {"parent": self.enrolled_students, "paid": 0, "pay": 1}, order_by='date asc')
 
-		if len(products_verificate) == 0:
-			frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(enrolled.item, self.enrolled_students)))
+		for detail in details_graduations:
+			products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "description": str(detail.date ) + " " + detail.item})
 
-		if len(products_verificate) > 1:
-			frappe.throw(_("Only can exist one product {} in this invoice.".format(enrolled.item, self.enrolled_students)))
-		
-		if int(products_verificate[0].qty) > len(details):
-			frappe.throw(_("You have only {} pending payments and you pay {} in this invoice.".format(len(details), int(products_verificate[0].qty))))
-
-		for i in range(int(products_verificate[0].qty)):
-			doc = frappe.get_doc("details of quotas", details[i].name)
+			if len(products_verificate) == 0:
+				frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(detail.item, self.enrolled_students)))
+			
+			doc = frappe.get_doc("details of graduation expenses", detail.name)
 			doc.paid = 1
 			doc.db_set('paid', 1, update_modified=False)
+			doc.db_set('coments', "PAID", update_modified=False)
+			doc.save()
+
+			graduation_exp = False
+		
+		if len(details) == 0 and graduation_exp:
+			frappe.throw(_("You don´t have pending payments for Enrolled Student {}.".format(self.enrolled_students)))
+
+		for detail in details:
+			products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "description": str(detail.date ) + " " + detail.item})
+
+			if len(products_verificate) == 0:
+				frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(detail.item, self.enrolled_students)))
+
+			if len(products_verificate) > 1:
+				frappe.throw(_("Only can exist one product {} in this invoice.".format(detail.item, self.enrolled_students)))
+			
+			if int(products_verificate[0].qty) > len(details):
+				frappe.throw(_("You have only {} pending payments and you pay {} in this invoice.".format(len(details), int(products_verificate[0].qty))))
+
+			doc = frappe.get_doc("details of quotas", detail.name)
+			doc.paid = 1
+			doc.db_set('paid', 1, update_modified=False)
+			doc.db_set('coments', "PAID", update_modified=False)
 			doc.save()
 
 	def validate(self):
@@ -954,6 +973,9 @@ class SalesInvoice(SellingController):
 
 	def on_cancel(self):
 		super(SalesInvoice, self).on_cancel()
+
+		if self.enrolled_students != None:
+			frappe.throw(_("You can´t cancel pay for Enrolled Student: {}".format(self.enrolled_students)))
 
 		self.update_dashboard_customer_cancel()
  

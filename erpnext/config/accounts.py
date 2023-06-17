@@ -873,8 +873,8 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
-					"name": "Registration Student",
-					"description": _("List Resgistration Student")
+					"name": "Admin Enrolled Students",
+					"description": _("List Admin Enrolled Students")
 				},
 				{
 					"type": "doctype",
@@ -883,9 +883,14 @@ def get_data():
 				},
 				{
 					"type": "doctype",
-					"name": "Frecuency Enrolled Students",
-					"description": _("List Frecuency Enrolled Students")
+					"name": "Withdraw Course",
+					"description": _("List Withdraw Course"),
 				},
+				# {
+				# 	"type": "doctype",
+				# 	"name": "Frecuency Enrolled Students",
+				# 	"description": _("List Frecuency Enrolled Students")
+				# },
 				{
 					"type": "doctype",
 					"name": "Settings Enrolled Students",

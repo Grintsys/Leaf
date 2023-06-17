@@ -1,0 +1,124 @@
+{
+ "autoname": "field:name_register",
+ "creation": "2023-06-16 18:54:49.804895",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name_register",
+  "section0",
+  "pre_from",
+  "pre_to",
+  "surcharge",
+  "column1",
+  "initial_date",
+  "final_date",
+  "limit_date",
+  "section1",
+  "registration_detail",
+  "details",
+  "graduation_expenses"
+ ],
+ "fields": [
+  {
+   "fieldname": "pre_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "PRE Registration From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pre_to",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "PRE Registration To",
+   "reqd": 1
+  },
+  {
+   "fieldname": "surcharge",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Surcharge",
+   "reqd": 1
+  },
+  {
+   "fieldname": "initial_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date initial class",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final_date",
+   "fieldtype": "Date",
+   "label": "Date final class",
+   "reqd": 1
+  },
+  {
+   "fieldname": "limit_date",
+   "fieldtype": "Date",
+   "label": "Date Limit To Registration",
+   "reqd": 1
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "details quotes admin",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "name_register",
+   "fieldtype": "Data",
+   "label": "Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "section0",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "registration_detail",
+   "fieldtype": "Table",
+   "label": "Registration Detail",
+   "options": "details quotes admin"
+  },
+  {
+   "fieldname": "graduation_expenses",
+   "fieldtype": "Table",
+   "label": "Graduation Expenses",
+   "options": "details of graduation expenses admin"
+  }
+ ],
+ "modified": "2023-06-17 08:57:53.996158",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Admin Enrolled Students",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
