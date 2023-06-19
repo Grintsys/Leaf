@@ -1,5 +1,5 @@
 {
- "creation": "2023-06-04 14:34:54.839996",
+ "creation": "2023-06-17 08:56:42.395637",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -20,18 +20,18 @@
    "read_only": 1
   },
   {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Items",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "read_only": 1
-  },
-  {
-   "default": "0",
-   "fieldname": "paid",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "Paid",
    "read_only": 1
   },
   {
@@ -42,26 +42,26 @@
    "label": "Pay"
   },
   {
+   "default": "0",
+   "fieldname": "paid",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Paid",
+   "read_only": 1
+  },
+  {
    "fieldname": "coments",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Coments",
    "read_only": 1
-  },
-  {
-   "fieldname": "item",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Items",
-   "options": "Item",
-   "read_only": 1
   }
  ],
  "istable": 1,
- "modified": "2023-06-16 19:03:32.702124",
+ "modified": "2023-06-17 08:56:42.395637",
  "modified_by": "Administrator",
  "module": "Accounts",
- "name": "details of quotas",
+ "name": "details of graduation expenses",
  "owner": "Administrator",
  "permissions": [],
  "quick_entry": 1,

@@ -3,6 +3,10 @@ DocType: Employee,Salary Mode,Modo de pago
 apps/erpnext/erpnext/public/js/hub/marketplace.js,Register,Registro
 apps/erpnext/erpnext/stock/doctype/material_request/material_request_list.js,Partially Received,Parcialmente recibido
 DocType: Patient,Divorced,Divorciado
+DocType: Admin Enrolled Students,Admin Enrolled Students,Plantillas de registro de estudiantes
+DocType: Enrolled Student,Enrolled Student,Registro de estudiantes
+DocType: Withdraw Course,Withdraw Course,Retirar cursos
+DocType: Settings Enrolled Students,Settings Enrolled Students,Configuración registro de estudiates
 DocType: Support Settings,Post Route Key,Publicar clave de ruta
 DocType: Buying Settings,Allow Item to be added multiple times in a transaction,Permitir añadir el artículo varias veces en una transacción
 DocType: Content Question,Content Question,Pregunta de contenido
@@ -3099,6 +3103,7 @@ apps/erpnext/erpnext/accounts/doctype/gl_entry/gl_entry.py,Accounting Dimension 
 DocType: Communication Medium,Voice,Voz
 apps/erpnext/erpnext/manufacturing/doctype/bom/bom.py,BOM {0} must be submitted,La lista de materiales (LdM) {0} debe ser validada
 apps/erpnext/erpnext/config/accounting.py,Share Management,Gestión de Compartir
+apps/erpnext/erpnext/config/accounting.py,Inscriptions Students,Inscripción de estudiantes
 DocType: Authorization Control,Authorization Control,Control de Autorización
 apps/erpnext/erpnext/controllers/buying_controller.py,Row #{0}: Rejected Warehouse is mandatory against rejected Item {1},Fila #{0}: Almacén Rechazado es obligatorio en la partida rechazada {1}
 apps/erpnext/erpnext/stock/doctype/stock_entry/stock_entry.js,Received Stock Entries,Entradas de stock recibidas
