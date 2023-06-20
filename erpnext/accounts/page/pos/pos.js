@@ -130,6 +130,10 @@ erpnext.pos.PointOfSale = erpnext.taxes_and_totals.extend({
 		this.page.add_menu_item(__("POS Profile"), function () {
 			frappe.set_route('List', 'POS Profile');
 		});
+
+		this.page.add_menu_item(__("Enrolled Student"), function () {
+			frappe.set_route('List', 'Enrolled Student');
+		});
 	},
 
 	email_prompt: function() {
