@@ -233,7 +233,7 @@ class BankBookReconciliations(Document):
 
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
-				book_balance -= transaction.amount_data
+				book_balance += transaction.amount_data
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("debit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
