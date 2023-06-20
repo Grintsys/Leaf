@@ -681,6 +681,9 @@ erpnext.pos.PointOfSale = class PointOfSale {
 		this.page.add_menu_item(__('Payment Of Hospital Bill Advances'), function() {
 			frappe.set_route('List', 'Advance Statement/');
 		});
+		this.page.add_menu_item(__("Enrolled Student"), function () {
+			frappe.set_route('List', 'Enrolled Student');
+		});
 
 
 		this.page.add_menu_item(__('Close the POS'), function() {
