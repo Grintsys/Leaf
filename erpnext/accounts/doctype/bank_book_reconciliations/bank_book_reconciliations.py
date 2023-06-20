@@ -226,7 +226,7 @@ class BankBookReconciliations(Document):
 		for payment in payments:
 			if datetime.strptime(str(payment.posting_date).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				if payment.mode_of_payment == "Cheque":
-					book_balance -= payment.paid_amount
+					book_balance += payment.paid_amount
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("check")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -240,7 +240,7 @@ class BankBookReconciliations(Document):
 
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
-				book_balance -= transaction.amount_data
+				book_balance += transaction.amount_data
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("credit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
