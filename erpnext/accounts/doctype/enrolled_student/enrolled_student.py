@@ -14,7 +14,7 @@ class EnrolledStudent(Document):
 
 		admin_enrolled = frappe.get_all("details quotes admin", ["*"], filters = {"parent": self.admin_enrolled_students})
 
-		if(len(self.get("registration_detail")) + len(self.get("details")) + len(self.get("graduation_expenses")) != len(admin_enrolled)):
+		if(len(self.get("registration_detail")) + len(self.get("details")) != len(admin_enrolled)):
 			if(len(invoices) == 0):
 				self.calculate_quotas()
 			else:
@@ -66,14 +66,15 @@ class EnrolledStudent(Document):
 		enrolleds = frappe.get_all("Enrolled Student", ["*"], filters = {"customer": self.customer})
 
 		for enrolled in enrolleds:
-			admin_enrolled = frappe.get_doc("Admin Enrolled Students", enrolled.admin_enrolled_students)
+			if enrolled.admin_enrolled_students != None:
+				admin_enrolled = frappe.get_doc("Admin Enrolled Students", enrolled.admin_enrolled_students)
 
-			details = frappe.get_all("details of quotas", ["*"], filters = {"parent": enrolled.name, "paid": 0})
+				details = frappe.get_all("details of quotas", ["*"], filters = {"parent": enrolled.name, "paid": 0})
 
-			now = datetime.now()
+				now = datetime.now()
 
-			if datetime.strptime(str(admin_enrolled.final_date ).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d') and len(details) > 0:
-				frappe.throw(_("This customer have another course not paid."))
+				if datetime.strptime(str(admin_enrolled.final_date ).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d') and len(details) > 0:
+					frappe.throw(_("This customer have another course not paid."))
 	
 	def create_sale_invoice(self):
 		settings = frappe.get_all("Settings Enrolled Students", ["*"])
