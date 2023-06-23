@@ -215,9 +215,11 @@ class BankBookReconciliations(Document):
 		credit_note = self.credit_note_amount + self.credit_note_transit
 		deposit = self.bank_deposit_amount + self.bank_deposit_transit
 
-		debits_totals = debit_note + check
-		credits_totals = deposit + credit_note + self.wire_transfer_amount
-		book_balance = self.total_last_reconciliations + credits_totals - debits_totals
+		# debits_totals = debit_note + check
+		# credits_totals = deposit + credit_note + self.wire_transfer_amount
+		# book_balance = self.total_last_reconciliations + credits_totals - debits_totals
+
+		book_balance = self.total_last_reconciliations - check + credit_note - debit_note + deposit + self.wire_transfer_amount
 
 		filters_payments = self.filters_payment_amount_by_range()
 
