@@ -142,6 +142,8 @@ class BankBookReconciliations(Document):
 
 		self.transaction_amount = self.credit_note_transit - self.bank_check_transit_amount - self.debit_note_transit + self.bank_deposit_transit + self.wire_transfer_amount
 
+		frappe.msgprint("{} - {} - {} - {} + {} + {}".format(self.credit_note_transit, self.bank_check_transit_amount, self.debit_note_transit, self.bank_deposit_transit, self.wire_transfer_amount))
+
 		self.db_set('transaction_amount', self.transaction_amount, update_modified=False)
 
 		if self.bank_amount == '':
@@ -221,14 +223,18 @@ class BankBookReconciliations(Document):
 
 		book_balance = self.total_last_reconciliations - check + credit_note - debit_note + deposit + self.wire_transfer_amount
 
+		frappe.msgprint("{} - {} + {} - {} + {} + {}".format(self.total_last_reconciliations, check, credit_note, debit_note, deposit, self.wire_transfer_amount))
 		filters_payments = self.filters_payment_amount_by_range()
 
 		payments = frappe.get_all("Payment Entry", ["*"], filters = filters_payments)
+
+		transit_transactions_arr = []
 
 		for payment in payments:
 			if datetime.strptime(str(payment.posting_date).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				if payment.mode_of_payment == "Cheque":
 					book_balance += payment.paid_amount
+					transit_transactions_arr.append("cheque {}: {}".format(payment.name, payment.paid_amount))
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("check")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -236,6 +242,7 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance += transaction.amount_data
+				transit_transactions_arr.append("cheque {}: {}".format(transaction.name, transaction.amount_data))
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("debit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -243,6 +250,7 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance += transaction.amount_data
+				transit_transactions_arr.append("nota de debito {}: {}".format(transaction.name, transaction.amount_data))
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("credit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -250,6 +258,7 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance -= transaction.amount_data
+				transit_transactions_arr.append("nota de credito {}: {}".format(transaction.name, transaction.amount_data))
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("deposit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -257,7 +266,9 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance -= transaction.amount_data
+				transit_transactions_arr.append("deposito {}: {}".format(transaction.name, transaction.amount_data))
 
+		frappe.msgprint(transit_transactions_arr)
 		self.db_set('book_balance', book_balance, update_modified=False)
 
 	def set_new_row_detail(self, bank_trasaction, no_document, type, date, mode, amount):
