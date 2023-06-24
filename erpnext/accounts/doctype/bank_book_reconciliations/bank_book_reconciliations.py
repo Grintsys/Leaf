@@ -153,6 +153,8 @@ class BankBookReconciliations(Document):
 
 		self.defference_amount = self.actual_total_conciliation - self.book_balance
 
+		frappe.msgprint("{} + {} - {} - {} + {} + {}".format("Bank Amount", "Notas de credito en transito", "Cheques en transito", "notas de debito en transito", "deposito de bando en transito", "transferencias bancarias"))
+
 		frappe.msgprint("{} + {} - {} - {} + {} + {}".format(self.bank_amount, self.credit_note_transit, self.bank_check_transit_amount, self.debit_note_transit, self.bank_deposit_transit, self.wire_transfer_amount))
 
 		if self.actual_total_conciliation < 0:
@@ -223,6 +225,7 @@ class BankBookReconciliations(Document):
 
 		book_balance = self.total_last_reconciliations - check + credit_note - debit_note + deposit + self.wire_transfer_amount
 
+		frappe.msgprint("{} + {} - {} - {} + {} + {}".format("Total de la ultima conciliación", "Cheques en transito totales", "Nota de credito en transito total", "notas de debito en transito total", "deposito de banco en transito", "transferencias bancarias"))
 		frappe.msgprint("{} - {} + {} - {} + {} + {}".format(self.total_last_reconciliations, check, credit_note, debit_note, deposit, self.wire_transfer_amount))
 		filters_payments = self.filters_payment_amount_by_range()
 
