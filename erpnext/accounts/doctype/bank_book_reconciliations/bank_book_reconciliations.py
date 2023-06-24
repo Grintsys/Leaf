@@ -142,8 +142,6 @@ class BankBookReconciliations(Document):
 
 		self.transaction_amount = self.credit_note_transit - self.bank_check_transit_amount - self.debit_note_transit + self.bank_deposit_transit + self.wire_transfer_amount
 
-		frappe.msgprint("{} - {} - {} - {} + {} + {}".format(self.credit_note_transit, self.bank_check_transit_amount, self.debit_note_transit, self.bank_deposit_transit, self.wire_transfer_amount))
-
 		self.db_set('transaction_amount', self.transaction_amount, update_modified=False)
 
 		if self.bank_amount == '':
@@ -154,6 +152,8 @@ class BankBookReconciliations(Document):
 		self.actual_total_conciliation = self.bank_amount + self.credit_note_transit - self.bank_check_transit_amount - self.debit_note_transit + self.bank_deposit_transit + self.wire_transfer_amount
 
 		self.defference_amount = self.actual_total_conciliation - self.book_balance
+
+		frappe.msgprint("{} + {} - {} - {} + {} + {}".format(self.bank_amount, self.credit_note_transit, self.bank_check_transit_amount, self.debit_note_transit, self.bank_deposit_transit, self.wire_transfer_amount))
 
 		if self.actual_total_conciliation < 0:
 			self.actual_total_conciliation = self.actual_total_conciliation * -1
@@ -268,7 +268,7 @@ class BankBookReconciliations(Document):
 				book_balance -= transaction.amount_data
 				transit_transactions_arr.append("deposito {}: {}".format(transaction.name, transaction.amount_data))
 
-		frappe.msgprint(transit_transactions_arr)
+		frappe.msgprint("{}".format(transit_transactions_arr))
 		self.db_set('book_balance', book_balance, update_modified=False)
 
 	def set_new_row_detail(self, bank_trasaction, no_document, type, date, mode, amount):
