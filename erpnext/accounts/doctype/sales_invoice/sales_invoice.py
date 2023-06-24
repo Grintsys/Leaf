@@ -169,17 +169,19 @@ class SalesInvoice(SellingController):
 								
 							for tax_tamplate in tax_tamplates:
 
-								tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate"], filters = {"parent": tax_tamplate.name})
+								tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
 									
 								for tax_detail in tax_details:
 
 									if tax_detail.tax_rate == 15:
+										self.account15 = tax_detail.tax_type
 										taxed_sales15 = item.amount/1.15
 										rate = taxed_sales15/item.qty
 
 										self.set_new_row_item(item, rate, taxed_sales15, 1)										
 									
 									if tax_detail.tax_rate == 18:
+										self.account18 = tax_detail.tax_type
 										taxed_sales18 = item.amount/1.18
 										rate = taxed_sales18/item.qty
 										
@@ -225,9 +227,57 @@ class SalesInvoice(SellingController):
 				frappe.delete_doc("Work Order Invoice", order.name)
 
 	def calculate_insurance(self):
-		self.total_insurance_deduction = self.excesses + self.deductible + self.ineligible_expenses + self.co_pay20
+		if self.excesses != None and self.excesses != None and self.excesses != None and self.excesses != None:
+			self.total_insurance_deduction = self.excesses + self.deductible + self.ineligible_expenses + self.co_pay20
+		else:
+			self.total_insurance_deduction = 0
+			
 		self.deduction_grand_total = self.grand_total - self.total_insurance_deduction
 		self.db_set('deduction_grand_total', self.deduction_grand_total, update_modified=False)
+
+	def veificate_enrolled_student(self):		
+		# enrolled = frappe.get_doc('Enrolled Student', self.enrolled_students)
+
+		details = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_students, "paid": 0, "pay": 1}, order_by='date asc')
+
+		graduation_exp = True
+
+		details_graduations = frappe.get_all("details of graduation expenses", ["*"], filters = {"parent": self.enrolled_students, "paid": 0, "pay": 1}, order_by='date asc')
+
+		for detail in details_graduations:
+			products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "description": str(detail.date ) + " " + detail.item})
+
+			if len(products_verificate) == 0:
+				frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(detail.item, self.enrolled_students)))
+			
+			doc = frappe.get_doc("details of graduation expenses", detail.name)
+			doc.paid = 1
+			doc.db_set('paid', 1, update_modified=False)
+			doc.db_set('coments', "PAID", update_modified=False)
+			doc.save()
+
+			graduation_exp = False
+		
+		if len(details) == 0 and graduation_exp:
+			frappe.throw(_("You don´t have pending payments for Enrolled Student {}.".format(self.enrolled_students)))
+
+		for detail in details:
+			products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "description": str(detail.date ) + " " + detail.item})
+
+			if len(products_verificate) == 0:
+				frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(detail.item, self.enrolled_students)))
+
+			if len(products_verificate) > 1:
+				frappe.throw(_("Only can exist one product {} in this invoice.".format(detail.item, self.enrolled_students)))
+			
+			if int(products_verificate[0].qty) > len(details):
+				frappe.throw(_("You have only {} pending payments and you pay {} in this invoice.".format(len(details), int(products_verificate[0].qty))))
+
+			doc = frappe.get_doc("details of quotas", detail.name)
+			doc.paid = 1
+			doc.db_set('paid', 1, update_modified=False)
+			doc.db_set('coments', "PAID", update_modified=False)
+			doc.save()
 
 	def validate(self):
 		super(SalesInvoice, self).validate()
@@ -317,6 +367,9 @@ class SalesInvoice(SellingController):
 			self.calculated_taxes()
 			if self.is_pos:
 				self.allow_credit_pos()
+			
+			if self.enrolled_students != None:
+				self.veificate_enrolled_student()
 
 			self.update_dashboard_customer()
 			# self.create_dispatch_control()
@@ -501,11 +554,12 @@ class SalesInvoice(SellingController):
 							
 						for tax_tamplate in tax_tamplates:
 
-							tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate"], filters = {"parent": tax_tamplate.name})
+							tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
 								
 							for tax_detail in tax_details:
 
 								if tax_detail.tax_rate == 15:
+									self.account15 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales15 += item.amount
 										taxed15 += item.amount * 0.15
@@ -515,6 +569,7 @@ class SalesInvoice(SellingController):
 										taxed15 += item.amount - (item.amount/1.15)
 								
 								if tax_detail.tax_rate == 18:
+									self.account18 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales18 += item.amount
 										taxed18 += item.amount * 0.18
@@ -918,6 +973,9 @@ class SalesInvoice(SellingController):
 
 	def on_cancel(self):
 		super(SalesInvoice, self).on_cancel()
+
+		if self.enrolled_students != None:
+			frappe.throw(_("You can´t cancel pay for Enrolled Student: {}".format(self.enrolled_students)))
 
 		self.update_dashboard_customer_cancel()
  
@@ -1456,6 +1514,12 @@ class SalesInvoice(SellingController):
 
 		if self.discount_reason != None:
 			self.make_discount_gl_entries(gl_entries)
+		
+		if self.isv15 > 0:
+			self.make_isv15_gl_entries(gl_entries)
+		
+		if self.isv18 > 0:
+			self.make_isv18_gl_entries(gl_entries)
 
 		# if self.exonerated and self.account_head == None:
 		# 	frappe.throw(_("You need to fill the account head field"))
@@ -1481,6 +1545,7 @@ class SalesInvoice(SellingController):
 		# because rounded_total had value even before introcution of posting GLE based on rounded total
 		grand_total = self.rounded_total if (self.rounding_adjustment and self.rounded_total) else self.grand_total
 		if grand_total:
+
 			# Didnot use base_grand_total to book rounding loss gle
 			grand_total_in_company_currency = flt(grand_total * self.conversion_rate,
 				self.precision("grand_total"))
@@ -1502,7 +1567,44 @@ class SalesInvoice(SellingController):
 					"cost_center": company.cost_center
 				}, self.party_account_currency)
 			)
+	def make_isv15_gl_entries(self, gl_entries):
+		company = frappe.get_doc("Company", self.company)
+
+		account_currency = get_account_currency(self.account15)
+
+		gl_entries.append(
+				self.get_gl_dict({
+					"account": self.account15,
+					"party_type": "Customer",
+					"party": self.customer,
+					"against": self.customer,
+			 		"credit": self.isv15,
+			 		"credit_in_account_currency": self.isv15,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+			}, account_currency)
+		)
 	
+	def make_isv18_gl_entries(self, gl_entries):
+		company = frappe.get_doc("Company", self.company)
+
+		account_currency = get_account_currency(self.account15)
+
+		gl_entries.append(
+				self.get_gl_dict({
+					"account": self.account18,
+					"party_type": "Customer",
+					"party": self.customer,
+					"against": self.customer,
+			 		"credit": self.isv18,
+			 		"credit_in_account_currency": self.isv18,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+			}, account_currency)
+		)
+
 	def make_discount_gl_entries(self, gl_entries):
 		account = frappe.get_all("Mode of Payment Account", ["*"], filters = {"company": self.company, "parent": self.discount_reason})
 
@@ -1579,8 +1681,54 @@ class SalesInvoice(SellingController):
 								sum_amount = gl_entries[0].debit - total_amount
 								base_net_amount += sum_amount
 								total_amount += sum_amount
+					
+					if item.is_exonerated != 1:
+						item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+						if len(item_taxes) >0:
+							for item_tax in item_taxes:
+								tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
+									
+								for tax_tamplate in tax_tamplates:
+
+									tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
+												
+									for tax_detail in tax_details:
+
+										if tax_detail.tax_rate == 15:
+											taxed_sales15 = item.amount/1.15
+											rate = taxed_sales15/item.qty
+											base_net_amount -= item.amount - rate					
+												
+										if tax_detail.tax_rate == 18:
+											taxed_sales18 = item.amount/1.18
+											rate = taxed_sales18/item.qty
+													
+											base_net_amount -= item.amount - rate
 				else:
 					base_net_amount = item.base_net_amount
+
+					if item.is_exonerated != 1:
+						item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+						if len(item_taxes) >0:
+							for item_tax in item_taxes:
+								tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
+									
+								for tax_tamplate in tax_tamplates:
+
+									tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
+												
+									for tax_detail in tax_details:
+
+										if tax_detail.tax_rate == 15:
+											taxed_sales15 = item.amount/1.15
+											rate = taxed_sales15/item.qty
+											base_net_amount -= item.amount - rate						
+												
+										if tax_detail.tax_rate == 18:
+											taxed_sales18 = item.amount/1.18
+											rate = taxed_sales18/item.qty
+													
+											base_net_amount -= item.amount - rate
 			else:
 				if self.round_off_discount:
 					base_net_amount = math.floor(item.base_net_amount)
@@ -1598,8 +1746,54 @@ class SalesInvoice(SellingController):
 								sum_amount = gl_entries[0].debit - total_amount
 								base_net_amount += sum_amount
 								total_amount += sum_amount
+					
+					if item.is_exonerated != 1:
+						item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+						if len(item_taxes) >0:
+							for item_tax in item_taxes:
+								tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
+									
+								for tax_tamplate in tax_tamplates:
+
+									tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
+												
+									for tax_detail in tax_details:
+
+										if tax_detail.tax_rate == 15:
+											taxed_sales15 = item.amount/1.15
+											rate = taxed_sales15/item.qty
+											base_net_amount -= item.amount - rate						
+												
+										if tax_detail.tax_rate == 18:
+											taxed_sales18 = item.amount/1.18
+											rate = taxed_sales18/item.qty
+													
+											base_net_amount -= item.amount - rate
 				else:
 					base_net_amount = item.base_net_amount
+
+					if item.is_exonerated != 1:
+						item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+						if len(item_taxes) >0:
+							for item_tax in item_taxes:
+								tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
+									
+								for tax_tamplate in tax_tamplates:
+
+									tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
+												
+									for tax_detail in tax_details:
+
+										if tax_detail.tax_rate == 15:
+											taxed_sales15 = item.amount/1.15
+											rate = taxed_sales15/item.qty
+											base_net_amount -= item.amount - rate						
+												
+										if tax_detail.tax_rate == 18:
+											taxed_sales18 = item.amount/1.18
+											rate = taxed_sales18/item.qty
+													
+											base_net_amount -= item.amount - rate
 
 			if flt(base_net_amount, item.precision("base_net_amount")):
 				if item.is_fixed_asset:

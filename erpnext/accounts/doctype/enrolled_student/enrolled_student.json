@@ -1,0 +1,72 @@
+{
+ "autoname": "ENR-STU-.########",
+ "creation": "2023-06-04 14:55:03.150832",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "admin_enrolled_students",
+  "customer",
+  "registration_detail",
+  "details",
+  "graduation_expenses"
+ ],
+ "fields": [
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details of quotas",
+   "options": "details of quotas"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "admin_enrolled_students",
+   "fieldtype": "Link",
+   "label": "Admin Enrolled Students",
+   "options": "Admin Enrolled Students",
+   "reqd": 1
+  },
+  {
+   "fieldname": "registration_detail",
+   "fieldtype": "Table",
+   "label": "Registration Detail",
+   "options": "details of quotas"
+  },
+  {
+   "fieldname": "graduation_expenses",
+   "fieldtype": "Table",
+   "label": "Graduation Expenses",
+   "options": "details of graduation expenses"
+  }
+ ],
+ "modified": "2023-06-17 10:11:38.587097",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Enrolled Student",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "customer",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

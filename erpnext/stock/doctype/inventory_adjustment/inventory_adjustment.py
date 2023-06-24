@@ -29,8 +29,10 @@ class InventoryAdjustment(Document):
 					for bin in items_bin:
 						if self.from_warehouse == bin.warehouse:
 							doc = frappe.get_doc("Bin", bin.name)
-							actual_qty = item.qty - doc.actual_qty
-							self.create_stock_ledger_entry(item, doc.actual_qty, 0)
+							# actual_qty = item.qty - doc.actual_qty
+							self.create_stock_ledger_entry(item, doc.actual_qty, 1)
+							actual_qty = item.qty 
+							self.create_stock_ledger_entry(item, actual_qty, 0)
 					if item.basic_rate == 0:
 						it = frappe.get_doc("Item", item.item_code)
 						basic_amount += it.valuation_rate * actual_qty
@@ -92,14 +94,12 @@ class InventoryAdjustment(Document):
 		self.total_amount = total
 
 	def create_stock_ledger_entry(self, item, qty, delete, allow_negative_stock=False, via_landed_cost_voucher=False, is_amended=None):
-		qty_item = 0
+		actual_qty = 0
 
 		if delete == 1:
-			qty_item = item.qty - (item.qty * 2)
+			actual_qty = qty * -1
 		else:
-			qty_item = item.qty
-
-		actual_qty = qty * -1
+			actual_qty = qty		
 
 		currentDateTime = datetime.now()
 		date = currentDateTime.date()
@@ -122,34 +122,6 @@ class InventoryAdjustment(Document):
 			"voucher_no": self.name,
 			"voucher_detail_no": self.name,
 			"actual_qty": actual_qty,
-			"stock_uom": frappe.db.get_value("Item", item.item_code or item.item_code, "stock_uom"),
-			"incoming_rate": 0,
-			"company": self.company,
-			"batch_no": None,
-			"serial_no": None,
-			"valuation_rate": None,
-			"project": None,
-			"is_cancelled": self.docstatus==2 and "Yes" or "No",
-			'doctype':self.doctype
-		})
-
-		sle_id = make_entry(sle, allow_negative_stock, via_landed_cost_voucher)
-
-		sle.update({
-			"sle_id": sle_id,
-			"is_amended": is_amended
-		})
-
-		sle = ({
-			"item_code": item.item_code,
-			"warehouse": self.from_warehouse,
-			"posting_date": self.posting_date,
-			"posting_time": self.posting_time,
-			'fiscal_year': fiscal_year[0].name,
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"voucher_detail_no": self.name,
-			"actual_qty": qty_item,
 			"stock_uom": frappe.db.get_value("Item", item.item_code or item.item_code, "stock_uom"),
 			"incoming_rate": 0,
 			"company": self.company,

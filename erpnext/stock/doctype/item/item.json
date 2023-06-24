@@ -111,6 +111,7 @@
   "item_tax_section_break",
   "tax_detail",
   "taxes",
+  "taxes_purchase",
   "inspection_criteria",
   "inspection_required_before_purchase",
   "inspection_required_before_delivery",
@@ -791,7 +792,7 @@
    "description": "Will also apply for variants",
    "fieldname": "taxes",
    "fieldtype": "Table",
-   "label": "Taxes",
+   "label": "Taxes Sales",
    "oldfieldname": "item_tax",
    "oldfieldtype": "Table",
    "options": "Item Tax"
@@ -1113,6 +1114,12 @@
    "fieldtype": "Link",
    "label": "Inventory Default Values",
    "options": "Account"
+  },
+  {
+   "fieldname": "taxes_purchase",
+   "fieldtype": "Table",
+   "label": "Taxes Purchase",
+   "options": "Item Tax Purchase"
   }
  ],
  "has_web_view": 1,
@@ -1120,7 +1127,7 @@
  "idx": 2,
  "image_field": "image",
  "max_attachments": 1,
- "modified": "2022-08-24 16:16:21.461691",
+ "modified": "2023-05-19 19:54:48.059074",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
