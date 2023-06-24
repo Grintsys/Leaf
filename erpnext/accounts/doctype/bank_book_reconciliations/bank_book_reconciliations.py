@@ -221,29 +221,14 @@ class BankBookReconciliations(Document):
 
 		book_balance = self.total_last_reconciliations - check + credit_note - debit_note + deposit + self.wire_transfer_amount
 
-		# frappe.msgprint("{} - {} + {} - {} + {} + {}".cormat(self.total_last_reconciliations,check,credit_note,debit_note,deposit,self.wire_transfer_amount))
-
 		filters_payments = self.filters_payment_amount_by_range()
 
 		payments = frappe.get_all("Payment Entry", ["*"], filters = filters_payments)
-
-		# total_before = 0
 
 		for payment in payments:
 			if datetime.strptime(str(payment.posting_date).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				if payment.mode_of_payment == "Cheque":
 					book_balance += payment.paid_amount
-		
-		filters_payments = self.filters_payment_before()
-		
-		payments = frappe.get_all("Payment Entry", ["*"], filters = filters_payments)
-
-		for payment in payments:
-			if datetime.strptime(str(payment.posting_date).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
-				# if payment.mode_of_payment == "Cheque":
-				# 	book_balance += payment.paid_amount
-				if payment.mode_of_payment == "Transferencia Bancaria":
-					book_balance -= payment.paid_amount
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("check")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -251,7 +236,6 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance += transaction.amount_data
-				# total_before += transaction.amount_data
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("debit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -259,7 +243,6 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance += transaction.amount_data
-				# total_before += payment.amount_data
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("credit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -267,7 +250,6 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance -= transaction.amount_data
-				# total_before += payment.amount_data
 		
 		filters_transactions= self.filters_bank_transactions_amounts_by_range("deposit")
 		transactions = frappe.get_all("Bank Transactions", ["*"], filters = filters_transactions)
@@ -275,9 +257,6 @@ class BankBookReconciliations(Document):
 		for transaction in transactions:
 			if datetime.strptime(str(transaction.date_data).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(self.from_date).split(" ")[0], '%Y-%m-%d'):
 				book_balance -= transaction.amount_data
-				# total_before += transaction.amount_data
-		
-		# frappe.msgprint("las anteriores a la fecha: {}".format(total_before))
 
 		self.db_set('book_balance', book_balance, update_modified=False)
 
@@ -500,20 +479,7 @@ class BankBookReconciliations(Document):
 		conditions = ''
 
 		conditions += "{"
-		conditions += '"posting_date": ["<=", "{}"]'.format(self.to_date)
-		conditions += ', "prereconcilied": 1'
-		conditions += ', "reconciled": 0'
-		conditions += ', "company": "{}"'.format(self.company)
-		conditions += ', "bank_account": "{}"'.format(self.bank_account)
-		conditions += '}'
-
-		return conditions
-	
-	def filters_payment_before(self):
-		conditions = ''
-
-		conditions += "{"
-		conditions += '"posting_date": ["<=", "{}"]'.format(self.to_date)
+		conditions += '"posting_date": ["between", ["{}", "{}"]]'.format(self.from_date, self.to_date)
 		conditions += ', "prereconcilied": 1'
 		conditions += ', "reconciled": 0'
 		conditions += ', "company": "{}"'.format(self.company)
