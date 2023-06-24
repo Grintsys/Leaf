@@ -234,7 +234,7 @@ class BankBookReconciliations(Document):
 				if payment.mode_of_payment == "Cheque":
 					book_balance += payment.paid_amount
 		
-		filters_payments = self.filters_payment()
+		filters_payments = self.filters_payment_before()
 		
 		payments = frappe.get_all("Payment Entry", ["*"], filters = filters_payments)
 
@@ -500,7 +500,20 @@ class BankBookReconciliations(Document):
 		conditions = ''
 
 		conditions += "{"
-		conditions += '"posting_date": ["between", ["{}", "{}"]]'.format(self.from_date, self.to_date)
+		conditions += '"posting_date": ["<=", "{}"]'.format(self.to_date)
+		conditions += ', "prereconcilied": 1'
+		conditions += ', "reconciled": 0'
+		conditions += ', "company": "{}"'.format(self.company)
+		conditions += ', "bank_account": "{}"'.format(self.bank_account)
+		conditions += '}'
+
+		return conditions
+	
+	def filters_payment_before(self):
+		conditions = ''
+
+		conditions += "{"
+		conditions += '"posting_date": ["<=", "{}"]'.format(self.to_date)
 		conditions += ', "prereconcilied": 1'
 		conditions += ', "reconciled": 0'
 		conditions += ', "company": "{}"'.format(self.company)
