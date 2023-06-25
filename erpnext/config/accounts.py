@@ -895,6 +895,11 @@ def get_data():
 					"type": "doctype",
 					"name": "Settings Enrolled Students",
 					"description": _("List Settings Enrolled Students"),
+				},
+				{
+					"type": "doctype",
+					"name": "Update Biometric Data Students",
+					"description": _("List Update Biometric Data Students"),
 				}
 			]
 		},
