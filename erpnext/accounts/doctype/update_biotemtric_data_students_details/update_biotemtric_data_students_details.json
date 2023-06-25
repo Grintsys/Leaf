@@ -1,0 +1,37 @@
+{
+ "creation": "2023-06-25 09:25:16.452455",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "biometric_identifier"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "biometric_identifier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Biometric Identifier",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2023-06-25 09:56:29.436416",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Update Biotemtric Data Students Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
