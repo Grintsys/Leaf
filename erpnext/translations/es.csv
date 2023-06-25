@@ -6,6 +6,7 @@ DocType: Patient,Divorced,Divorciado
 DocType: Admin Enrolled Students,Admin Enrolled Students,Plantillas de registro de estudiantes
 DocType: Enrolled Student,Enrolled Student,Registro de estudiantes
 DocType: Withdraw Course,Withdraw Course,Retirar cursos
+DocType: Withdraw Course,Update Biometric Data Students,Actualizar datos biometricos de los estudiantes
 DocType: Settings Enrolled Students,Settings Enrolled Students,Configuración registro de estudiates
 DocType: Support Settings,Post Route Key,Publicar clave de ruta
 DocType: Buying Settings,Allow Item to be added multiple times in a transaction,Permitir añadir el artículo varias veces en una transacción
