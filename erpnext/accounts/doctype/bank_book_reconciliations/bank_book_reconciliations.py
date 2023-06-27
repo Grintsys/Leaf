@@ -149,7 +149,7 @@ class BankBookReconciliations(Document):
 
 		# self.actual_total_conciliation = self.bank_amount + self.credit_note_amount - self.bank_check_amount - self.debit_note_amount + self.bank_deposit_amount + self.wire_transfer_amount
 
-		self.actual_total_conciliation = self.bank_amount + self.credit_note_transit - self.bank_check_transit_amount - self.debit_note_transit + self.bank_deposit_transit - self.wire_transfer_amount
+		self.actual_total_conciliation = self.bank_amount + self.credit_note_transit - self.bank_check_transit_amount - self.debit_note_transit + self.bank_deposit_transit + self.wire_transfer_amount
 
 		self.defference_amount = self.actual_total_conciliation - self.book_balance
 
