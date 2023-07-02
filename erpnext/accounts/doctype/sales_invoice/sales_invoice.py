@@ -629,6 +629,9 @@ class SalesInvoice(SellingController):
 			else:
 				self.grand_total = self.total
 		
+		if self.exonerated != 1:
+			self.grand_total += self.isv15 + self.isv18
+		
 		grand_total = self.grand_total
 		
 		if self.is_pos and self.change_amount > 0:
@@ -664,18 +667,20 @@ class SalesInvoice(SellingController):
 			pos = frappe.get_doc("POS Profile", self.pos_profile)
 
 			if pos.round_off_discount == 1:
-				self.db_set('rounded_total', self.grand_total, update_modified=False)
+				self.db_set('rounded_total', self.rounded_total, update_modified=False)
 
 				if self.grand_total == self.paid_amount:
 					self.db_set('outstanding_amount', 0, update_modified=False)	
 		else:
 			if self.round_off_discount == 1:
-				self.db_set('rounded_total', self.grand_total, update_modified=False)
+				self.db_set('rounded_total', self.rounded_total, update_modified=False)
 
 				if self.grand_total == self.paid_amount:
 					self.db_set('outstanding_amount', 0, update_modified=False)		
+		
+		self.db_set('rounded_total', self.rounded_total, update_modified=False)
 
-		self.in_words = money_in_words(self.grand_total)
+		self.in_words = money_in_words(self.rounded_total)
 		self.db_set('in_words', self.in_words, update_modified=False)		
 		self.calculate_insurance()
 
@@ -1703,7 +1708,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18/item.qty
 													
-											base_net_amount -= item.amount - rate
+											base_net_amount += item.amount - rate
 				else:
 					base_net_amount = item.base_net_amount
 
@@ -1728,7 +1733,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18/item.qty
 													
-											base_net_amount -= item.amount - rate
+											base_net_amount += item.amount - rate
 			else:
 				if self.round_off_discount:
 					base_net_amount = math.floor(item.base_net_amount)
@@ -1768,7 +1773,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18/item.qty
 													
-											base_net_amount -= item.amount - rate
+											base_net_amount += item.amount - rate
 				else:
 					base_net_amount = item.base_net_amount
 
@@ -1793,7 +1798,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18/item.qty
 													
-											base_net_amount -= item.amount - rate
+											base_net_amount += item.amount - rate
 
 			if flt(base_net_amount, item.precision("base_net_amount")):
 				if item.is_fixed_asset:
