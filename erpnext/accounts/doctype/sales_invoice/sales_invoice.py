@@ -629,8 +629,8 @@ class SalesInvoice(SellingController):
 			else:
 				self.grand_total = self.total
 		
-		if self.exonerated != 1:
-			self.grand_total += self.isv15 + self.isv18
+		# if self.exonerated != 1:
+		# 	self.grand_total += self.isv15 + self.isv18
 		
 		grand_total = self.grand_total
 		
