@@ -38,9 +38,6 @@ form_grid_templates = {
 	"items": "templates/form_grid/item_grid.html"
 }
 
-local_account15 = ""
-local_account18 = ""
-
 class SalesInvoice(SellingController):
 	def __init__(self, *args, **kwargs):
 		super(SalesInvoice, self).__init__(*args, **kwargs)
@@ -178,7 +175,6 @@ class SalesInvoice(SellingController):
 
 									if tax_detail.tax_rate == 15:
 										self.account15 = tax_detail.tax_type
-										local_account15 = tax_detail.tax_type
 										taxed_sales15 = item.amount/1.15
 										rate = taxed_sales15/item.qty
 
@@ -186,7 +182,6 @@ class SalesInvoice(SellingController):
 									
 									if tax_detail.tax_rate == 18:
 										self.account18 = tax_detail.tax_type
-										local_account18 = tax_detail.tax_type
 										taxed_sales18 = item.amount/1.18
 										rate = taxed_sales18/item.qty
 										
@@ -562,11 +557,10 @@ class SalesInvoice(SellingController):
 							tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
 								
 							for tax_detail in tax_details:
-								frappe.msgprint("tax detail {}".format(tax_detail))
+								# frappe.msgprint("tax detail {}".format(tax_detail))
 								if tax_detail.tax_rate == 15:
-									frappe.msgprint("cuenta tax 15 {}".format(tax_detail.tax_type))
+									# frappe.msgprint("cuenta tax 15 {}".format(tax_detail.tax_type))
 									self.account15 = tax_detail.tax_type
-									local_account15 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales15 += item.amount
 										taxed15 += item.amount * 0.15
@@ -577,7 +571,6 @@ class SalesInvoice(SellingController):
 								
 								if tax_detail.tax_rate == 18:
 									self.account18 = tax_detail.tax_type
-									local_account18 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales18 += item.amount
 										taxed18 += item.amount * 0.18
@@ -1588,11 +1581,14 @@ class SalesInvoice(SellingController):
 		account = self.account15
 
 		if account == None:
-			account = local_account15
+			account = company.account_isv15
+		
+		if account == None:
+			frappe.throw(_("Assign a account to product and company for ISV 18"))
 
 		account_currency = get_account_currency(account)
 
-		frappe.msgprint("cuenta factrura {}".format(account))
+		# frappe.msgprint("cuenta factrura {}".format(account))
 
 		gl_entries.append(
 				self.get_gl_dict({
@@ -1614,11 +1610,14 @@ class SalesInvoice(SellingController):
 		account = self.account18
 
 		if account == None:
-			account = local_account18
+			account = company.account_isv18
+		
+		if account == None:
+			frappe.throw(_("Assign a account to product and company for ISV 18"))
 
 		account_currency = get_account_currency(account)
 
-		frappe.msgprint("cuenta factrura 18 {}".format(account))
+		# frappe.msgprint("cuenta factrura 18 {}".format(account))
 
 		gl_entries.append(
 				self.get_gl_dict({
