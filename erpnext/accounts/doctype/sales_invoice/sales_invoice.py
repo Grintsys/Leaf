@@ -38,6 +38,9 @@ form_grid_templates = {
 	"items": "templates/form_grid/item_grid.html"
 }
 
+local_account15 = ""
+local_account18 = ""
+
 class SalesInvoice(SellingController):
 	def __init__(self, *args, **kwargs):
 		super(SalesInvoice, self).__init__(*args, **kwargs)
@@ -175,6 +178,7 @@ class SalesInvoice(SellingController):
 
 									if tax_detail.tax_rate == 15:
 										self.account15 = tax_detail.tax_type
+										local_account15 = tax_detail.tax_type
 										taxed_sales15 = item.amount/1.15
 										rate = taxed_sales15/item.qty
 
@@ -182,6 +186,7 @@ class SalesInvoice(SellingController):
 									
 									if tax_detail.tax_rate == 18:
 										self.account18 = tax_detail.tax_type
+										local_account18 = tax_detail.tax_type
 										taxed_sales18 = item.amount/1.18
 										rate = taxed_sales18/item.qty
 										
@@ -561,6 +566,7 @@ class SalesInvoice(SellingController):
 								if tax_detail.tax_rate == 15:
 									frappe.msgprint("cuenta tax 15 {}".format(tax_detail.tax_type))
 									self.account15 = tax_detail.tax_type
+									local_account15 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales15 += item.amount
 										taxed15 += item.amount * 0.15
@@ -571,6 +577,7 @@ class SalesInvoice(SellingController):
 								
 								if tax_detail.tax_rate == 18:
 									self.account18 = tax_detail.tax_type
+									local_account18 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales18 += item.amount
 										taxed18 += item.amount * 0.18
@@ -1578,11 +1585,18 @@ class SalesInvoice(SellingController):
 	def make_isv15_gl_entries(self, gl_entries):
 		company = frappe.get_doc("Company", self.company)
 
-		account_currency = get_account_currency(self.account15)
+		account = self.account15
+
+		if account == None:
+			account = local_account15
+
+		account_currency = get_account_currency(account)
+
+		frappe.msgprint("cuenta factrura {}".format(account))
 
 		gl_entries.append(
 				self.get_gl_dict({
-					"account": self.account15,
+					"account": account,
 					"party_type": "Customer",
 					"party": self.customer,
 					"against": self.customer,
@@ -1597,11 +1611,18 @@ class SalesInvoice(SellingController):
 	def make_isv18_gl_entries(self, gl_entries):
 		company = frappe.get_doc("Company", self.company)
 
-		account_currency = get_account_currency(self.account18)
+		account = self.account18
+
+		if account == None:
+			account = local_account18
+
+		account_currency = get_account_currency(account)
+
+		frappe.msgprint("cuenta factrura 18 {}".format(account))
 
 		gl_entries.append(
 				self.get_gl_dict({
-					"account": self.account18,
+					"account": account,
 					"party_type": "Customer",
 					"party": self.customer,
 					"against": self.customer,
