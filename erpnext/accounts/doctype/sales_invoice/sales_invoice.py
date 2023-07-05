@@ -1584,7 +1584,7 @@ class SalesInvoice(SellingController):
 			account = company.account_isv15
 		
 		if account == None:
-			frappe.throw(_("Assign a account to product and company for ISV 18"))
+			frappe.throw(_("Assign a account to product and company for ISV 15"))
 
 		account_currency = get_account_currency(account)
 
