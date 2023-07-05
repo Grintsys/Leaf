@@ -1596,7 +1596,7 @@ class SalesInvoice(SellingController):
 	def make_isv18_gl_entries(self, gl_entries):
 		company = frappe.get_doc("Company", self.company)
 
-		account_currency = get_account_currency(self.account15)
+		account_currency = get_account_currency(self.account18)
 
 		gl_entries.append(
 				self.get_gl_dict({
