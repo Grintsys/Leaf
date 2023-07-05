@@ -1544,7 +1544,7 @@ class SalesInvoice(SellingController):
 		self.make_write_off_gl_entry(gl_entries)
 		self.make_gle_for_rounding_adjustment(gl_entries)
 
-		frappe.msgprint("{}".format(gl_entries))
+		# frappe.msgprint("{}".format(gl_entries))
 
 		return gl_entries
 
@@ -1584,7 +1584,7 @@ class SalesInvoice(SellingController):
 			account = company.account_isv15
 		
 		if account == None:
-			frappe.throw(_("Assign a account to product and company for ISV 18"))
+			frappe.throw(_("Assign a account to product and company for ISV 15"))
 
 		account_currency = get_account_currency(account)
 
