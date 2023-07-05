@@ -1544,7 +1544,7 @@ class SalesInvoice(SellingController):
 		self.make_write_off_gl_entry(gl_entries)
 		self.make_gle_for_rounding_adjustment(gl_entries)
 
-		frappe.msgprint("{}".format(gl_entries))
+		# frappe.msgprint("{}".format(gl_entries))
 
 		return gl_entries
 
