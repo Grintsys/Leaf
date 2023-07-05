@@ -557,8 +557,9 @@ class SalesInvoice(SellingController):
 							tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
 								
 							for tax_detail in tax_details:
-
+								frappe.msgprint("tax detail {}".format(tax_detail))
 								if tax_detail.tax_rate == 15:
+									frappe.msgprint("cuenta tax 15 {}".format(tax_detail.tax_type))
 									self.account15 = tax_detail.tax_type
 									if self.exonerated == 1:
 										taxed_sales15 += item.amount
