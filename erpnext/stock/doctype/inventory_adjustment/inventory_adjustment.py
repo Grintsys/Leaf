@@ -159,7 +159,7 @@ class InventoryAdjustment(Document):
 		company = frappe.get_doc("Company", self.company)
 		
 		if item.inventory_default_values == None:
-			inventory_default_values = company.default_expense_account
+			inventory_default_values = company.stock_adjustment_account
 		else:
 			inventory_default_values = item.inventory_default_values
 		
@@ -245,7 +245,7 @@ class InventoryAdjustment(Document):
 		company = frappe.get_doc("Company", self.company)
 		
 		if item.inventory_default_values == None:
-			inventory_default_values = company.default_expense_account
+			inventory_default_values = company.stock_adjustment_account
 		else:
 			inventory_default_values = item.inventory_default_values
 		
