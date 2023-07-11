@@ -90,7 +90,7 @@ class InventoryAdjustment(Document):
 						total += it.valuation_rate * item.qty
 					else:
 						total += item.basic_rate * item.qty
-
+					
 		self.total_amount = total
 
 	def create_stock_ledger_entry(self, item, qty, delete, allow_negative_stock=False, via_landed_cost_voucher=False, is_amended=None):
