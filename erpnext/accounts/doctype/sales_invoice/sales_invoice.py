@@ -1724,12 +1724,12 @@ class SalesInvoice(SellingController):
 
 										if tax_detail.tax_rate == 15:
 											taxed_sales15 = item.amount/1.15
-											rate = taxed_sales15/item.qty
+											rate = taxed_sales15
 											base_net_amount -= item.amount - rate					
 												
 										if tax_detail.tax_rate == 18:
 											taxed_sales18 = item.amount/1.18
-											rate = taxed_sales18/item.qty
+											rate = taxed_sales18
 													
 											base_net_amount += item.amount - rate
 				else:
@@ -1749,12 +1749,12 @@ class SalesInvoice(SellingController):
 
 										if tax_detail.tax_rate == 15:
 											taxed_sales15 = item.amount/1.15
-											rate = taxed_sales15/item.qty
+											rate = taxed_sales15
 											base_net_amount -= item.amount - rate						
 												
 										if tax_detail.tax_rate == 18:
 											taxed_sales18 = item.amount/1.18
-											rate = taxed_sales18/item.qty
+											rate = taxed_sales18
 													
 											base_net_amount += item.amount - rate
 			else:
@@ -1789,12 +1789,12 @@ class SalesInvoice(SellingController):
 
 										if tax_detail.tax_rate == 15:
 											taxed_sales15 = item.amount/1.15
-											rate = taxed_sales15/item.qty
+											rate = taxed_sales15
 											base_net_amount -= item.amount - rate						
 												
 										if tax_detail.tax_rate == 18:
 											taxed_sales18 = item.amount/1.18
-											rate = taxed_sales18/item.qty
+											rate = taxed_sales18
 													
 											base_net_amount += item.amount - rate
 				else:
@@ -1814,12 +1814,12 @@ class SalesInvoice(SellingController):
 
 										if tax_detail.tax_rate == 15:
 											taxed_sales15 = item.amount/1.15
-											rate = taxed_sales15/item.qty
+											rate = taxed_sales15
 											base_net_amount -= item.amount - rate						
 												
 										if tax_detail.tax_rate == 18:
 											taxed_sales18 = item.amount/1.18
-											rate = taxed_sales18/item.qty
+											rate = taxed_sales18
 													
 											base_net_amount += item.amount - rate
 
