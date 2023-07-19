@@ -126,10 +126,19 @@ class EnrolledStudent(Document):
 
 			# initial_date =  detail.date 
 
-			if datetime.strptime(str(detail.date ).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d'):
-				admin_enrolled = frappe.get_doc("Admin Enrolled Students", self.admin_enrolled_students)
-				if mora == 0: mora = admin_enrolled.surcharge
-				mora_qty += 1
+			apply_mora = True
+
+			r_detail = self.get("registration_detail")
+
+			for r_d in r_detail:
+				if r_d.name == detail.name:
+					apply_mora = False
+
+			if apply_mora:
+				if datetime.strptime(str(detail.date ).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d'):
+					admin_enrolled = frappe.get_doc("Admin Enrolled Students", self.admin_enrolled_students)
+					if mora == 0: mora = admin_enrolled.surcharge
+					mora_qty += 1
 			
 			row = doc.append("items", {})
 			row.item_code = detail.item
