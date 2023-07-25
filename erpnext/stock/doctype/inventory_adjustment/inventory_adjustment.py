@@ -9,6 +9,7 @@ from datetime import datetime
 from erpnext.accounts.utils import get_account_currency
 from erpnext.stock.utils import get_incoming_rate
 from frappe.utils import flt
+from frappe import msgprint, _
 
 class InventoryAdjustment(Document):
 	def validate(self):
@@ -22,10 +23,15 @@ class InventoryAdjustment(Document):
 			if stock_type.accounting_seat == 1:
 				amount_total_debit = 0
 				amount_total_credit = 0
+				
 				for item in self.get("items"):
 					items_bin = frappe.get_all("Bin", ["*"], filters = {"item_code": item.item_code})
 					actual_qty = 0
 					basic_amount = 0
+					
+					if len(items_bin) == 0:
+						frappe.throw(_("the product {} no have inventory movements.".format(item.item_code)))
+
 					for bin in items_bin:
 						if self.from_warehouse == bin.warehouse:
 							doc = frappe.get_doc("Bin", bin.name)
@@ -33,6 +39,8 @@ class InventoryAdjustment(Document):
 							self.create_stock_ledger_entry(item, doc.actual_qty, 1)
 							actual_qty = item.qty 
 							self.create_stock_ledger_entry(item, actual_qty, 0)
+						else:
+							frappe.throw(_("the product {} no have inventory movements.".format(item.item_code)))
 					if item.basic_rate == 0:
 						it = frappe.get_doc("Item", item.item_code)
 						basic_amount += it.valuation_rate * actual_qty

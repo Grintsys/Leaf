@@ -1,5 +1,5 @@
 {
- "autoname": "ENR-STU-.########",
+ "autoname": ".YYYY.-.########",
  "creation": "2023-06-04 14:55:03.150832",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -22,6 +22,8 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer",
    "reqd": 1
@@ -29,6 +31,9 @@
   {
    "fieldname": "admin_enrolled_students",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Admin Enrolled Students",
    "options": "Admin Enrolled Students",
    "reqd": 1
@@ -46,7 +51,7 @@
    "options": "details of graduation expenses"
   }
  ],
- "modified": "2023-06-17 10:11:38.587097",
+ "modified": "2023-07-18 21:17:22.810787",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Enrolled Student",
@@ -67,6 +72,5 @@
  ],
  "search_fields": "customer",
  "sort_field": "modified",
- "sort_order": "DESC",
- "track_changes": 1
+ "sort_order": "DESC"
 }
