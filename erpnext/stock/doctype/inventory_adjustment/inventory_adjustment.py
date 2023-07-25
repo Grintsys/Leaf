@@ -25,10 +25,10 @@ class InventoryAdjustment(Document):
 				amount_total_credit = 0
 				
 				for item in self.get("items"):
-					items_bin = frappe.get_all("Bin", ["*"], filters = {"item_code": item.item_code})
+					items_bin = frappe.get_all("Bin", ["*"], filters = {"item_code": item.item_code, "warehouse": self.from_warehouse})
 					actual_qty = 0
 					basic_amount = 0
-					
+
 					if len(items_bin) == 0:
 						frappe.throw(_("the product {} no have inventory movements.".format(item.item_code)))
 
@@ -39,8 +39,6 @@ class InventoryAdjustment(Document):
 							self.create_stock_ledger_entry(item, doc.actual_qty, 1)
 							actual_qty = item.qty 
 							self.create_stock_ledger_entry(item, actual_qty, 0)
-						else:
-							frappe.throw(_("the product {} no have inventory movements.".format(item.item_code)))
 					if item.basic_rate == 0:
 						it = frappe.get_doc("Item", item.item_code)
 						basic_amount += it.valuation_rate * actual_qty
