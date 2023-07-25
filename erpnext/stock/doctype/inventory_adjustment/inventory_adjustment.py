@@ -88,7 +88,7 @@ class InventoryAdjustment(Document):
 	def calculate_total(self):
 		total = 0
 		for item in self.get("items"):
-			items_bin = frappe.get_all("Bin", ["*"], filters = {"item_code": item.item_code})
+			items_bin = frappe.get_all("Bin", ["*"], filters = {"item_code": item.item_code, "warehouse": self.from_warehouse})
 			for bin in items_bin:
 				if self.from_warehouse == bin.warehouse:
 					if item.basic_rate == 0:
