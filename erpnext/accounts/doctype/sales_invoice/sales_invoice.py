@@ -685,6 +685,9 @@ class SalesInvoice(SellingController):
 		self.db_set('in_words', self.in_words, update_modified=False)		
 		self.calculate_insurance()
 
+		self.subtotal = self.grand_total - self.isv15 - self.isv18
+		self.db_set('subtotal', self.subtotal, update_modified=False)
+
 	# def validate_camps(self):
 	# 	if not self.type_document:
 	# 		frappe.throw(_("Type Document is required."))
