@@ -19,7 +19,9 @@ frappe.ui.form.on('Enrolled Student', {
 		debugger
 		cur_frm.fields_dict['admin_enrolled_students'].get_query = function(doc, cdt, cdn) {
 			return {
-				filters:{'pre_from': ["<=", format], 'limit_date': [">=", format]}
+				filters:{
+				// 'pre_from': ["<=", format], 
+				'limit_date': [">=", format]}
 			}
 		}
 	},

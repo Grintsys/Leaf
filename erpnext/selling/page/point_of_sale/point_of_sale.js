@@ -2020,22 +2020,22 @@ class Payment {
 				default: me.frm.doc.paid_amount,
 				read_only: 1
 			},
-			{
-				fieldtype: 'Currency',
-				label: __("Taxed Sales15"),
-				options: me.frm.doc.currency,
-				fieldname: "taxed_sales15",
-				default: me.frm.doc.taxed_sales15,
-				read_only: 1
-			},
-			{
-				fieldtype: 'Currency',
-				label: __("ISV 15%"),
-				options: me.frm.doc.currency,
-				fieldname: "isv15",
-				default: me.frm.doc.isv15,
-				read_only: 1
-			},
+			// {
+			// 	fieldtype: 'Currency',
+			// 	label: __("Taxed Sales15"),
+			// 	options: me.frm.doc.currency,
+			// 	fieldname: "taxed_sales15",
+			// 	default: me.frm.doc.taxed_sales15,
+			// 	read_only: 1
+			// },
+			// {
+			// 	fieldtype: 'Currency',
+			// 	label: __("ISV 15%"),
+			// 	options: me.frm.doc.currency,
+			// 	fieldname: "isv15",
+			// 	default: me.frm.doc.isv15,
+			// 	read_only: 1
+			// },
 			{
 				fieldtype: 'Column Break',
 			},
@@ -2047,22 +2047,22 @@ class Payment {
 				default: me.frm.doc.outstanding_amount,
 				read_only: 1
 			},
-			{
-				fieldtype: 'Currency',
-				label: __("Taxed Sales18"),
-				options: me.frm.doc.currency,
-				fieldname: "taxed_sales18",
-				default: me.frm.doc.taxed_sales18,
-				read_only: 1
-			},
-			{
-				fieldtype: 'Currency',
-				label: __("ISV 18%"),
-				options: me.frm.doc.currency,
-				fieldname: "isv18",
-				default: me.frm.doc.isv18,
-				read_only: 1
-			},
+			// {
+			// 	fieldtype: 'Currency',
+			// 	label: __("Taxed Sales18"),
+			// 	options: me.frm.doc.currency,
+			// 	fieldname: "taxed_sales18",
+			// 	default: me.frm.doc.taxed_sales18,
+			// 	read_only: 1
+			// },
+			// {
+			// 	fieldtype: 'Currency',
+			// 	label: __("ISV 18%"),
+			// 	options: me.frm.doc.currency,
+			// 	fieldname: "isv18",
+			// 	default: me.frm.doc.isv18,
+			// 	read_only: 1
+			// },
 		]);
 
 		return fields;
@@ -2138,24 +2138,16 @@ class Payment {
 				this.dialog.set_value("paid_amount", total);
 				this.dialog.set_value("grand_total", total);
 				this.dialog.set_value("rounded_total", total);
-				this.dialog.set_value("isv15", 15);
-				this.dialog.set_value("isv18", 18);
 				this.frm.doc.additional_discount_percentage = this.frm.doc.additional_discount_percentage;
 				this.frm.doc.change_amount = this.frm.doc.change_amount;
 				this.frm.doc.total_with_discount = total;
 				this.frm.doc.paid_amount = total;
 				this.frm.doc.grand_total = total;
 				this.frm.doc.rounded_total = total;
-				this.frm.doc.isv15 = 15;
-				this.frm.doc.isv18 = 18;
 			}
 			else{
 				debugger
 				this.dialog.set_value("additional_discount_percentage", this.frm.doc.additional_discount_percentage);
-				this.dialog.set_value("isv15", 15);
-				this.dialog.set_value("isv18", 18);
-				this.frm.doc.isv15 = 15;
-				this.frm.doc.isv18 = 18;
 				this.update_change_amount();
 			}
    	 	})
@@ -2172,7 +2164,7 @@ class Payment {
 
 	update_total_with_discount() {
 		this.dialog.set_value("total_with_discount", this.frm.doc.paid_amount);
-		this.show_isv15()
+		// this.show_isv15()
 	}
 
 
@@ -2188,17 +2180,17 @@ class Payment {
 
 	show_isv15() {
 		this.dialog.set_value("isv15", this.frm.doc.isv15);		
-		this.show_isv18();
+		// this.show_isv18();
 	}
 
 	show_isv18() {
 		this.dialog.set_value("isv18", this.frm.doc.isv18);		
-		this.show_taxed_sales15();	
+		// this.show_taxed_sales15();	
 	}
 
 	show_taxed_sales15() {
 		this.dialog.set_value("taxed_sales15", this.frm.doc.taxed_sales15);		
-		this.show_taxed_sales18();	
+		// this.show_taxed_sales18();	
 	}
 
 	show_taxed_sales18() {
