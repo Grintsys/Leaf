@@ -160,6 +160,33 @@ def get_conditions(item_code, serial_no, batch_no, barcode):
 			
 	return """(name like {item_code} or item_name like {item_code} or active_component like {item_code})""".format(item_code = frappe.db.escape('%' + item_code + '%'))
 
+def get_isv(item):
+	taxed15 = 0
+	taxed18 = 0
+	taxed_sales15 = 0
+	taxed_sales18 = 0
+
+	item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+	if len(item_taxes) >0:
+		for item_tax in item_taxes:
+			tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
+					
+			for tax_tamplate in tax_tamplates:
+
+				tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
+								
+				for tax_detail in tax_details:
+					# frappe.msgprint("tax detail {}".format(tax_detail))
+					if tax_detail.tax_rate == 15:
+						taxed_sales15 += item.amount/1.15
+						taxed15 += item.amount - (item.amount/1.15)
+													
+					if tax_detail.tax_rate == 18:
+						taxed_sales18 += item.amount/1.18
+						taxed18 += item.amount - (item.amount/1.18)
+	
+	return taxed15, taxed18, taxed_sales15, taxed_sales18
+
 
 def get_item_group_condition(pos_profile):
 	cond = "and 1=1"
