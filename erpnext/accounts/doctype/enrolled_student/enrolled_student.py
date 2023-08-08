@@ -9,6 +9,23 @@ from datetime import datetime, timedelta
 from frappe import _
 
 class EnrolledStudent(Document):
+	def update_admins_enrolled(self, arg=None):
+		now = datetime.now()
+		fecha_i = now.strftime('%d-%m-%Y')
+		admins_enrolleds = frappe.get_all("Admin Enrolled Students", ["*"], filters = {"pre_from": ["<=", fecha_i], "limit_date": [">=", fecha_i], "able": 0})
+		
+		for admin in admins_enrolleds:
+			doc = frappe.get_doc("Admin Enrolled Students", admin.name)
+			doc.able = 1
+			doc.save()
+		
+		admins_enrolleds = frappe.get_all("Admin Enrolled Students", ["*"], filters = {"limit_date": ["<", fecha_i], "able": 1})
+		
+		for admin in admins_enrolleds:
+			doc = frappe.get_doc("Admin Enrolled Students", admin.name)
+			doc.able = 0
+			doc.save()
+
 	def validate(self):
 		invoices = frappe.get_all("Sales Invoice", ["*"], filters = {"enrolled_students": self.name})
 
