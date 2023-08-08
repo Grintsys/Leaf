@@ -7,21 +7,30 @@ frappe.ui.form.on('Enrolled Student', {
 	// }
 
 	onload: function(frm) {
-		const now = new Date();
+		// const now = new Date();
 
-		let day = now.getDate().toString();
-		let month = now.getMonth() + 1;
+		// let day = now.getDate().toString();
+		// let month = now.getMonth() + 1;
 
-		if (day.length == 1) day = "0" + day;
-		if (month.toString().length == 1) month = "0" + month;
+		// if (day.length == 1) day = "0" + day;
+		// if (month.toString().length == 1) month = "0" + month;
 
-		const format = day + "-" + month + "-" + now.getFullYear();
+		// const format = day + "-" + month + "-" + now.getFullYear();
+		frm.events.update_admins_enrolled(frm);
 		debugger
 		cur_frm.fields_dict['admin_enrolled_students'].get_query = function(doc, cdt, cdn) {
 			return {
-				filters:{'pre_from': ["<=", format], 'limit_date': [">=", format]}
+				filters:{'able': 1}
 			}
 		}
+	},
+
+	update_admins_enrolled: function(frm) {
+		debugger
+		frappe.call({
+			method: "update_admins_enrolled",
+			doc: frm.doc
+		});
 	},
 
 	refresh: function (frm) {
