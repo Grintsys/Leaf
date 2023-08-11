@@ -152,6 +152,12 @@ def get_data():
 					"doctype": "Customer Documents",
 					"is_query_report": True
 				},
+				{
+					"type": "doctype",
+					"name": "Update customer info in sale invoice",
+					"description": _("Update customer info in sale invoice"),
+					"doctype": "Sales Invoice"
+				},
 			]
 		},
 		{
