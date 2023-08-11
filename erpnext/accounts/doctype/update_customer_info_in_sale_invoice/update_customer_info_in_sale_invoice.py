@@ -18,6 +18,7 @@ class Updatecustomerinfoinsaleinvoice(Document):
 		invoice.db_set('rtn', self.rtn, update_modified=False)
 		invoice.db_set('customer_name', self.customer_name, update_modified=False)
 		invoice.db_set('client_name', self.customer_name, update_modified=False)
+		invoice.db_set('tax_id', self.rtn, update_modified=False)
 
 	def on_trash(self):
 		frappe.throw(_("Yo cant delete this element."))
