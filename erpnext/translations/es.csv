@@ -22,6 +22,7 @@ apps/erpnext/erpnext/accounts/report/payment_period_based_on_invoice_date/paymen
 DocType: Item,Customer Items,Partidas de deudores
 apps/erpnext/erpnext/accounts/report/balance_sheet/balance_sheet.py,Liabilities,Pasivo
 DocType: Project,Costing and Billing,Cálculo de Costos y Facturación
+DocType: Update customer info in sale invoice,Update customer info in sale invoice,Actualizar cliente en factura de venta
 apps/erpnext/erpnext/hr/doctype/employee_advance/employee_advance.py,Advance account currency should be same as company currency {0},La moneda de la cuenta adelantada debe ser la misma que la moneda de la empresa {0}
 DocType: QuickBooks Migrator,Token Endpoint,Token Endpoint
 apps/erpnext/erpnext/accounts/doctype/account/account.py,Account {0}: Parent account {1} can not be a ledger,Cuenta {0}: la cuenta padre {1} no puede ser una cuenta de libro mayor
