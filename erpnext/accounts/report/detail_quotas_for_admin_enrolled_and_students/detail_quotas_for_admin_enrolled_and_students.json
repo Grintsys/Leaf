@@ -1,0 +1,25 @@
+{
+ "add_total_row": 0,
+ "creation": "2023-08-23 09:22:14.176128",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "SERVICIOS MEDICOS MULTIPLES S DE R.L",
+ "modified": "2023-08-23 10:40:55.413360",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Detail quotas for Admin Enrolled and Students",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Enrolled Student",
+ "report_name": "Detail quotas for Admin Enrolled and Students",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ]
+}

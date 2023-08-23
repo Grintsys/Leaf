@@ -12,6 +12,11 @@ def execute(filters=None):
    			"fieldname": "category",
   			"fieldtype": "Data",
   			"label": "Category",
+  		},		  
+		{
+   			"fieldname": "invoice",
+  			"fieldtype": "Data",
+  			"label": "Sales Invoice",
   		},
 		{
    			"fieldname": "product",
@@ -70,7 +75,7 @@ def execute(filters=None):
 
 		for product in products:
 			if item_group == product.item_group:
-				product_arr = {'indent': 1.0, "category":"", "product": product.item_name, "total_product": product.rate, "product_description": product.description, "quantity": product.qty, "total_price": product.amount}
+				product_arr = {'indent': 1.0, "category":"", "invoice": product.parent, "product": product.item_name, "total_product": product.rate, "product_description": product.description, "quantity": product.qty, "total_price": product.amount}
 				items.append(product_arr)
 		
 		data.extend(items or [])

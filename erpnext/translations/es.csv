@@ -8164,6 +8164,7 @@ DocType: Supplier Retention,Transaction Number,Numero de transacción
 DocType: Cancellation Of Supplier Retentions,Cancellation Of Supplier Retentions,Anulación de retenciones
 DocType: Payment Entry CXC,Payment Entry CXC,Reporte de entradas de pago CxC
 DocType: Payment Entry CXP,Payment Entry CXP,Reporte de entradas de pago CxP
+DocType: Details Enrolled Students,Details Enrolled Students,Detalle de registro de estudiantes
 DocType: Accounts Payable,Accounts Payable,Reporte de cuentas por pagar
 DocType: Accounts Payable Summary,Accounts Payable Summary,Reporte de Balance de cuentas por pagar
 DocType: Purchase Register,Purchase Register,Reporte de registro de compras
