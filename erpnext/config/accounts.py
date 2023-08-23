@@ -906,7 +906,13 @@ def get_data():
 					"type": "doctype",
 					"name": "Update Biometric Data Students",
 					"description": _("List Update Biometric Data Students"),
-				}
+				},
+				{
+					"type": "report",
+					"name": "Details Enrolled Students",
+					"doctype": "Details Enrolled Students",
+					"is_query_report": True
+				},
 			]
 		},
 	]
