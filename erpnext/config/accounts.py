@@ -910,9 +910,9 @@ def get_data():
 				{
 					"type": "report",
 					"name": "Details Enrolled Students",
-					"doctype": "Details Enrolled Students",
+					"doctype": "Enrolled Student",
 					"is_query_report": True
-				},
+				}
 			]
 		},
 	]
