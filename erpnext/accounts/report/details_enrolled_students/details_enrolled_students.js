@@ -28,6 +28,16 @@ frappe.query_reports["Details Enrolled Students"] = {
 			"label": __("Type"),
 			"fieldtype": "Select",
 			"options": "Enrollment\nMonthly Payment\nGraduation Expenses"
+		},
+		{
+			"fieldname": "from_date",
+			"label": __("From Date"),
+			"fieldtype": "Date"
+		},
+		{
+			"fieldname": "to_date",
+			"label": __("To Date"),
+			"fieldtype": "Date"
 		}
 	]
 };
