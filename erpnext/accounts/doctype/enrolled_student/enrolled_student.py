@@ -52,15 +52,6 @@ class EnrolledStudent(Document):
 
 		admin_enrolled = frappe.get_doc("Admin Enrolled Students", self.admin_enrolled_students)
 
-		for i in admin_enrolled.get("details"):	
-			row = self.append("details", {})
-			row.date = i.date
-			row.item = i.item
-			row.amount = i.amount
-			row.pay = 0
-			row.paid = 0
-			row.coments = ""
-		
 		for i in admin_enrolled.get("registration_detail"):	
 			row = self.append("registration_detail", {})
 			row.date = i.date
@@ -68,7 +59,18 @@ class EnrolledStudent(Document):
 			row.amount = i.amount
 			row.pay = 0
 			row.paid = 0
-			row.coments = ""
+			row.coments = "UNPAID"
+			row.type = i.type
+
+		for i in admin_enrolled.get("details"):	
+			row = self.append("details", {})
+			row.date = i.date
+			row.item = i.item
+			row.amount = i.amount
+			row.pay = 0
+			row.paid = 0
+			row.coments = "UNPAID"
+			row.type = i.type
 		
 		for i in admin_enrolled.get("graduation_expenses"):	
 			row = self.append("graduation_expenses", {})
@@ -77,7 +79,9 @@ class EnrolledStudent(Document):
 			row.amount = i.amount
 			row.pay = 0
 			row.paid = 0
-			row.coments = ""
+			row.coments = "UNPAID"
+			row.type = i.type
+
 	
 	def verificate_customer(self):
 		enrolleds = frappe.get_all("Enrolled Student", ["*"], filters = {"customer": self.customer})
