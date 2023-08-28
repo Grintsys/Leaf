@@ -983,8 +983,8 @@ class SalesInvoice(SellingController):
 	def on_cancel(self):
 		super(SalesInvoice, self).on_cancel()
 
-		# if self.enrolled_students != None:
-		# 	frappe.throw(_("You can´t cancel pay for Enrolled Student: {}".format(self.enrolled_students)))
+		if self.enrolled_students != None:
+			frappe.throw(_("You can´t cancel pay for Enrolled Student: {}".format(self.enrolled_students)))
 
 		self.update_dashboard_customer_cancel()
  
