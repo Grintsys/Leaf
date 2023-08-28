@@ -24,5 +24,4 @@ Hotels
 Hub Node
 Quality Management
 Communication
-Student Registration
 Inscriptions Students
