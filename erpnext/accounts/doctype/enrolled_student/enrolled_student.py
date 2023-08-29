@@ -126,46 +126,77 @@ class EnrolledStudent(Document):
 		if len(details) == 0 and graduation_exp:
 			frappe.throw(_("You don´t have pending payments."))
 		
+		itemEnrollment = ""		
+		itemQtyEnrollment = 0
+		itemAmountEnrollment = 0
+		itemDescriptionEnrollment = "Matricula"
+
+		for detail in self.get("registration_detail"):
+			if detail.paid == 0 and detail.pay == 1:
+				itemEnrollment = detail.item
+				itemQtyEnrollment += 1
+				itemAmountEnrollment += detail.amount
+				itemDescriptionEnrollment += " " + str(detail.date)
+		
+		if itemQtyEnrollment > 0:
+			row = doc.append("items", {})
+			row.item_code = itemEnrollment
+			row.qty = itemQtyEnrollment
+			row.rate = itemAmountEnrollment
+			row.description = itemDescriptionEnrollment
+
 		now = datetime.now()
 		amount = 0
 		qty = 0
 		mora = 0
 		mora_qty = 0		
 
-		for detail in details:
-			if amount == 0:
-				amount = detail.amount
+		itemDetail = ""		
+		itemQty = 0
+		itemAmount = 0
+		itemDescription = "Mensualidades"
 
-			details_before = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.name, "paid": 0, "pay": 0})
+		for detail in self.get("details"):
+			if detail.paid == 0 and detail.pay == 1:
+				itemDetail = detail.item
+				itemQty += 1
+				itemDescription += " " + str(detail.date) 
 
-			for detail_b in details_before:
-				if datetime.strptime(str(detail_b.date).split(" ")[0], '%Y-%m-%d') <= datetime.strptime(str(detail.date).split(" ")[0], '%Y-%m-%d'):
-					frappe.throw(_("You are skipping the payment of the fee with the date: {}".format(detail_b.date)))
-			
-			if datetime.strptime(str(detail.date).split(" ")[0], '%Y-%m-%d') <= datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d'):
-				qty += 1
+				if amount == 0:
+					amount = detail.amount
+					itemAmount = detail.amount
 
-			# initial_date =  detail.date 
+				details_before = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.name, "paid": 0, "pay": 0})
 
-			apply_mora = True
+				for detail_b in details_before:
+					if datetime.strptime(str(detail_b.date).split(" ")[0], '%Y-%m-%d') <= datetime.strptime(str(detail.date).split(" ")[0], '%Y-%m-%d'):
+						frappe.throw(_("You are skipping the payment of the fee with the date: {}".format(detail_b.date)))
+				
+				if datetime.strptime(str(detail.date).split(" ")[0], '%Y-%m-%d') <= datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d'):
+					qty += 1
 
-			r_detail = self.get("registration_detail")
+				# initial_date =  detail.date 
 
-			for r_d in r_detail:
-				if r_d.name == detail.name:
-					apply_mora = False
+				apply_mora = True
 
-			if apply_mora:
-				if datetime.strptime(str(detail.date ).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d'):
-					admin_enrolled = frappe.get_doc("Admin Enrolled Students", self.admin_enrolled_students)
-					if mora == 0: mora = admin_enrolled.surcharge
-					mora_qty += 1
-			
+				r_detail = self.get("registration_detail")
+
+				for r_d in r_detail:
+					if r_d.name == detail.name:
+						apply_mora = False
+
+				if apply_mora:
+					if datetime.strptime(str(detail.date ).split(" ")[0], '%Y-%m-%d') < datetime.strptime(str(now).split(" ")[0], '%Y-%m-%d'):
+						admin_enrolled = frappe.get_doc("Admin Enrolled Students", self.admin_enrolled_students)
+						if mora == 0: mora = admin_enrolled.surcharge
+						mora_qty += 1
+		
+		if itemQty > 0:
 			row = doc.append("items", {})
-			row.item_code = detail.item
-			row.qty = 1
-			row.rate = detail.amount
-			row.description = str(detail.date ) + " " + detail.item
+			row.item_code = itemDetail
+			row.qty = itemQty
+			row.rate = itemAmount
+			row.description = itemDescription
 
 		if qty == 0: qty = 1
 		if amount == 0: amount = 0

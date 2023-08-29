@@ -261,23 +261,37 @@ class SalesInvoice(SellingController):
 		if len(details) == 0 and graduation_exp:
 			frappe.throw(_("You don´t have pending payments for Enrolled Student {}.".format(self.enrolled_students)))
 
+		products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name})
+
+		# if len(products_verificate) == 0:
+		# 		frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(detail.item, self.enrolled_students)))
+
 		for detail in details:
-			products_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "description": str(detail.date ) + " " + detail.item})
+			product_verificate = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name, "item_code": detail.item})
 
-			if len(products_verificate) == 0:
+			if len(product_verificate) == 0:
 				frappe.throw(_("The product {} with relation to Enrolled Student {} no exist in this invoice.".format(detail.item, self.enrolled_students)))
-
-			if len(products_verificate) > 1:
-				frappe.throw(_("Only can exist one product {} in this invoice.".format(detail.item, self.enrolled_students)))
 			
-			if int(products_verificate[0].qty) > len(details):
-				frappe.throw(_("You have only {} pending payments and you pay {} in this invoice.".format(len(details), int(products_verificate[0].qty))))
+			for product in product_verificate:
 
-			doc = frappe.get_doc("details of quotas", detail.name)
-			doc.paid = 1
-			doc.db_set('paid', 1, update_modified=False)
-			doc.db_set('coments', "PAID", update_modified=False)
-			doc.save()
+				detailsItem = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_students, "paid": 0, "pay": 1, "item": detail.item}, order_by='date asc')
+
+				if len(detailsItem) > 0:
+					if int(product.qty) > len(detailsItem):
+						frappe.throw(_("You have only {} pending payments and you pay {} in this invoice.".format(len(detailsItem), int(product.qty))))
+					
+					rangeInt = product.qty
+					
+					for i in range(0,int(rangeInt), 1):
+						# if len(products_verificate) > 1:
+						# 	frappe.throw(_("Only can exist one product {} in this invoice.".format(detail.item, self.enrolled_students)))
+						
+									
+						doc = frappe.get_doc("details of quotas", detailsItem[i].name)
+						doc.paid = 1
+						doc.db_set('paid', 1, update_modified=False)
+						doc.db_set('coments', "PAID", update_modified=False)
+						doc.save()
 
 	def validate(self):
 		super(SalesInvoice, self).validate()
