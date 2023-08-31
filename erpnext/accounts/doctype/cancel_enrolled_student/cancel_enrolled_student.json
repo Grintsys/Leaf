@@ -1,0 +1,96 @@
+{
+ "autoname": "CAN-.YYYY.-.########",
+ "creation": "2023-08-31 15:51:31.580833",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enrolled_student",
+  "admin_enrolled_students",
+  "customer",
+  "registration_detail",
+  "details",
+  "graduation_expenses",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "enrolled_student",
+   "fieldtype": "Link",
+   "label": "Enrolled Student",
+   "options": "Enrolled Student"
+  },
+  {
+   "fetch_from": "enrolled_student.admin_enrolled_students",
+   "fieldname": "admin_enrolled_students",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Admin Enrolled Students",
+   "options": "Admin Enrolled Students",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "enrolled_student.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "registration_detail",
+   "fieldtype": "Table",
+   "label": "Registration Detail",
+   "options": "details of quotas cancel"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details of quotas",
+   "options": "details of quotas cancel"
+  },
+  {
+   "fieldname": "graduation_expenses",
+   "fieldtype": "Table",
+   "label": "Graduation Expenses",
+   "options": "details of graduation expenses cancel"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Cancel Enrolled Student",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2023-08-31 15:55:13.530361",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Cancel Enrolled Student",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "customer",
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

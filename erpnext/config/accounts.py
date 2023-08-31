@@ -889,6 +889,11 @@ def get_data():
 				},
 				{
 					"type": "doctype",
+					"name": "Cancel Enrolled Student",
+					"description": _("List Cancel Enrolled Student"),
+				},
+				{
+					"type": "doctype",
 					"name": "Withdraw Course",
 					"description": _("List Withdraw Course"),
 				},

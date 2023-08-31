@@ -1,0 +1,77 @@
+{
+ "creation": "2023-08-31 15:53:06.242424",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "date",
+  "item",
+  "amount",
+  "pay",
+  "paid",
+  "coments",
+  "type"
+ ],
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Items",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "pay",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Pay"
+  },
+  {
+   "default": "0",
+   "fieldname": "paid",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Paid"
+  },
+  {
+   "fieldname": "coments",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Coments"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Type",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2023-08-31 15:53:47.604216",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "details of quotas cancel",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
