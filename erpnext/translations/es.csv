@@ -5,6 +5,7 @@ apps/erpnext/erpnext/stock/doctype/material_request/material_request_list.js,Par
 DocType: Patient,Divorced,Divorciado
 DocType: Admin Enrolled Students,Admin Enrolled Students,Plantillas de registro de estudiantes
 DocType: Enrolled Student,Enrolled Student,Registro de estudiantes
+DocType: Cancel Enrolled Student,Cancel Enrolled Student,Cancelar pago de Registro de estudiantes
 DocType: Withdraw Course,Withdraw Course,Retirar cursos
 DocType: Withdraw Course,Update Biometric Data Students,Actualizar datos biometricos de los estudiantes
 DocType: Settings Enrolled Students,Settings Enrolled Students,Configuración registro de estudiates

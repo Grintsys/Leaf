@@ -48,7 +48,7 @@ class EnrolledStudent(Document):
 			frappe.delete_doc("details of quotas", detail.name)
 		
 		for detail in self.get("graduation_expenses"):
-			frappe.delete_doc("details of quotas", detail.name)
+			frappe.delete_doc("details of graduation expenses", detail.name)
 
 		admin_enrolled = frappe.get_doc("Admin Enrolled Students", self.admin_enrolled_students)
 
