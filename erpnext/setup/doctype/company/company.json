@@ -32,6 +32,7 @@
   "existing_company",
   "tax_id",
   "date_of_establishment",
+  "isv_by_item_amount",
   "sales_settings",
   "monthly_sales_target",
   "sales_monthly_history",
@@ -49,7 +50,6 @@
   "discount_received_account",
   "exchange_gain_loss_account",
   "unrealized_exchange_gain_loss_account",
-  "account_isv15",
   "column_break0",
   "allow_account_creation_against_child_company",
   "default_payable_account",
@@ -62,7 +62,6 @@
   "default_deferred_expense_account",
   "default_payroll_payable_account",
   "default_expense_claim_payable_account",
-  "account_isv18",
   "section_break_22",
   "cost_center",
   "column_break_26",
@@ -746,22 +745,16 @@
    "options": "Account"
   },
   {
-   "fieldname": "account_isv15",
-   "fieldtype": "Link",
-   "label": "Account ISV 15",
-   "options": "Account"
-  },
-  {
-   "fieldname": "account_isv18",
-   "fieldtype": "Link",
-   "label": "Account ISV 18",
-   "options": "Account"
+   "default": "0",
+   "fieldname": "isv_by_item_amount",
+   "fieldtype": "Check",
+   "label": "ISV With Discount Included "
   }
  ],
  "icon": "fa fa-building",
  "idx": 1,
  "image_field": "company_logo",
- "modified": "2023-07-04 21:40:02.182742",
+ "modified": "2023-10-26 19:44:36.196867",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

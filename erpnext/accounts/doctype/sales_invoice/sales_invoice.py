@@ -378,7 +378,11 @@ class SalesInvoice(SellingController):
 			
 		if self.docstatus == 1:
 			self.update_accounts_status()
-			self.calculated_taxes()
+			company = frappe.get_doc('Company', self.company)
+			if company.isv_by_item_amount:
+				self.calculated_taxes_by_item_amount()
+			else:
+				self.calculated_taxes()
 			if self.is_pos:
 				self.allow_credit_pos()
 			
@@ -592,6 +596,174 @@ class SalesInvoice(SellingController):
 									else:
 										taxed_sales18 += item.amount/1.18
 										taxed18 += item.amount - (item.amount/1.18)
+				else:
+					exempt += item.amount
+	
+		self.isv15 = taxed15
+		self.isv18 = taxed18
+		self.total_exonerated = exonerated
+		self.total_exempt = exempt
+		self.total_taxes_and_charges = taxed15 + taxed18
+		self.taxed_sales15 = taxed_sales15
+		self.taxed_sales18 = taxed_sales18
+
+		if self.is_pos:
+			pos = frappe.get_doc("POS Profile", self.pos_profile)
+
+			if pos.round_off_discount == 1:
+				discount_amount = math.ceil(self.discount_amount)
+
+				net_total = math.floor(self.net_total)
+				self.db_set('net_total', net_total, update_modified=False)
+
+				# rounding_adjustment = math.floor(self.rounding_adjustment)
+				self.db_set('rounding_adjustment', 0, update_modified=False)
+
+				self.discount_amount = discount_amount
+				self.db_set('discount_amount', discount_amount, update_modified=False)
+
+				change_amount = self.paid_amount - self.rounded_total
+				self.db_set('change_amount', change_amount, update_modified=False)
+		else:
+			if self.round_off_discount == 1:
+				discount_amount = math.ceil(self.discount_amount)
+
+				net_total = math.floor(self.net_total)
+				self.db_set('net_total', net_total, update_modified=False)
+
+				# rounding_adjustment = math.floor(self.rounding_adjustment)
+				self.db_set('rounding_adjustment', 0, update_modified=False)
+
+				self.discount_amount = discount_amount
+				self.db_set('discount_amount', discount_amount, update_modified=False)
+
+		if self.exonerated == 1:
+			if self.discount_amount:
+				self.grand_total = self.total - self.discount_amount
+			else:
+				self.grand_total = self.total			
+		else:
+			if self.discount_amount:
+				self.grand_total = self.total - self.discount_amount
+			else:
+				self.grand_total = self.total
+		
+		# if self.exonerated != 1:
+		# 	self.grand_total += self.isv15 + self.isv18
+		
+		grand_total = self.grand_total
+		
+		if self.is_pos and self.change_amount > 0:
+			outstanding_amount = 0
+			self.db_set('outstanding_amount', outstanding_amount, update_modified=False)
+		else:
+			if self.round_off_discount:
+				if self.grand_total != self.outstanding_amount:
+					outstanding_amount = self.grand_total
+					self.db_set('outstanding_amount', outstanding_amount, update_modified=False)
+			else:
+				outstanding_amount = 0
+				if self.paid_amount > 0:
+					outstanding_amount = self.grand_total - self.paid_amount
+				else:
+					outstanding_amount = self.grand_total
+
+				self.db_set('outstanding_amount', outstanding_amount, update_modified=False)
+		
+		self.rounded_total = self.grand_total
+
+		# if self.status == 'Draft' or self.docstatus == 1:
+		self.db_set('grand_total', grand_total, update_modified=False)
+		self.db_set('isv15', taxed15, update_modified=False)
+		self.db_set('isv18', taxed18, update_modified=False)
+		self.db_set('total_exonerated', exonerated, update_modified=False)
+		self.db_set('taxed_sales15', taxed_sales15, update_modified=False)
+		self.db_set('total_exempt', exempt, update_modified=False)
+		self.db_set('taxed_sales18', taxed_sales18, update_modified=False)
+		self.db_set('total_taxes_and_charges', taxed15 + taxed18, update_modified=False)
+
+		if self.is_pos:
+			pos = frappe.get_doc("POS Profile", self.pos_profile)
+
+			if pos.round_off_discount == 1:
+				self.db_set('rounded_total', self.rounded_total, update_modified=False)
+
+				if self.grand_total == self.paid_amount:
+					self.db_set('outstanding_amount', 0, update_modified=False)	
+		else:
+			if self.round_off_discount == 1:
+				self.db_set('rounded_total', self.rounded_total, update_modified=False)
+
+				if self.grand_total == self.paid_amount:
+					self.db_set('outstanding_amount', 0, update_modified=False)		
+		
+		self.db_set('rounded_total', self.rounded_total, update_modified=False)
+
+		self.in_words = money_in_words(self.rounded_total)
+		self.db_set('in_words', self.in_words, update_modified=False)		
+		self.calculate_insurance()
+
+		self.subtotal = self.grand_total - self.isv15 - self.isv18
+		self.db_set('subtotal', self.subtotal, update_modified=False)
+
+	def calculated_taxes_by_item_amount(self):
+		taxed15 = 0
+		taxed18 = 0
+		exempt = 0
+		exonerated = 0
+		taxed_sales15 = 0
+		taxed_sales18 = 0
+		outstanding_amount = 0
+		grand_total = 0
+
+		if self.taxes_and_charges:
+					if self.exonerated == 1:
+						exonerated += self.total
+					else:
+						invoice_table_taxes = frappe.get_all("Sales Taxes and Charges", ["name", "rate", "tax_amount"], filters = {"parent": self.name})
+
+						for invoice_tax in invoice_table_taxes:
+
+							if invoice_tax.rate == 15:
+								taxed15 += invoice_tax.tax_amount							
+							
+							if invoice_tax.rate == 18:
+								taxed18 += invoice_tax.tax_amount
+		else:
+			items = frappe.get_all("Sales Invoice Item", ["item_code", "amount", "discount_amount"], filters = {"parent": self.name})
+
+			for item in items:
+				item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+				if len(item_taxes) >0:
+					for item_tax in item_taxes:
+						tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
+							
+						for tax_tamplate in tax_tamplates:
+
+							tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
+								
+							for tax_detail in tax_details:
+								# frappe.msgprint("tax detail {}".format(tax_detail))
+								if tax_detail.tax_rate == 15:
+									# frappe.msgprint("cuenta tax 15 {}".format(tax_detail.tax_type))
+									self.account15 = tax_detail.tax_type
+									if self.exonerated == 1:
+										taxed_sales15 += item.amount + item.discount_amount
+										taxed15 += (item.amount + item.discount_amount) * 0.15
+										exonerated += taxed_sales15 + taxed15
+									else:
+										taxed_sales15 += (item.amount+ item.discount_amount)/1.15
+										taxed15 += (item.amount + item.discount_amount) - ((item.amount + item.discount_amount)/1.15)
+								
+								if tax_detail.tax_rate == 18:
+									self.account18 = tax_detail.tax_type
+									if self.exonerated == 1:
+										taxed_sales18 += (item.amount + item.discount_amount) + item.discount_amount
+										taxed18 += (item.amount + item.discount_amount) * 0.18
+										exonerated += taxed_sales18 + taxed18
+									else:
+										taxed_sales18 += item.amount/1.18
+										taxed18 += (item.amount + item.discount_amount) - ((item.amount + item.discount_amount)/1.18)
 				else:
 					exempt += item.amount
 	
@@ -1143,7 +1315,11 @@ class SalesInvoice(SellingController):
 	def on_update(self):
 		self.set_paid_amount()
 		# self.exonerated_value()
-		self.calculated_taxes()
+		company = frappe.get_doc('Company', self.company)
+		if company.isv_by_item_amount:
+			self.calculated_taxes_by_item_amount()
+		else:
+			self.calculated_taxes()
 		if self.docstatus == 1:
 			self.create_dispatch_control()
 			self.verificate_work_order()
