@@ -255,8 +255,10 @@ class InventoryDownload(Document):
 		stock = frappe.get_all("Stock Ledger Entry", ["*"], filters = {"item_code": item.item_code})
 
 		if len(stock) > 0:
-			frappe.msgprint("{}".format(stock[0]))
-			valuation_rate += stock[0].valuation_rate
+			for r in stock:
+				if r.valuation_rate > 0:
+					valuation_rate += r.valuation_rate
+					break
 		else:
 			frappe.throw(_("The Item {} is not defined valuation rate.".format(item.item_code)))
 		
