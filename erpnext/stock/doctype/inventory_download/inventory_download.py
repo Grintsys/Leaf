@@ -252,9 +252,10 @@ class InventoryDownload(Document):
 	def set_valuation_rate_item(self, item):
 		valuation_rate = 0
 
-		stock = frappe.get_all("Stock Ledger Entry", ["valuation_rate"], filters = {"item_code": item.item_code})
+		stock = frappe.get_all("Stock Ledger Entry", ["*"], filters = {"item_code": item.item_code})
 
 		if len(stock) > 0:
+			frappe.msgprint("{}".format(stock[0]))
 			valuation_rate += stock[0].valuation_rate
 		else:
 			frappe.throw(_("The Item {} is not defined valuation rate.".format(item.item_code)))

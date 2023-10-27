@@ -68,6 +68,7 @@ class GLEntry(Document):
 		# Zero value transaction is not allowed
 		#frappe.msgprint("credit {}".format((flt(self.credit, self.precision("credit"))))
 		if not (flt(self.debit, self.precision("debit")) or flt(self.credit, self.precision("credit"))):
+			frappe.msgprint("debit:{}, credit: {}".format((flt(self.debit, self.precision("debit"))), (flt(self.credit, self.precision("credit")))))
 			frappe.throw(_("{0} {1}: Either debit or credit amount is required for {2}")
 				.format(self.voucher_type, self.voucher_no, self.account))
 
