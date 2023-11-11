@@ -60,7 +60,7 @@ class EnrolledStudent(Document):
 			row.pay = 0
 			row.paid = 0
 			row.coments = "UNPAID"
-			row.type = i.type
+			row.type = "Monthly Payment"
 
 		for i in admin_enrolled.get("details"):	
 			row = self.append("details", {})
@@ -70,7 +70,7 @@ class EnrolledStudent(Document):
 			row.pay = 0
 			row.paid = 0
 			row.coments = "UNPAID"
-			row.type = i.type
+			row.type = "Enrollment"
 		
 		for i in admin_enrolled.get("graduation_expenses"):	
 			row = self.append("graduation_expenses", {})
@@ -80,7 +80,7 @@ class EnrolledStudent(Document):
 			row.pay = 0
 			row.paid = 0
 			row.coments = "UNPAID"
-			row.type = i.type
+			row.type = "GRADUATION"
 
 	
 	def verificate_customer(self):

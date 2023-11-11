@@ -58,6 +58,7 @@ class CancelEnrolledStudent(Document):
 	
 	def update_enrolled(self):
 		for detail in self.get("details"):
+			registers = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_student})
 			registers = frappe.get_all("details of quotas", ["*"], filters = {"parent": self.enrolled_student, "type": "Enrollment", "date": detail.date})
 
 			for register in registers:
