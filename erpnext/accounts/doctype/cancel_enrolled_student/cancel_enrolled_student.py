@@ -9,7 +9,7 @@ from frappe.model.document import Document
 class CancelEnrolledStudent(Document):
 	def validate(self):
 		if self.docstatus == 0:
-			if len(self.get("registration_detail")) == 0:
+			if len(self.get("registration_detail")) == 0 and len(self.get("details")) == 0  and len(self.get("graduation_expenses")) == 0 :
 				self.saveData()
 		if self.docstatus == 1:
 			self.update_enrolled()
