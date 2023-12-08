@@ -75,7 +75,7 @@ def _execute(filters=None, additional_table_columns=None, additional_query_colum
 					row += [item_tax.get("tax_rate", 0), item_tax.get("tax_amount", 0)]
 					total_tax += flt(item_tax.get("tax_amount"))
 
-				row += [total_tax, d.base_net_amount + total_tax, company_currency]
+				row += [total_tax, d.taxed_sales15, d.taxed15, d.taxed_sales18, d.taxed18, d.base_net_amount + total_tax, company_currency]
 
 				data.append(row)
 
@@ -151,7 +151,8 @@ def get_items(filters, additional_query_columns):
 			`tabSales Invoice`.posting_date, `tabSales Invoice`.debit_to,
 			`tabSales Invoice`.project, `tabSales Invoice`.customer, `tabSales Invoice`.remarks,
 			`tabSales Invoice`.territory, `tabSales Invoice`.company, `tabSales Invoice`.base_net_total,
-			`tabSales Invoice Item`.item_code, `tabSales Invoice Item`.item_name,
+			`tabSales Invoice Item`.item_code, `tabSales Invoice Item`.item_name, `tabSales Invoice Item`.taxed_sales15,
+			`tabSales Invoice Item`.taxed15, `tabSales Invoice Item`.taxed_sales18, `tabSales Invoice Item`.taxed18,
 			`tabSales Invoice Item`.item_group, `tabSales Invoice Item`.description, `tabSales Invoice Item`.sales_order,
 			`tabSales Invoice Item`.delivery_note, `tabSales Invoice Item`.income_account,
 			`tabSales Invoice Item`.cost_center, `tabSales Invoice Item`.stock_qty,
@@ -272,6 +273,6 @@ def get_tax_accounts(item_list, columns, company_currency,
 		columns.append(desc + " Rate:Data:80")
 		columns.append(desc + " Amount:Currency/currency:100")
 
-	columns += ["Total Tax:Currency/currency:80", "Total:Currency/currency:100"]
+	columns += ["Total Tax:Currency/currency:80", _("Taxed Sales 15") + ":Currency/currency:120", _("Taxed 15") + ":Currency/currency:120", _("Taxed Sales 18") + ":Currency/currency:120", _("Taxed 18") + ":Currency/currency:120", "Total:Currency/currency:100"]
 
 	return itemised_tax, tax_columns

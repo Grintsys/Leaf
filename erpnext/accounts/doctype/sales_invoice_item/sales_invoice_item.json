@@ -103,7 +103,11 @@
   "dimension_col_break",
   "section_break_54",
   "page_break",
-  "is_exonerated"
+  "is_exonerated",
+  "taxed_sales15",
+  "taxed15",
+  "taxed_sales18",
+  "taxed18"
  ],
  "fields": [
   {
@@ -859,11 +863,31 @@
    "fieldtype": "Link",
    "label": "Inventory Default Values",
    "options": "Account"
+  },
+  {
+   "fieldname": "taxed_sales15",
+   "fieldtype": "Currency",
+   "label": "taxed_sales15"
+  },
+  {
+   "fieldname": "taxed15",
+   "fieldtype": "Currency",
+   "label": "taxed15"
+  },
+  {
+   "fieldname": "taxed_sales18",
+   "fieldtype": "Currency",
+   "label": "taxed_sales18"
+  },
+  {
+   "fieldname": "taxed18",
+   "fieldtype": "Currency",
+   "label": "taxed18"
   }
  ],
  "idx": 1,
  "istable": 1,
- "modified": "2022-08-24 16:23:59.840458",
+ "modified": "2023-12-07 17:39:49.751306",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice Item",
