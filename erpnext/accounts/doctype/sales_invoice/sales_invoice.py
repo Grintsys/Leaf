@@ -1789,15 +1789,16 @@ class SalesInvoice(SellingController):
 				}, self.party_account_currency)
 			)
 	def make_isv15_gl_entries(self, gl_entries):
+		self.calculated_taxes_by_item_amount()
 		company = frappe.get_doc("Company", self.company)
 
 		account = self.account15
 
-		if account == None:
-			account = company.account_isv15
+		# if account == None:
+		# 	account = company.account_isv15
 		
 		if account == None:
-			frappe.throw(_("Assign a account to product and company for ISV 15"))
+			frappe.throw(_("Assign a account to product for ISV 15"))
 
 		account_currency = get_account_currency(account)
 

@@ -1867,6 +1867,38 @@ class Payment {
 	get_fields() {
 		const me = this;
 
+		let allow_edit_discount = false;
+
+		if(this.frm.allow_edit_discount === 0){
+			allow_edit_discount = true;
+		}
+		// debugger
+
+		// let taxed15 = 0
+		// let taxed18 = 0
+		// let taxed_sales15 = 0
+		// let taxed_sales18 = 0
+
+		// $.each(this.frm.doc.items, function(i, data) {
+
+		// 	frappe.call({
+		// 		method: "erpnext.selling.page.point_of_sale.point_of_sale.get_isv",
+		// 		args: {
+		// 			"item": data
+		// 		},
+		// 		callback: function(r) {
+		// 			// frm.set_df_property("selling_price_list", "options", r.message.price_list);
+		// 			// me.frm.set_value("selling_price_list", r.message.price_list);
+		// 			taxed15 = r.message[0]
+		// 			taxed18 = r.message[1]
+		// 			taxed_sales15 = r.message[2]
+		// 			taxed_sales18 = r.message[3]
+		// 			console.log(r);
+		// 			debugger;
+		// 		}
+		// 	});
+		// });	
+
 		let fields = this.frm.doc.payments.map(p => {
 			return {
 				fieldtype: 'Currency',
@@ -1949,6 +1981,7 @@ class Payment {
 				options: me.frm.doc.currency,
 				fieldname: "discount_amount",
 				default: me.frm.doc.discount_amount,
+				read_only: allow_edit_discount,
 				onchange: () => {
 					me.update_cur_frm_value('discount_amount', () => {
 						frappe.flags.discount_amount = false;
@@ -1962,6 +1995,7 @@ class Payment {
 				options: me.frm.doc.currency,
 				fieldname: "additional_discount_percentage",
 				default: me.frm.doc.additional_discount_percentage,
+				read_only: allow_edit_discount,
 				onchange: () => {
 					me.update_cur_frm_value('additional_discount_percentage', () => {
 						frappe.flags.additional_discount_percentage = false;
@@ -1991,6 +2025,7 @@ class Payment {
 				options: "Reason For Discount",
 				fieldname: "discount_reason",
 				default: me.frm.doc.discount_reason,
+				read_only: allow_edit_discount,
 				onchange: () => {
 					me.update_cur_frm_value('discount_reason', () => {
 						frappe.flags.discount_reason = false;
@@ -2020,22 +2055,22 @@ class Payment {
 				default: me.frm.doc.paid_amount,
 				read_only: 1
 			},
-			// {
-			// 	fieldtype: 'Currency',
-			// 	label: __("Taxed Sales15"),
-			// 	options: me.frm.doc.currency,
-			// 	fieldname: "taxed_sales15",
-			// 	default: me.frm.doc.taxed_sales15,
-			// 	read_only: 1
-			// },
-			// {
-			// 	fieldtype: 'Currency',
-			// 	label: __("ISV 15%"),
-			// 	options: me.frm.doc.currency,
-			// 	fieldname: "isv15",
-			// 	default: me.frm.doc.isv15,
-			// 	read_only: 1
-			// },
+			{
+				fieldtype: 'Currency',
+				label: __("Taxed Sales15"),
+				options: me.frm.doc.currency,
+				fieldname: "taxed_sales15",
+				default: me.frm.doc.taxed_sales15,
+				read_only: 1
+			},
+			{
+				fieldtype: 'Currency',
+				label: __("ISV 15%"),
+				options: me.frm.doc.currency,
+				fieldname: "isv15",
+				default: me.frm.doc.taxed15,
+				read_only: 1
+			},
 			{
 				fieldtype: 'Column Break',
 			},
@@ -2047,22 +2082,22 @@ class Payment {
 				default: me.frm.doc.outstanding_amount,
 				read_only: 1
 			},
-			// {
-			// 	fieldtype: 'Currency',
-			// 	label: __("Taxed Sales18"),
-			// 	options: me.frm.doc.currency,
-			// 	fieldname: "taxed_sales18",
-			// 	default: me.frm.doc.taxed_sales18,
-			// 	read_only: 1
-			// },
-			// {
-			// 	fieldtype: 'Currency',
-			// 	label: __("ISV 18%"),
-			// 	options: me.frm.doc.currency,
-			// 	fieldname: "isv18",
-			// 	default: me.frm.doc.isv18,
-			// 	read_only: 1
-			// },
+			{
+				fieldtype: 'Currency',
+				label: __("Taxed Sales18"),
+				options: me.frm.doc.currency,
+				fieldname: "taxed_sales18",
+				default: me.frm.doc.taxed_sales18,
+				read_only: 1
+			},
+			{
+				fieldtype: 'Currency',
+				label: __("ISV 18%"),
+				options: me.frm.doc.currency,
+				fieldname: "isv18",
+				default: me.frm.doc.taxed18,
+				read_only: 1
+			},
 		]);
 
 		return fields;
@@ -2164,7 +2199,7 @@ class Payment {
 
 	update_total_with_discount() {
 		this.dialog.set_value("total_with_discount", this.frm.doc.paid_amount);
-		// this.show_isv15()
+		this.show_isv15()
 	}
 
 
@@ -2180,51 +2215,103 @@ class Payment {
 
 	show_isv15() {
 		this.dialog.set_value("isv15", this.frm.doc.isv15);		
-		// this.show_isv18();
+		this.show_isv18();
 	}
 
 	show_isv18() {
 		this.dialog.set_value("isv18", this.frm.doc.isv18);		
-		// this.show_taxed_sales15();	
+		this.show_taxed_sales15();	
 	}
 
 	show_taxed_sales15() {
 		this.dialog.set_value("taxed_sales15", this.frm.doc.taxed_sales15);		
-		// this.show_taxed_sales18();	
+		this.show_taxed_sales18();	
 	}
 
 	show_taxed_sales18() {
-		this.dialog.set_value("taxed_sales18", this.frm.doc.taxed_sales18);	
-
-		let taxed15 = 1
-		let taxed18 = 2
-		let taxed_sales15 = 3
-		let taxed_sales18 = 4
-
-		$.each(this.frm.doc.items, function(i, data) {
-			debugger;
-
-			frappe.call({
-				method: "erpnext.selling.page.point_of_sale.point_of_sale.get_isv",
-				args: {
-					"item": data
-				},
-				callback: function(r) {
-					// frm.set_df_property("selling_price_list", "options", r.message.price_list);
-					// me.frm.set_value("selling_price_list", r.message.price_list);
-					console.log(r);
-					debugger;
-				}
+		// this.dialog.set_value("taxed_sales18", this.frm.doc.taxed_sales18);
+	
+		let promises = [];
+	
+		$.each(this.frm.doc.items, (i, data) => {
+			let promise = new Promise((resolve, reject) => {
+				frappe.call({
+					method: "erpnext.selling.page.point_of_sale.point_of_sale.get_isv",
+					args: {
+						"item": data
+					},
+					callback: function (r) {
+						resolve({
+							taxed15: r.message[0],
+							taxed18: r.message[1],
+							taxed_sales15: r.message[2],
+							taxed_sales18: r.message[3]
+						});
+					}
+				});
 			});
-
-			debugger;
-		});	
-
-		this.dialog.set_value("taxed_sales15", taxed_sales15);		
-		this.dialog.set_value("taxed_sales18", taxed_sales18);		
-		this.dialog.set_value("isv15", taxed15);	
-		this.dialog.set_value("isv18", taxed18);		
+	
+			promises.push(promise);
+		});
+	
+		Promise.all(promises).then((results) => {
+			let totalTaxedSales15 = 0;
+			let totalTaxedSales18 = 0;
+			let totalTaxed15 = 0;
+			let totalTaxed18 = 0;
+	
+			results.forEach((result) => {
+				totalTaxedSales15 += result.taxed_sales15;
+				totalTaxedSales18 += result.taxed_sales18;
+				totalTaxed15 += result.taxed15;
+				totalTaxed18 += result.taxed18;
+			});
+	
+			this.dialog.set_value("taxed_sales15", totalTaxedSales15);
+			this.dialog.set_value("taxed_sales18", totalTaxedSales18);
+			this.dialog.set_value("isv15", totalTaxed15);
+			this.dialog.set_value("isv18", totalTaxed18);
+		});
 	}
+
+	// show_taxed_sales18() {
+	// 	this.dialog.set_value("taxed_sales18", this.frm.doc.taxed_sales18);	
+
+	// 	let taxed15 = 0
+	// 	let taxed18 = 0
+	// 	let taxed_sales15 = 0
+	// 	let taxed_sales18 = 0
+
+	// 	$.each(this.frm.doc.items, function(i, data) {
+	// 		debugger;
+
+	// 		frappe.call({
+	// 			method: "erpnext.selling.page.point_of_sale.point_of_sale.get_isv",
+	// 			args: {
+	// 				"item": data
+	// 			},
+	// 			callback: function(r) {
+	// 				taxed15 = r.message[0]
+	// 				taxed18 = r.message[1]
+	// 				taxed_sales15 = r.message[2]
+	// 				taxed_sales18 = r.message[3]
+	// 				console.log(r.message[0]);
+	// 				console.log(r.message[1]);
+	// 				console.log(r.message[2]);
+	// 				console.log(r.message[3]);
+	// 				console.log(r);
+	// 				debugger;
+	// 			}
+	// 		});
+
+	// 		debugger;
+	// 	});	
+
+	// 	this.dialog.set_value("taxed_sales15", taxed_sales15);		
+	// 	this.dialog.set_value("taxed_sales18", taxed_sales18);		
+	// 	this.dialog.set_value("isv15", taxed15);	
+	// 	this.dialog.set_value("isv18", taxed18);		
+	// }
 
 	// show_paid_amount() {
 	// 	var out_amount = 0
