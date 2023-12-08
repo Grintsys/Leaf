@@ -562,9 +562,10 @@ class SalesInvoice(SellingController):
 							if invoice_tax.rate == 18:
 								taxed18 += invoice_tax.tax_amount
 		else:
-			items = frappe.get_all("Sales Invoice Item", ["item_code", "amount"], filters = {"parent": self.name})
+			items = frappe.get_all("Sales Invoice Item", ["name", "item_code", "amount"], filters = {"parent": self.name})
 
 			for item in items:
+				itUp = frappe.get_doc("Sales Invoice Item", item.name)
 				item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
 				if len(item_taxes) >0:
 					for item_tax in item_taxes:
@@ -583,9 +584,18 @@ class SalesInvoice(SellingController):
 										taxed_sales15 += item.amount
 										taxed15 += item.amount * 0.15
 										exonerated += taxed_sales15 + taxed15
+
+										itUp.db_set('taxed_sales15', item.amount, update_modified=False)
+										itUp.db_set('taxed15', item.amount * 0.15, update_modified=False)
+										itUp.db_set('taxed_sales18', 0, update_modified=False)
+										itUp.db_set('taxed18', 0, update_modified=False)
 									else:
 										taxed_sales15 += item.amount/1.15
 										taxed15 += item.amount - (item.amount/1.15)
+										itUp.db_set('taxed_sales15', item.amount, update_modified=False)
+										itUp.db_set('taxed15', item.amount - (item.amount/1.15), update_modified=False)
+										itUp.db_set('taxed_sales18', 0, update_modified=False)
+										itUp.db_set('taxed18', 0, update_modified=False)
 								
 								if tax_detail.tax_rate == 18:
 									self.account18 = tax_detail.tax_type
@@ -593,9 +603,19 @@ class SalesInvoice(SellingController):
 										taxed_sales18 += item.amount
 										taxed18 += item.amount * 0.18
 										exonerated += taxed_sales18 + taxed18
+
+										itUp.db_set('taxed_sales15', 0, update_modified=False)
+										itUp.db_set('taxed15', 0, update_modified=False)
+										itUp.db_set('taxed_sales18', item.amount, update_modified=False)
+										itUp.db_set('taxed18', item.amount * 0.18, update_modified=False)
 									else:
 										taxed_sales18 += item.amount/1.18
 										taxed18 += item.amount - (item.amount/1.18)
+
+										itUp.db_set('taxed_sales15', 0, update_modified=False)
+										itUp.db_set('taxed15', 0, update_modified=False)
+										itUp.db_set('taxed_sales18', item.amount, update_modified=False)
+										itUp.db_set('taxed18', item.amount - (item.amount/1.18), update_modified=False)
 				else:
 					exempt += item.amount
 	
