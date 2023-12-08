@@ -1789,7 +1789,7 @@ class NumberPad {
 }
 
 class Payment {
-	constructor({frm, events}) {
+	constructor({frm, events, isTaxes}) {
 		this.frm = frm;
 		this.events = events;
 		this.make();
@@ -1867,6 +1867,12 @@ class Payment {
 	get_fields() {
 		const me = this;
 
+		let allow_edit_discount = false;
+
+		if(this.frm.allow_edit_discount === 0){
+			allow_edit_discount = true;
+		}
+		
 		let fields = this.frm.doc.payments.map(p => {
 			return {
 				fieldtype: 'Currency',
@@ -1949,6 +1955,7 @@ class Payment {
 				options: me.frm.doc.currency,
 				fieldname: "discount_amount",
 				default: me.frm.doc.discount_amount,
+				read_only: allow_edit_discount,
 				onchange: () => {
 					me.update_cur_frm_value('discount_amount', () => {
 						frappe.flags.discount_amount = false;
@@ -1962,6 +1969,7 @@ class Payment {
 				options: me.frm.doc.currency,
 				fieldname: "additional_discount_percentage",
 				default: me.frm.doc.additional_discount_percentage,
+				read_only: allow_edit_discount,
 				onchange: () => {
 					me.update_cur_frm_value('additional_discount_percentage', () => {
 						frappe.flags.additional_discount_percentage = false;
@@ -1991,6 +1999,7 @@ class Payment {
 				options: "Reason For Discount",
 				fieldname: "discount_reason",
 				default: me.frm.doc.discount_reason,
+				read_only: allow_edit_discount,
 				onchange: () => {
 					me.update_cur_frm_value('discount_reason', () => {
 						frappe.flags.discount_reason = false;
