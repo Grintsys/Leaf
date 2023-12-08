@@ -1789,7 +1789,7 @@ class NumberPad {
 }
 
 class Payment {
-	constructor({frm, events, isTaxes}) {
+	constructor({frm, events}) {
 		this.frm = frm;
 		this.events = events;
 		this.make();
