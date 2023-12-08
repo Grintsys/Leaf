@@ -7,6 +7,7 @@ from frappe.utils.nestedset import get_root_of
 from frappe.utils import cint
 from erpnext.accounts.doctype.pos_profile.pos_profile import get_item_groups
 from datetime import datetime
+import json
 
 from six import string_types
 
@@ -160,13 +161,17 @@ def get_conditions(item_code, serial_no, batch_no, barcode):
 			
 	return """(name like {item_code} or item_name like {item_code} or active_component like {item_code})""".format(item_code = frappe.db.escape('%' + item_code + '%'))
 
+@frappe.whitelist()
 def get_isv(item):
 	taxed15 = 0
 	taxed18 = 0
 	taxed_sales15 = 0
 	taxed_sales18 = 0
 
-	item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": item.item_code})
+	# Cargar el JSON
+	data = json.loads(item)
+
+	item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": data.get("item_code")})
 	if len(item_taxes) >0:
 		for item_tax in item_taxes:
 			tax_tamplates = frappe.get_all("Item Tax Template", ["name"], filters = {"name": item_tax.item_tax_template})
@@ -178,12 +183,12 @@ def get_isv(item):
 				for tax_detail in tax_details:
 					# frappe.msgprint("tax detail {}".format(tax_detail))
 					if tax_detail.tax_rate == 15:
-						taxed_sales15 += item.amount/1.15
-						taxed15 += item.amount - (item.amount/1.15)
+						taxed_sales15 += data.get("amount")/1.15
+						taxed15 += data.get("amount") - (data.get("amount")/1.15)
 													
 					if tax_detail.tax_rate == 18:
-						taxed_sales18 += item.amount/1.18
-						taxed18 += item.amount - (item.amount/1.18)
+						taxed_sales18 += data.get("amount")/1.18
+						taxed18 += data.get("amount") - (data.get("amount")/1.18)
 	
 	return taxed15, taxed18, taxed_sales15, taxed_sales18
 
