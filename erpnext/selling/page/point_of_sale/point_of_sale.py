@@ -170,6 +170,7 @@ def get_isv(item):
 
 	# Cargar el JSON
 	data = json.loads(item)
+	amountItem = data.get("amount")
 
 	item_taxes = frappe.get_all("Item Tax", ['name', "item_tax_template"], filters = {"parent": data.get("item_code")})
 	if len(item_taxes) >0:
@@ -179,7 +180,7 @@ def get_isv(item):
 			for tax_tamplate in tax_tamplates:
 
 				tax_details = frappe.get_all("Item Tax Template Detail", ["name", "tax_rate", "tax_type"], filters = {"parent": tax_tamplate.name})
-								
+							
 				for tax_detail in tax_details:
 					# frappe.msgprint("tax detail {}".format(tax_detail))
 					if tax_detail.tax_rate == 15:
@@ -190,7 +191,7 @@ def get_isv(item):
 						taxed_sales18 += data.get("amount")/1.18
 						taxed18 += data.get("amount") - (data.get("amount")/1.18)
 	
-	return taxed15, taxed18, taxed_sales15, taxed_sales18
+	return taxed15, taxed18, taxed_sales15, taxed_sales18, amountItem
 
 
 def get_item_group_condition(pos_profile):

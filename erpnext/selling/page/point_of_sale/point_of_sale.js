@@ -725,7 +725,7 @@ erpnext.pos.PointOfSale = class PointOfSale {
 const [Qty,Disc,Rate,Del,Pay] = [__("Qty"), __('Disc'), __('Rate'), __('Del'), __('Pay')];
 
 class POSCart {
-	constructor({frm, wrapper, events}) {
+	constructor({frm, wrapper, events, }) {
 		this.frm = frm;
 		this.item_data = {};
 		this.wrapper = wrapper;
@@ -1413,12 +1413,49 @@ class POSItems {
 		this.load_items_data();
 	}
 
+  // Función para escanear el código de barras (simulación)
+  escanearCodigoBarras() {
+    return prompt("Escanea el código de barras:");
+  }
+
+  // Función para agregar un producto al array
+  agregarProducto() {
+	const productos = [];
+    const codigoBarras = escanearCodigoBarras();
+
+    if (!codigoBarras) {
+      alert("Operación cancelada.");
+      return;
+    }
+
+    const nombreProducto = prompt("Ingrese el nombre del producto:");
+    const precioProducto = parseFloat(prompt("Ingrese el precio del producto:"));
+
+    const producto = {
+      codigoBarras,
+      nombre: nombreProducto,
+      precio: precioProducto
+    };
+
+    // Agregar el producto al array
+    productos.push(producto);
+
+    // Imprimir la lista de productos (puedes personalizar cómo se muestra)
+    console.log("Lista de productos:");
+    console.table(productos);
+  }
+
 	make_dom() {
 		this.wrapper.html(`
 			<div class="fields">
 				<div class="search-field">
 				</div>
 				<div class="item-group-field">
+				</div>
+				<div class="codigoBarrasInput">
+				</div>
+				<div class="buttoncodigoBarrasInput">
+				</div>
 				</div>
 				</div>
 				<div class="items-wrapper">
@@ -1459,6 +1496,31 @@ class POSItems {
 					this.item_group_field.get_value() : '';
 
 				this.filter_items({ search_term:search_term,  item_group: item_group});
+			}, 300);
+		});
+
+		this.codigoBarrasInput = frappe.ui.form.make_control({
+			df: {
+				fieldtype: 'Data',
+				label: __('Scan BarCode (Ctrl + b)'),
+				placeholder: __('Search with scanner')
+			},
+			parent: this.wrapper.find('.codigoBarrasInput'),
+			render_input: true,
+		});
+
+		frappe.ui.keys.on('ctrl+b', () => {
+			this.codigoBarrasInput.set_focus();
+		});
+
+		this.codigoBarrasInput.$input.on('input', (e) => {
+			clearTimeout(this.last_search);
+			this.last_search = setTimeout(() => {
+				const search_term = e.target.value;
+				const item_group = this.item_group_field ?
+					this.item_group_field.get_value() : '';
+
+				this.filter_items_barcode({ search_term:search_term,  item_group: item_group});
 			}, 300);
 		});
 
@@ -1553,7 +1615,46 @@ class POSItems {
 			});
 	}
 
+	filter_items_barcode({ search_term='', item_group=this.parent_item_group }={}) {
+		// if (search_term) {
+		// 	search_term = search_term.toLowerCase();
+
+		// 	// memoize
+		// 	this.search_index = this.search_index || {};
+		// 	if (this.search_index[search_term]) {
+		// 		const items = this.search_index[search_term];
+		// 		this.items = items;
+		// 		this.render_items(items);
+		// 		this.set_item_in_the_cart(items);
+		// 		return;
+		// 	}
+		// } else if (item_group == this.parent_item_group) {
+		// 	this.items = this.all_items;
+		// 	return this.render_items(this.all_items);
+		// }
+
+		// const posCartInstance = new POSCart();
+		// const posInstance = new PointOfSale();
+		this.get_items({search_value: search_term, item_group })
+			.then(({ items, serial_no, batch_no, barcode }) => {
+				if (search_term && !barcode) {
+					this.search_index[search_term] = items;
+				}
+				debugger
+				// this.items = items;
+				// this.render_items(items);
+				// this.set_item_in_the_cart(items, serial_no, batch_no, barcode);
+				if(items.length > 0){
+					// this.posInstance.update_cart_data(items[0])
+					erpnext.pos.PointOfSale.update_cart_data(items[0])
+					// posCartInstance.add_item(items[0]);
+					frappe.dom.unfreeze();
+				}
+			});
+	}
+
 	set_item_in_the_cart(items, serial_no, batch_no, barcode) {
+		debugger
 		if (serial_no) {
 			this.events.update_cart(items[0].item_code,
 				'serial_no', serial_no);
@@ -2072,6 +2173,14 @@ class Payment {
 				read_only: 1
 			},
 			{
+				fieldtype: 'Currency',
+				label: __("Total sin impuesto"),
+				options: me.frm.doc.currency,
+				fieldname: "total_without_taxes",
+				default: me.frm.doc.total_without_taxes,
+				read_only: 1
+			},
+			{
 				fieldtype: 'Column Break',
 			},
 			{
@@ -2245,7 +2354,8 @@ class Payment {
 							taxed15: r.message[0],
 							taxed18: r.message[1],
 							taxed_sales15: r.message[2],
-							taxed_sales18: r.message[3]
+							taxed_sales18: r.message[3],
+							amount: r.message[4]
 						});
 					}
 				});
@@ -2259,18 +2369,24 @@ class Payment {
 			let totalTaxedSales18 = 0;
 			let totalTaxed15 = 0;
 			let totalTaxed18 = 0;
-	
+			let total_without_taxes = 0;
+			let total_Amount = 0;
+			debugger
 			results.forEach((result) => {
 				totalTaxedSales15 += result.taxed_sales15;
 				totalTaxedSales18 += result.taxed_sales18;
 				totalTaxed15 += result.taxed15;
 				totalTaxed18 += result.taxed18;
+				total_Amount += result.amount;
 			});
-	
+			
+			total_without_taxes = total_Amount - totalTaxed15 - totalTaxed18;
+
 			this.dialog.set_value("taxed_sales15", totalTaxedSales15);
 			this.dialog.set_value("taxed_sales18", totalTaxedSales18);
 			this.dialog.set_value("isv15", totalTaxed15);
 			this.dialog.set_value("isv18", totalTaxed18);
+			this.dialog.set_value("total_without_taxes", total_without_taxes);
 		});
 	}
 
