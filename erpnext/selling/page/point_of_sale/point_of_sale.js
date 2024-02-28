@@ -1973,32 +1973,6 @@ class Payment {
 		if(this.frm.allow_edit_discount === 0){
 			allow_edit_discount = true;
 		}
-		// debugger
-
-		// let taxed15 = 0
-		// let taxed18 = 0
-		// let taxed_sales15 = 0
-		// let taxed_sales18 = 0
-
-		// $.each(this.frm.doc.items, function(i, data) {
-
-		// 	frappe.call({
-		// 		method: "erpnext.selling.page.point_of_sale.point_of_sale.get_isv",
-		// 		args: {
-		// 			"item": data
-		// 		},
-		// 		callback: function(r) {
-		// 			// frm.set_df_property("selling_price_list", "options", r.message.price_list);
-		// 			// me.frm.set_value("selling_price_list", r.message.price_list);
-		// 			taxed15 = r.message[0]
-		// 			taxed18 = r.message[1]
-		// 			taxed_sales15 = r.message[2]
-		// 			taxed_sales18 = r.message[3]
-		// 			console.log(r);
-		// 			debugger;
-		// 		}
-		// 	});
-		// });	
 
 		let fields = this.frm.doc.payments.map(p => {
 			return {
@@ -2158,33 +2132,6 @@ class Payment {
 			},
 			{
 				fieldtype: 'Currency',
-				label: __("Taxed Sales15"),
-				options: me.frm.doc.currency,
-				fieldname: "taxed_sales15",
-				default: me.frm.doc.taxed_sales15,
-				read_only: 1
-			},
-			{
-				fieldtype: 'Currency',
-				label: __("ISV 15%"),
-				options: me.frm.doc.currency,
-				fieldname: "isv15",
-				default: me.frm.doc.taxed15,
-				read_only: 1
-			},
-			{
-				fieldtype: 'Currency',
-				label: __("Total sin impuesto"),
-				options: me.frm.doc.currency,
-				fieldname: "total_without_taxes",
-				default: me.frm.doc.total_without_taxes,
-				read_only: 1
-			},
-			{
-				fieldtype: 'Column Break',
-			},
-			{
-				fieldtype: 'Currency',
 				label: __("Outstanding Amount"),
 				options: me.frm.doc.currency,
 				fieldname: "outstanding_amount",
@@ -2192,19 +2139,30 @@ class Payment {
 				read_only: 1
 			},
 			{
+				fieldtype: 'Column Break',
+			},
+			{
 				fieldtype: 'Currency',
-				label: __("Taxed Sales18"),
+				label: __("Subtotal"),
 				options: me.frm.doc.currency,
-				fieldname: "taxed_sales18",
-				default: me.frm.doc.taxed_sales18,
+				fieldname: "subtotal",
+				default: me.frm.doc.subtotal,
 				read_only: 1
 			},
 			{
 				fieldtype: 'Currency',
-				label: __("ISV 18%"),
+				label: __("Taxes"),
 				options: me.frm.doc.currency,
-				fieldname: "isv18",
-				default: me.frm.doc.taxed18,
+				fieldname: "taxes",
+				default: me.frm.doc.taxed15,
+				read_only: 1
+			},
+			{
+				fieldtype: 'Currency',
+				label: __("Total"),
+				options: me.frm.doc.currency,
+				fieldname: "grand_totalAmount",
+				default: me.frm.doc.total_without_taxes,
 				read_only: 1
 			},
 		]);
@@ -2308,7 +2266,7 @@ class Payment {
 
 	update_total_with_discount() {
 		this.dialog.set_value("total_with_discount", this.frm.doc.paid_amount);
-		this.show_isv15()
+		this.show_subtotal()
 	}
 
 
@@ -2322,23 +2280,22 @@ class Payment {
 		this.update_total_with_discount();
 	}
 
-	show_isv15() {
-		this.dialog.set_value("isv15", this.frm.doc.isv15);		
-		this.show_isv18();
+	show_subtotal() {
+		this.dialog.set_value("subtotal", this.frm.doc.subtotal);		
+		this.show_taxes();	
 	}
 
-	show_isv18() {
-		this.dialog.set_value("isv18", this.frm.doc.isv18);		
-		this.show_taxed_sales15();	
+	show_taxes() {
+		this.dialog.set_value("taxes", this.frm.doc.taxes);	
+		this.show_totalAmount();
 	}
 
-	show_taxed_sales15() {
-		this.dialog.set_value("taxed_sales15", this.frm.doc.taxed_sales15);		
-		this.show_taxed_sales18();	
+	show_totalAmount() {
+		this.dialog.set_value("grand_totalAmount", this.frm.doc.grand_totalAmount);	
+		this.show_taxes_total();
 	}
 
-	show_taxed_sales18() {
-		// this.dialog.set_value("taxed_sales18", this.frm.doc.taxed_sales18);
+	show_taxes_total() {
 	
 		let promises = [];
 	
@@ -2353,7 +2310,7 @@ class Payment {
 						resolve({
 							taxed15: r.message[0],
 							taxed18: r.message[1],
-							taxed_sales15: r.message[2],
+							subtotal: r.message[2],
 							taxed_sales18: r.message[3],
 							amount: r.message[4]
 						});
@@ -2369,7 +2326,7 @@ class Payment {
 			let totalTaxedSales18 = 0;
 			let totalTaxed15 = 0;
 			let totalTaxed18 = 0;
-			let total_without_taxes = 0;
+			let subtotal = 0;
 			let total_Amount = 0;
 			debugger
 			results.forEach((result) => {
@@ -2380,69 +2337,13 @@ class Payment {
 				total_Amount += result.amount;
 			});
 			
-			total_without_taxes = total_Amount - totalTaxed15 - totalTaxed18;
+			subtotal = total_Amount - totalTaxed15 - totalTaxed18;
 
-			this.dialog.set_value("taxed_sales15", totalTaxedSales15);
-			this.dialog.set_value("taxed_sales18", totalTaxedSales18);
-			this.dialog.set_value("isv15", totalTaxed15);
-			this.dialog.set_value("isv18", totalTaxed18);
-			this.dialog.set_value("total_without_taxes", total_without_taxes);
+			this.dialog.set_value("subtotal", subtotal);
+			this.dialog.set_value("taxes", totalTaxed15 + totalTaxed18);
+			this.dialog.set_value("grand_totalAmount", subtotal + totalTaxed15 + totalTaxed18);
 		});
 	}
-
-	// show_taxed_sales18() {
-	// 	this.dialog.set_value("taxed_sales18", this.frm.doc.taxed_sales18);	
-
-	// 	let taxed15 = 0
-	// 	let taxed18 = 0
-	// 	let taxed_sales15 = 0
-	// 	let taxed_sales18 = 0
-
-	// 	$.each(this.frm.doc.items, function(i, data) {
-	// 		debugger;
-
-	// 		frappe.call({
-	// 			method: "erpnext.selling.page.point_of_sale.point_of_sale.get_isv",
-	// 			args: {
-	// 				"item": data
-	// 			},
-	// 			callback: function(r) {
-	// 				taxed15 = r.message[0]
-	// 				taxed18 = r.message[1]
-	// 				taxed_sales15 = r.message[2]
-	// 				taxed_sales18 = r.message[3]
-	// 				console.log(r.message[0]);
-	// 				console.log(r.message[1]);
-	// 				console.log(r.message[2]);
-	// 				console.log(r.message[3]);
-	// 				console.log(r);
-	// 				debugger;
-	// 			}
-	// 		});
-
-	// 		debugger;
-	// 	});	
-
-	// 	this.dialog.set_value("taxed_sales15", taxed_sales15);		
-	// 	this.dialog.set_value("taxed_sales18", taxed_sales18);		
-	// 	this.dialog.set_value("isv15", taxed15);	
-	// 	this.dialog.set_value("isv18", taxed18);		
-	// }
-
-	// show_paid_amount() {
-	// 	var out_amount = 0
-	// 	$.each(this.frm.doc.payments, function(i, data) {
-	// 		out_amount += data.amount;
-	// 	});	
-	// 	debugger;
-	// 	if (this.frm.doc.total_with_discount === out_amount){
-	// 		this.dialog.set_value("outstanding_amount", 0);
-	// 	}
-	// 	else{
-	// 		this.dialog.set_value("outstanding_amount", this.frm.doc.outstanding_amount);
-	// 	}
-			
-	// }
 
 	update_payment_amount() {
 		var me = this;
