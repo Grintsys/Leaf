@@ -1970,7 +1970,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18
 													
-											base_net_amount += item.amount - rate
+											base_net_amount -= item.amount - rate
 			else:
 				if self.round_off_discount:
 					base_net_amount = math.floor(item.base_net_amount)
@@ -2010,7 +2010,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18
 													
-											base_net_amount += item.amount - rate
+											base_net_amount -= item.amount - rate
 				else:
 					base_net_amount = item.base_net_amount
 
@@ -2035,7 +2035,7 @@ class SalesInvoice(SellingController):
 											taxed_sales18 = item.amount/1.18
 											rate = taxed_sales18
 													
-											base_net_amount += item.amount - rate
+											base_net_amount -= item.amount - rate
 
 			if flt(base_net_amount, item.precision("base_net_amount")):
 				if item.is_fixed_asset:
