@@ -1499,30 +1499,30 @@ class POSItems {
 			}, 300);
 		});
 
-		this.codigoBarrasInput = frappe.ui.form.make_control({
-			df: {
-				fieldtype: 'Data',
-				label: __('Scan BarCode (Ctrl + b)'),
-				placeholder: __('Search with scanner')
-			},
-			parent: this.wrapper.find('.codigoBarrasInput'),
-			render_input: true,
-		});
+		// this.codigoBarrasInput = frappe.ui.form.make_control({
+		// 	df: {
+		// 		fieldtype: 'Data',
+		// 		label: __('Scan BarCode (Ctrl + b)'),
+		// 		placeholder: __('Search with scanner')
+		// 	},
+		// 	parent: this.wrapper.find('.codigoBarrasInput'),
+		// 	render_input: true,
+		// });
 
-		frappe.ui.keys.on('ctrl+b', () => {
-			this.codigoBarrasInput.set_focus();
-		});
+		// frappe.ui.keys.on('ctrl+b', () => {
+		// 	this.codigoBarrasInput.set_focus();
+		// });
 
-		this.codigoBarrasInput.$input.on('input', (e) => {
-			clearTimeout(this.last_search);
-			this.last_search = setTimeout(() => {
-				const search_term = e.target.value;
-				const item_group = this.item_group_field ?
-					this.item_group_field.get_value() : '';
+		// this.codigoBarrasInput.$input.on('input', (e) => {
+		// 	clearTimeout(this.last_search);
+		// 	this.last_search = setTimeout(() => {
+		// 		const search_term = e.target.value;
+		// 		const item_group = this.item_group_field ?
+		// 			this.item_group_field.get_value() : '';
 
-				this.filter_items_barcode({ search_term:search_term,  item_group: item_group});
-			}, 300);
-		});
+		// 		this.filter_items_barcode({ search_term:search_term,  item_group: item_group});
+		// 	}, 300);
+		// });
 
 		this.item_group_field = frappe.ui.form.make_control({
 			df: {
@@ -1654,7 +1654,6 @@ class POSItems {
 	}
 
 	set_item_in_the_cart(items, serial_no, batch_no, barcode) {
-		debugger
 		if (serial_no) {
 			this.events.update_cart(items[0].item_code,
 				'serial_no', serial_no);
