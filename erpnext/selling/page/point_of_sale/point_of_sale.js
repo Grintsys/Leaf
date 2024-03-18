@@ -1654,7 +1654,6 @@ class POSItems {
 	}
 
 	set_item_in_the_cart(items, serial_no, batch_no, barcode) {
-		debugger
 		if (serial_no) {
 			this.events.update_cart(items[0].item_code,
 				'serial_no', serial_no);
