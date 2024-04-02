@@ -10,7 +10,7 @@ erpnext.patches.v4_0.fix_employee_user_id
 erpnext.patches.v4_0.remove_employee_role_if_no_employee
 erpnext.patches.v4_0.update_user_properties
 erpnext.patches.v4_0.apply_user_permissions
-erpnext.patches.v4_0.move_warehouse_user_to_restrictions
+#erpnext.patches.v4_0.move_warehouse_user_to_restrictions
 erpnext.patches.v4_0.global_defaults_to_system_settings
 erpnext.patches.v4_0.update_incharge_name_to_sales_person_in_maintenance_schedule
 execute:frappe.reload_doc('stock', 'doctype', 'warehouse') # 2017-04-24
