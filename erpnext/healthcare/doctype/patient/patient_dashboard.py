@@ -18,6 +18,26 @@ def get_data():
 			{
 				'label': _('Billing'),
 				'items': ['Sales Invoice']
+			},
+			{
+				'label': _('Pastoral de la salud'),
+				'items': ['General Patient Interview']
+			},
+			{
+				'label': _('Historial Psicología'),
+				'items': ['Clinical History Psychology', 'Medical Evolution Notes Psychology', 'Psychology Test Sheet', 'Reference and Response', 'Scanned Contracts Psycology']
+			},
+			{
+				'label': _('Historial Psiquiatria'),
+				'items': ['Clinical History Psychiatric', 'Medical Evolution Notes Psychiatric', 'Psychiatric Examination Sheet', 'Reference and Answers Psychiatric', 'Clinical Deposit Registration']
+			},
+			{
+				'label': _('Trabajo Social'),
+				'items': ['Social Work Interview', 'Economic Social Study', 'Follow up Notes']
+			},
+			{
+				'label': _('Enfermeria'),
+				'items': ['Notes Patient', 'Deposit Registration', 'Applied medication sheet']
 			}
 		]
 	}

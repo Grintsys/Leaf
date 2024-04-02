@@ -944,7 +944,26 @@ class SalesInvoice(SellingController):
 		cai = frappe.get_all("CAI", ["initial_number", "final_number", "name_cai", "cai", "issue_deadline", "prefix"], filters = { "status": "Active", "prefix": self.naming_series})
 
 		if len(cai) == 0:
-			frappe.throw(_("This secuence no assign cai"))
+			cai_secondary = frappe.get_all("CAI", ["initial_number", "final_number", "name_cai", "cai", "issue_deadline", "prefix"], filters = { "status": "Pending", "prefix": self.naming_series})
+			
+			if len(cai_secondary) > 0:
+				self.assing_data(cai_secondary[0].cai, cai_secondary[0].issue_deadline, cai_secondary[0].initial_number, cai_secondary[0].final_number, user, cai_secondary[0].prefix)
+				# doc = frappe.get_doc("CAI", cai[0].name_cai)
+				# doc.status = "Inactive"
+				# doc.save()
+
+				doc_sec = frappe.get_doc("CAI", cai_secondary[0].name_cai)
+				doc_sec.status = "Active"
+				doc_sec.save()
+
+				new_current = int(cai_secondary[0].initial_number) - 1
+				name = self.parse_naming_series(cai_secondary[0].prefix)
+
+				frappe.db.set_value("Series", name, "current", new_current, update_modified=False)
+			else:
+				# self.assing_data(cai[0].cai, cai[0].issue_deadline, cai[0].initial_number, cai[0].final_number, user, cai[0].prefix)
+				frappe.throw("The CAI you are using is expired.")
+			# frappe.throw(_("This secuence no assign cai"))
 
 		current_value = self.get_current(cai[0].prefix)
 
