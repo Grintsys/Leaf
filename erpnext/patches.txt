@@ -1,18 +1,18 @@
 execute:import unidecode # new requirement
 erpnext.patches.v8_0.move_perpetual_inventory_setting
 erpnext.patches.v8_9.set_print_zero_amount_taxes
-erpnext.patches.v11_0.rename_production_order_to_work_order
+#erpnext.patches.v11_0.rename_production_order_to_work_order
 erpnext.patches.v11_0.refactor_naming_series
 erpnext.patches.v11_0.refactor_autoname_naming
 erpnext.patches.v10_0.rename_schools_to_education
-erpnext.patches.v4_0.validate_v3_patch
+#erpnext.patches.v4_0.validate_v3_patch
 erpnext.patches.v4_0.fix_employee_user_id
 erpnext.patches.v4_0.remove_employee_role_if_no_employee
 erpnext.patches.v4_0.update_user_properties
 erpnext.patches.v4_0.apply_user_permissions
-erpnext.patches.v4_0.move_warehouse_user_to_restrictions
-erpnext.patches.v4_0.global_defaults_to_system_settings
-erpnext.patches.v4_0.update_incharge_name_to_sales_person_in_maintenance_schedule
+#erpnext.patches.v4_0.move_warehouse_user_to_restrictions
+#erpnext.patches.v4_0.global_defaults_to_system_settings
+#erpnext.patches.v4_0.update_incharge_name_to_sales_person_in_maintenance_schedule
 execute:frappe.reload_doc('stock', 'doctype', 'warehouse') # 2017-04-24
 execute:frappe.reload_doc('accounts', 'doctype', 'sales_invoice') # 2016-08-31
 execute:frappe.reload_doc('selling', 'doctype', 'sales_order') # 2014-01-29
@@ -28,7 +28,7 @@ execute:frappe.reload_doc('selling', 'doctype', 'customer') # 2014-01-29
 execute:frappe.reload_doc('buying', 'doctype', 'supplier') # 2014-01-29
 execute:frappe.reload_doc('accounts', 'doctype', 'asset_category')
 execute:frappe.reload_doc('accounts', 'doctype', 'pricing_rule')
-erpnext.patches.v4_0.map_charge_to_taxes_and_charges
+#erpnext.patches.v4_0.map_charge_to_taxes_and_charges
 execute:frappe.reload_doc('support', 'doctype', 'newsletter') # 2014-01-31
 execute:frappe.reload_doc('hr', 'doctype', 'employee') # 2014-02-03
 execute:frappe.db.sql("update tabPage set module='Core' where name='Setup'")
