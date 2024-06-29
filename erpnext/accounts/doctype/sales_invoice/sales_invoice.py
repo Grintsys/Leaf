@@ -959,7 +959,11 @@ class SalesInvoice(SellingController):
 				new_current = int(cai_secondary[0].initial_number) - 1
 				name = self.parse_naming_series(cai_secondary[0].prefix)
 
-				frappe.db.set_value("Series", name, "current", new_current, update_modified=False)
+				frappe.db.sql("""
+				UPDATE `tabSeries`
+				SET `current` = %s
+				WHERE `name` = %s
+				""", (new_current, name))
 			else:
 				# self.assing_data(cai[0].cai, cai[0].issue_deadline, cai[0].initial_number, cai[0].final_number, user, cai[0].prefix)
 				frappe.throw("The CAI you are using is expired.")
@@ -988,7 +992,7 @@ class SalesInvoice(SellingController):
 			if len(cai_secondary) > 0:
 				final = int(cai[0].final_number) + 1
 				initial = int(cai_secondary[0].initial_number)
-				if final == initial:
+				if final <= initial:
 					self.assing_data(cai_secondary[0].cai, cai_secondary[0].issue_deadline, cai_secondary[0].initial_number, cai_secondary[0].final_number, user, cai_secondary[0].prefix)
 					doc = frappe.get_doc("CAI", cai[0].name_cai)
 					doc.status = "Inactive"
@@ -1001,7 +1005,11 @@ class SalesInvoice(SellingController):
 					new_current = int(cai_secondary[0].initial_number) - 1
 					name = self.parse_naming_series(cai_secondary[0].prefix)
 
-					frappe.db.set_value("Series", name, "current", new_current, update_modified=False)
+					frappe.db.sql("""
+					UPDATE `tabSeries`
+					SET `current` = %s
+					WHERE `name` = %s
+					""", (new_current, name))
 				else:
 					self.assing_data(cai[0].cai, cai[0].issue_deadline, cai[0].initial_number, cai[0].final_number, user, cai[0].prefix)
 					frappe.throw("The CAI you are using is expired.")
