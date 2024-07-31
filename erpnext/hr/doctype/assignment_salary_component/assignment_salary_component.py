@@ -12,13 +12,9 @@ class AssignmentSalaryComponent(Document):
 	def validate(self):
 		self.status = self.get_status()
 	
-	def on_update(self):
-		total = 0
-		for employee in self.get("employees"):
-			total += employee.moneda
-		
-		self.total = total
-		self.db_set('total', total, update_modified=False)
+	def on_update(self):		
+		self.generate_total_registers()	
+		self.reload()		
 	
 	def get_status(self):
 		if self.docstatus == 0:
@@ -97,3 +93,43 @@ class AssignmentSalaryComponent(Document):
 		doc.rounded_total = rounded_total
 
 		doc.save()
+		
+	def generate_total_registers(self):
+		total = 0
+		
+		configRRHH = frappe.get_single('HR Settings')
+
+		salarayComponent = frappe.get_doc('Salary Component', self.salary_component)
+
+		factor = 1
+
+		if configRRHH.business_days == None:
+			frappe.throw(_('Assign Business Days in HR Settings'))
+
+		if configRRHH.daily_hours == None:
+			frappe.throw(_('Assign Dily Hours in HR Settings'))
+
+		if salarayComponent.factor > 0:
+			factor = salarayComponent.factor
+
+		for d in self.get("employees"):
+			register = frappe.get_doc('Employee Detail Salary Component', d.name)
+			employee = d.employee + ": " + d.employee_name
+
+			base = frappe.get_all('Salary Structure Assignment', ['base'], filters = {'employee': d.employee})
+
+			if(len(base) == 0):
+				frappe.throw(_('This employee {} no have a Salary Structure Assignment').format(employee))
+
+			if self.time == 'Days':
+				register.moneda = (base[0].base/configRRHH.business_days)*factor*d.time
+
+			if self.time == 'Hours':
+				register.moneda = (base[0].base/configRRHH.business_days/configRRHH.daily_hours)*factor*d.time 
+			
+			register.save()
+
+			total += register.moneda
+
+		self.total = total
+		self.db_set('total', total, update_modified=False)

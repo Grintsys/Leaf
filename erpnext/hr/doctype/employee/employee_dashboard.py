@@ -39,5 +39,9 @@ def get_data():
 				'label': _('Training'),
 				'items': ['Training Event', 'Training Result', 'Training Feedback', 'Employee Skill Map']
 			},
+			{
+				'label': _('Contract'),
+				'items': ['Contract']
+			},
 		]
 	}
