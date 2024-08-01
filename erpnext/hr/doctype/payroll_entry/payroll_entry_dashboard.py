@@ -10,7 +10,10 @@ def get_data():
 		},
 		'transactions': [
 			{
-				'items': ['Salary Slip', 'Journal Entry', 'Assignment Salary Component']
+				'items': ['Salary Slip', 'Journal Entry']
+			},
+			{
+				'items': ['Assignment Salary Component', 'Licenses Assingment Salary']
 			}
 		]
 	}
