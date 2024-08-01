@@ -96,12 +96,11 @@
    "fieldname": "time",
    "fieldtype": "Select",
    "label": "Tiempo",
-   "options": "\nDays\nHours",
-   "reqd": 1
+   "options": "No\nDays\nHours"
   }
  ],
  "is_submittable": 1,
- "modified": "2024-07-31 16:03:43.453635",
+ "modified": "2024-07-31 23:05:51.377709",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Assignment Salary Component",

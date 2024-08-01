@@ -116,18 +116,19 @@ class AssignmentSalaryComponent(Document):
 			register = frappe.get_doc('Employee Detail Salary Component', d.name)
 			employee = d.employee + ": " + d.employee_name
 
-			base = frappe.get_all('Salary Structure Assignment', ['base'], filters = {'employee': d.employee})
+			if self.time != 'No':
+				base = frappe.get_all('Salary Structure Assignment', ['base'], filters = {'employee': d.employee})
 
-			if(len(base) == 0):
-				frappe.throw(_('This employee {} no have a Salary Structure Assignment').format(employee))
+				if(len(base) == 0):
+					frappe.throw(_('This employee {} no have a Salary Structure Assignment').format(employee))
 
-			if self.time == 'Days':
-				register.moneda = (base[0].base/configRRHH.business_days)*factor*d.time
+				if self.time == 'Days':
+					register.moneda = (base[0].base/configRRHH.business_days)*factor*d.time
 
-			if self.time == 'Hours':
-				register.moneda = (base[0].base/configRRHH.business_days/configRRHH.daily_hours)*factor*d.time 
-			
-			register.save()
+				if self.time == 'Hours':
+					register.moneda = (base[0].base/configRRHH.business_days/configRRHH.daily_hours)*factor*d.time 
+				
+				register.save()
 
 			total += register.moneda
 
