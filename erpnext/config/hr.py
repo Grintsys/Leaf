@@ -188,6 +188,11 @@ def get_data():
 				},
 				{
 					"type": "doctype",
+					"name": "Licenses Assingment Salary",
+					"dependencies": ["Payroll Entry"]
+				},
+				{
+					"type": "doctype",
 					"name": "Assignment Salary Component Confidential",
 					"dependencies": ["Payroll Entry"]
 				},

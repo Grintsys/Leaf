@@ -1,0 +1,62 @@
+{
+ "creation": "2024-08-01 10:37:12.404510",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "time",
+  "amount_deduction",
+  "amount_earning"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount_deduction",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount Deduction"
+  },
+  {
+   "fieldname": "amount_earning",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount Earning"
+  }
+ ],
+ "istable": 1,
+ "modified": "2024-08-01 11:05:21.951550",
+ "modified_by": "Administrator",
+ "module": "HR",
+ "name": "Employee Detail Salary Component Licenses",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
