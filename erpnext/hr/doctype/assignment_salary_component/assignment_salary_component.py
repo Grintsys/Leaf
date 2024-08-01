@@ -13,8 +13,9 @@ class AssignmentSalaryComponent(Document):
 		self.status = self.get_status()
 	
 	def on_update(self):		
-		self.generate_total_registers()	
-		self.reload()		
+		if self.docstatus == 0:
+			self.generate_total_registers()	
+			self.reload()		
 	
 	def get_status(self):
 		if self.docstatus == 0:
