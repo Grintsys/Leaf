@@ -133,7 +133,11 @@ class LicensesAssingmentSalary(Document):
 
 			register.amount_deduction = (base[0].base/configRRHH.business_days)*factorDduction*d.time
 
+			if(d.standard_time != ''): register.amount_deduction += (base[0].base/configRRHH.business_days)*1*d.standard_time
+
 			register.amount_earning = (base[0].base/configRRHH.business_days)*factorEarning*d.time 
+
+			if(d.standard_time != ''): register.amount_earning += (base[0].base/configRRHH.business_days)*1*d.standard_time 
 				
 			register.save()
 
