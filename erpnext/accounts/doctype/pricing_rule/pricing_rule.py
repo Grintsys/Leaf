@@ -254,6 +254,7 @@ def get_pricing_rule_for_item(args, price_list_rate=0, doc=None, for_validate=Fa
 		item_details.has_pricing_rule = 1
 
 		item_details.pricing_rules = ','.join([d.pricing_rule for d in rules])
+		item_details.discount_reason = ','.join([d.discount_reason for d in rules])
 
 		if not doc: return item_details
 
@@ -295,6 +296,7 @@ def get_pricing_rule_details(args, pricing_rule):
 		'pricing_rule': pricing_rule.name,
 		'rate_or_discount': pricing_rule.rate_or_discount,
 		'margin_type': pricing_rule.margin_type,
+		'discount_reason': pricing_rule.discount_reason,
 		'item_code': args.get("item_code"),
 		'child_docname': args.get('child_docname')
 	})
