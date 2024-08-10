@@ -50,6 +50,7 @@
   "company",
   "currency",
   "margin",
+  "discount_reason",
   "margin_type",
   "column_break_33",
   "margin_rate_or_amount",
@@ -550,11 +551,17 @@
    "fieldtype": "Link",
    "label": "Promotional Scheme",
    "options": "Promotional Scheme"
+  },
+  {
+   "fieldname": "discount_reason",
+   "fieldtype": "Link",
+   "label": "Discount Reason",
+   "options": "Reason For Discount"
   }
  ],
  "icon": "fa fa-gift",
  "idx": 1,
- "modified": "2019-12-18 17:29:22.957077",
+ "modified": "2024-08-09 17:08:46.055459",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Pricing Rule",
