@@ -144,6 +144,15 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 	gle.run_method("on_update_with_args", adv_adj, update_outstanding, from_repost)
 	gle.submit()
 
+	if(args.cost_center == None):
+		company = frappe.get_doc("Company", args.company)
+		doc = frappe.get_doc("GL Entry", gle.name)
+		doc.db_set("cost_center", company.cost_center)
+	else:
+		if(gle.cost_center == None):
+			doc = frappe.get_doc("GL Entry", gle.name)
+			doc.db_set("cost_center", args.cost_center)
+
 def validate_account_for_perpetual_inventory(gl_map):
 	if cint(erpnext.is_perpetual_inventory_enabled(gl_map[0].company)):
 		account_list = [gl_entries.account for gl_entries in gl_map]
