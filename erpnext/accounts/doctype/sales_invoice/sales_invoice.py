@@ -1766,6 +1766,8 @@ class SalesInvoice(SellingController):
 		
 		if self.isv18 > 0:
 			self.make_isv18_gl_entries(gl_entries)
+		
+		self.make_discount_Reason_GL_Entries(gl_entries)
 
 		# if self.exonerated and self.account_head == None:
 		# 	frappe.throw(_("You need to fill the account head field"))
@@ -1873,6 +1875,83 @@ class SalesInvoice(SellingController):
 					"cost_center": company.round_off_cost_center
 			}, account_currency)
 		)
+
+	def make_discount_Reason_GL_Entries(self, gl_entries):
+		items = frappe.get_all("Sales Invoice Item", ["name", "discount_reason", "discount_amount"], filters = {"parent": self.name})
+
+		totalDiscount = 0
+
+		accountCredit = self.against_income_account
+
+		isPos = False
+
+		if(self.pos_profile  != None):
+			pos_profile = frappe.get_doc("POS Profile", self.pos_profile)
+
+			if(pos_profile.income_account != None):
+				isPos = True
+				accountCredit = pos_profile.income_account
+		
+		company = frappe.get_doc("Company", self.company)
+
+		if(isPos == False):
+			if(company.default_expense_account != None):
+				accountCredit = company.default_expense_account
+		
+		for item in items:
+			if(item.sales_default_values != None):
+				gl_entries.append(
+				self.get_gl_dict({
+					"account": item.sales_default_values,
+					"party_type": "Customer",
+					"party": self.customer,
+			 		"credit": item.discount_amount,
+			 		"credit_in_account_currency": item.discount_amount,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+					}, account_currency)
+				)
+			else:
+				totalDiscount += item.discount_amount
+
+			mode_of_payment = frappe.get_all("Mode of Payment Account", "default_account", filters = {"parent": item.discount_reason})
+
+			if(len(mode_of_payment) == 0):
+				frappe.throw(_("This mode of payment no have a account"))
+
+			account_currency = get_account_currency(mode_of_payment[0].default_account)
+
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": mode_of_payment[0].default_account,
+					"party_type": "Customer",
+					"party": self.customer,
+					"due_date": self.due_date,
+					# "against": self.against_income_account,
+					"debit": item.discount_amount,
+					"debit_in_account_currency": item.discount_amount,
+					"against_voucher": self.return_against if cint(self.is_return) and self.return_against else self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+				}, account_currency)
+			)
+
+		account_currency_default = get_account_currency(accountCredit)
+		
+		if(totalDiscount > 0):
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": accountCredit,
+					"party_type": "Customer",
+					"party": self.customer,
+					"credit": totalDiscount,
+					"credit_in_account_currency": totalDiscount,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": company.round_off_cost_center
+				}, account_currency_default)
+			)
 
 	def make_discount_gl_entries(self, gl_entries):
 		account = frappe.get_all("Mode of Payment Account", ["*"], filters = {"company": self.company, "parent": self.discount_reason})
