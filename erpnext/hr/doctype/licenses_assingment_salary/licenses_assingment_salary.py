@@ -103,18 +103,20 @@ class LicensesAssingmentSalary(Document):
 		
 		configRRHH = frappe.get_single('HR Settings')
 
-		earningsalarayComponent = frappe.get_doc('Salary Component', self.earning_salary_component)
+		licenseClassification = frappe.get_doc('License Classification', self.license_classification)
 
-		deductionsalarayComponent = frappe.get_doc('Salary Component', self.deduction_salary_component)
+		earningsalarayComponent = frappe.get_doc('Salary Component', licenseClassification.earning_salary_component)
+
+		deductionsalarayComponent = frappe.get_doc('Salary Component', licenseClassification.deduction_salary_component)
 
 		factorEarning = 1
 		factorDduction = 1
 
 		if configRRHH.business_days == None:
-			frappe.throw(_('Assign Business Days in HR Settings'))
+			frappe.throw(_('Assign Business Days For Pay in HR Settings'))
 
 		if configRRHH.daily_hours == None:
-			frappe.throw(_('Assign Dily Hours in HR Settings'))
+			frappe.throw(_('Assign Daily Hours in HR Settings'))
 
 		if earningsalarayComponent.factor > 0:
 			factorEarning = earningsalarayComponent.factor
@@ -131,17 +133,35 @@ class LicensesAssingmentSalary(Document):
 			if(len(base) == 0):
 				frappe.throw(_('This employee {} no have a Salary Structure Assignment').format(employee))
 
-			register.amount_deduction = (base[0].base/configRRHH.business_days)*factorDduction*d.time
+			# register.amount_deduction = (base[0].base/configRRHH.business_days)*factorDduction*d.time
 
-			if(d.standard_time != ''): register.amount_deduction += (base[0].base/configRRHH.business_days)*1*d.standard_time
+			# if(d.standard_time != ''): register.amount_deduction += (base[0].base/configRRHH.business_days)*1*d.standard_time
 
-			register.amount_earning = (base[0].base/configRRHH.business_days)*factorEarning*d.time 
+			# register.amount_earning = (base[0].base/configRRHH.business_days)*factorEarning*d.time 
 
-			if(d.standard_time != ''): register.amount_earning += (base[0].base/configRRHH.business_days)*1*d.standard_time 
-				
+			# if(d.standard_time != ''): register.amount_earning += (base[0].base/configRRHH.business_days)*1*d.standard_time 
+
+			# dias no subsidiados * salaridiario * 100% -- Primeros 3 dias de incapacidad
+			register.total_company = d.standard_time * (base[0].base/configRRHH.business_days) * 1
+			
+			# dias subsidiados * salario diario * porcentaje empresa de la clasificacion -- Valor a pagar incapacidad
+			register.total_company += d.time * (base[0].base/configRRHH.business_days) * (licenseClassification.daily_base_company/100)
+
+			# salario diario empresa - salario diario ihss * dias ihss * porcentaje -- Valor de incapacidad no pagado por el IHSS
+			register.total_company += ((base[0].base/configRRHH.business_days) - (licenseClassification.salary_base/configRRHH.business_days)) * d.time * (licenseClassification.daily_base_ihss/100)
+			
+			# (dias subsidiados + dias no subsidiados) * salario base -- monto a deducir
+			register.amount_deduction = (d.time + d.standard_time) * (base[0].base/configRRHH.business_days)
+
+			# monto a deducir - total pagado por compania -- monto del seguro
+			register.total_ihss = register.amount_deduction - register.total_company
+
+			# total compania + total seguro -- Monto de percepcion
+			register.amount_earning = register.total_company + register.total_ihss
+
 			register.save()
 
-			total += register.amount_deduction + register.amount_earning
+			total += register.amount_earning
 
 		self.total = total
 		self.db_set('total', total, update_modified=False)

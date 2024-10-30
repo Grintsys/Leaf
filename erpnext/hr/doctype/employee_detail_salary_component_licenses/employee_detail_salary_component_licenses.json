@@ -9,7 +9,9 @@
   "standard_time",
   "time",
   "amount_deduction",
-  "amount_earning"
+  "amount_earning",
+  "total_company",
+  "total_ihss"
  ],
  "fields": [
   {
@@ -32,30 +34,42 @@
    "fieldname": "time",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Time",
+   "label": "Dias subsidiados",
    "reqd": 1
   },
   {
    "fieldname": "amount_deduction",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount Deduction"
+   "label": "Deducci\u00f3n"
   },
   {
    "fieldname": "amount_earning",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount Earning"
+   "label": "Percepci\u00f3n"
   },
   {
    "fieldname": "standard_time",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Standard Time"
+   "label": "Dias no subsidiados"
+  },
+  {
+   "fieldname": "total_company",
+   "fieldtype": "Currency",
+   "label": "Total Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_ihss",
+   "fieldtype": "Currency",
+   "label": "Total IHSS",
+   "read_only": 1
   }
  ],
  "istable": 1,
- "modified": "2024-08-09 16:21:34.162145",
+ "modified": "2024-10-29 18:45:03.512276",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Employee Detail Salary Component Licenses",
