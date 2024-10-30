@@ -1,0 +1,109 @@
+{
+ "autoname": "field:clasification_name",
+ "creation": "2024-10-29 18:24:08.567126",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "clasification_name",
+  "minimum_days",
+  "salary_base",
+  "daily_base_ihss",
+  "daily_base_company",
+  "section1",
+  "earning_salary_component",
+  "deduction_salary_component",
+  "column",
+  "company"
+ ],
+ "fields": [
+  {
+   "fieldname": "clasification_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Clasification Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "minimum_days",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Minimum days for benefit",
+   "reqd": 1
+  },
+  {
+   "fieldname": "salary_base",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Salary Base For Pay",
+   "reqd": 1
+  },
+  {
+   "fieldname": "daily_base_ihss",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Daily  base salary subsidy (IHSS)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "daily_base_company",
+   "fieldtype": "Currency",
+   "label": "Daily  base salary subsidy (Company)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section1",
+   "fieldtype": "Section Break",
+   "label": "Components"
+  },
+  {
+   "fieldname": "earning_salary_component",
+   "fieldtype": "Link",
+   "label": "Earning Salary Component",
+   "options": "Salary Component",
+   "reqd": 1
+  },
+  {
+   "fieldname": "deduction_salary_component",
+   "fieldtype": "Link",
+   "label": "Deduction Salary Component",
+   "options": "Salary Component",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  }
+ ],
+ "modified": "2024-10-29 20:04:56.523686",
+ "modified_by": "Administrator",
+ "module": "HR",
+ "name": "License Classification",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

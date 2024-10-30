@@ -7,8 +7,7 @@
  "field_order": [
   "payroll_entry",
   "section_break_2",
-  "earning_salary_component",
-  "deduction_salary_component",
+  "license_classification",
   "column",
   "total",
   "company",
@@ -81,26 +80,19 @@
    "read_only": 1
   },
   {
-   "fieldname": "earning_salary_component",
-   "fieldtype": "Link",
-   "label": "Earning Salary Component",
-   "options": "Salary Component",
-   "reqd": 1
-  },
-  {
    "fieldname": "column",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "deduction_salary_component",
+   "fieldname": "license_classification",
    "fieldtype": "Link",
-   "label": "Deduction Salary Component",
-   "options": "Salary Component",
+   "label": "License Classification ",
+   "options": "License Classification",
    "reqd": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2024-08-01 11:00:31.955472",
+ "modified": "2024-10-29 18:34:43.356675",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Licenses Assingment Salary",
