@@ -157,7 +157,7 @@ class LicensesAssingmentSalary(Document):
 			register.total_ihss = register.amount_deduction - register.total_company
 
 			# total compania + total seguro -- Monto de percepcion
-			register.amount_earning = register.total_company + register.total_ihss
+			register.amount_earning = register.total_company
 
 			register.save()
 
