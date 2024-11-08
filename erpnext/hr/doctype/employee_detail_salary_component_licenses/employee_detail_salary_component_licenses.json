@@ -58,18 +58,20 @@
   {
    "fieldname": "total_company",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total Company",
    "read_only": 1
   },
   {
    "fieldname": "total_ihss",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total IHSS",
    "read_only": 1
   }
  ],
  "istable": 1,
- "modified": "2024-10-29 18:45:03.512276",
+ "modified": "2024-11-08 14:21:07.975915",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Employee Detail Salary Component Licenses",
