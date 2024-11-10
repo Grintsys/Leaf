@@ -32,19 +32,21 @@ class LicensesAssingmentSalary(Document):
 	def validate_assignment_Salary_Component(self):
 		employees = frappe.get_all("Employee Detail Salary Component Licenses", ["employee","amount_deduction", "amount_earning", "parent"], filters = {"parent": self.name})
 		
+		licenseClassification = frappe.get_doc('License Classification', self.license_classification)
+
 		for item in employees:
 			salary_slip = frappe.get_all("Salary Slip", ["name"], filters={"payroll_entry":self.payroll_entry, "employee":item.employee})
 			
 			for salary in salary_slip:
 				doc = frappe.get_doc("Salary Slip", salary.name)
 				row = doc.append("earnings", {})
-				row.salary_component = self.earning_salary_component
+				row.salary_component = licenseClassification.earning_salary_component
 				row.amount = item.amount_earning
 				doc.save()
 
 				doc_de = frappe.get_doc("Salary Slip", salary.name)
 				row = doc_de.append("deductions", {})
-				row.salary_component = self.deduction_salary_component
+				row.salary_component = licenseClassification.deduction_salary_component
 				row.amount = item.amount_deduction
 				doc_de.save()
 	
@@ -55,6 +57,8 @@ class LicensesAssingmentSalary(Document):
 		for item in employees:
 			salary_slip = frappe.get_all("Salary Slip", ["name"], filters={"payroll_entry":self.payroll_entry, "employee":item.employee})
 			
+			licenseClassification = frappe.get_doc('License Classification', self.license_classification)
+
 			for salary in salary_slip:
 				doc = frappe.get_doc("Salary Slip", salary.name)
 
@@ -63,15 +67,15 @@ class LicensesAssingmentSalary(Document):
 				type_component = doc.earnings
 
 				for component in type_component:
-					if component.salary_component == self.earning_salary_component:
-						salary_detail = frappe.get_all("Salary Detail", ["name"], filters = {"salary_component":self.earning_salary_component, "parent":salary.name})
+					if component.salary_component == licenseClassification.earning_salary_component:
+						salary_detail = frappe.get_all("Salary Detail", ["name"], filters = {"salary_component":licenseClassification.earning_salary_component, "parent":salary.name})
 						frappe.delete_doc("Salary Detail", salary_detail[0].name)
 
 				type_component = doc.deductions
 
 				for component in type_component:
-					if component.salary_component == self.deduction_salary_component:
-						salary_detail = frappe.get_all("Salary Detail", ["name"], filters = {"salary_component":self.deduction_salary_component, "parent":salary.name})
+					if component.salary_component == licenseClassification.deduction_salary_component:
+						salary_detail = frappe.get_all("Salary Detail", ["name"], filters = {"salary_component":licenseClassification.deduction_salary_component, "parent":salary.name})
 						frappe.delete_doc("Salary Detail", salary_detail[0].name)
 
 				self.update_data(salary.name)
