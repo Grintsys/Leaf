@@ -81,6 +81,7 @@ class SalesInvoice(SellingController):
 		self.db_set('cost_center', company[0].cost_center, update_modified=False)
 
 	def set_new_row_item(self, item, rate, taxed_sales, is_exonerated):
+		d_amount = item.price_list_rate * item.qty * (item.discount_percentage/100)
 		row = self.append("items", {})
 		row.item_code = item.item_code
 		row.qty = item.qty
@@ -116,7 +117,7 @@ class SalesInvoice(SellingController):
 		row.margin_rate_or_amount = item.margin_rate_or_amount
 		row.rate_with_margin = item.rate_with_margin
 		row.discount_percentage = item.discount_percentage
-		row.discount_amount = item.discount_amount
+		row.discount_amount = d_amount
 		row.base_rate_with_margin = item.base_rate_with_margin
 		row.item_tax_template = item.item_tax_template
 		row.tax_detail = item.tax_detail
@@ -155,6 +156,16 @@ class SalesInvoice(SellingController):
 		row.delivered_qty = item.delivered_qty
 		row.cost_center = item.cost_center
 		row.page_break = item.page_break
+
+	def update_item_discount_amount(self):
+		items = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name})
+
+		for item in items:
+			d_amount = item.price_list_rate * item.qty * (item.discount_percentage/100)
+
+			doc = frappe.get_doc("Sales Invoice Item", item.name)
+			doc.discount_amount = d_amount
+			doc.db_set("discount_amount", d_amount, update_modified=False)
 	
 	def caculate_items_amount(self):
 		items = frappe.get_all("Sales Invoice Item", ["*"], filters = {"parent": self.name})
@@ -1194,6 +1205,9 @@ class SalesInvoice(SellingController):
 
 		if "Healthcare" in active_domains:
 			manage_invoice_submit_cancel(self, "on_submit")
+		
+		if self.docstatus == 1:
+			self.update_item_discount_amount()
 
 	def validate_pos_return(self):
 
@@ -1361,6 +1375,8 @@ class SalesInvoice(SellingController):
 
 	def on_update(self):
 		self.set_paid_amount()
+		if self.docstatus == 0:
+			self.update_item_discount_amount()
 		# self.exonerated_value()
 		company = frappe.get_doc('Company', self.company)
 		if company.isv_by_item_amount:
@@ -1877,7 +1893,7 @@ class SalesInvoice(SellingController):
 		)
 
 	def make_discount_Reason_GL_Entries(self, gl_entries):
-		items = frappe.get_all("Sales Invoice Item", ["name", "discount_reason", "discount_amount"], filters = {"parent": self.name})
+		items = frappe.get_all("Sales Invoice Item", ["name", "discount_reason", "discount_amount", "price_list_rate", "qty", "discount_percentage"], filters = {"parent": self.name})
 
 		totalDiscount = 0
 
@@ -1899,21 +1915,23 @@ class SalesInvoice(SellingController):
 				accountCredit = company.default_expense_account
 		
 		for item in items:
+			d_amount = item.price_list_rate * item.qty * (item.discount_percentage/100)
+
 			if(item.sales_default_values != None):
 				gl_entries.append(
 				self.get_gl_dict({
 					"account": item.sales_default_values,
 					"party_type": "Customer",
 					"party": self.customer,
-			 		"credit": item.discount_amount,
-			 		"credit_in_account_currency": item.discount_amount,
+			 		"credit": d_amount,
+			 		"credit_in_account_currency": d_amount,
 					"against_voucher": self.name,
 					"against_voucher_type": self.doctype,
 					"cost_center": company.round_off_cost_center
 					}, account_currency)
 				)
 			else:
-				totalDiscount += item.discount_amount
+				totalDiscount += d_amount
 
 			mode_of_payment = frappe.get_all("Mode of Payment Account", "default_account", filters = {"parent": item.discount_reason})
 
@@ -1929,8 +1947,8 @@ class SalesInvoice(SellingController):
 					"party": self.customer,
 					"due_date": self.due_date,
 					# "against": self.against_income_account,
-					"debit": item.discount_amount,
-					"debit_in_account_currency": item.discount_amount,
+					"debit": d_amount,
+					"debit_in_account_currency": d_amount,
 					"against_voucher": self.return_against if cint(self.is_return) and self.return_against else self.name,
 					"against_voucher_type": self.doctype,
 					"cost_center": company.round_off_cost_center
